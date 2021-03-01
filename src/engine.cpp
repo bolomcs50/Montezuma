@@ -112,27 +112,23 @@ void Engine::updatePosition(const std::string command){
     } else if (command.find("fen", 9) == 9) {
         bool ok = cr.Forsyth(command.substr(13).c_str());
     }
+    hash = cr.Hash64Calculate();
 }
 
 // Start move evaluation
 void Engine::inputGo(const std::string command){
+
     unsigned int depth = 4;
     std::vector<thc::Move> moves;
     cr.GenLegalMoveListSorted(moves);
     thc::Move bestMove;
-    int score{0}, bestScore{-99999999};
+    int score{0}, bestScore{INT_MIN};
     // Loop over sorted moves and choose best
     auto startTime = std::chrono::high_resolution_clock::now();
     nodes = 0;
-    for (auto mv : moves){
-        cr.PushMove(mv);
-        score = -negaMax(depth-1);
-        cr.PopMove(mv);
-        if (score > bestScore){
-            bestScore = score;
-            bestMove = mv;
-        }
-    }
+
+    bestScore = alphaBeta(INT_MIN, INT_MAX, depth);
+
     auto stopTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
     int printScore = bestScore;
@@ -143,7 +139,7 @@ void Engine::inputGo(const std::string command){
         << " pv " << bestMove.TerseOut() << "\n";
 }
 
-int Engine::negaMax(const int depth){
+int Engine::alphaBeta(int alpha, int beta, int depth){
     // Base Case
     if (depth == 0) {
         nodes++;
@@ -160,11 +156,22 @@ int Engine::negaMax(const int depth){
     int score, bestScore = INT_MIN;
     for (auto mv:moves){
         cr.PushMove(mv);
-        int score = -negaMax(depth-1);
+        hash = cr.Hash64Update(hash, mv);
+        score = -alphaBeta(-beta, -alpha, depth-1);
+        hash = cr.Hash64Update(hash, mv);
         cr.PopMove(mv);
-        if (score > bestScore) bestScore = score;
+        // std::cout << "Evaluation " << score << "\talpha " << alpha << "\tbeta " << beta << "\t depth " << depth << "\n";
+        if (score > bestScore){ // If this is the best move found, save it
+            bestScore = score;
+        }
+        if (bestScore > alpha){ // if score beats my minimum assured score, it is new best move and update minimum
+            alpha = bestScore;
+        }
+        if (alpha >= beta) {    // If my assured minimum beats the opponent's assured maximum estimated so far, it is the new best
+            // Save this as best
+            return alpha;
+        }
     }
-    //std::cout << " alpha " << alpha << std::endl;
     return bestScore;
 }
 
