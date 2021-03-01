@@ -127,7 +127,7 @@ void Engine::inputGo(const std::string command){
     auto startTime = std::chrono::high_resolution_clock::now();
     nodes = 0;
 
-    bestScore = alphaBeta(INT_MIN, INT_MAX, depth);
+    bestScore = alphaBeta(INT_MIN+1, INT_MAX, depth);     // +1 is NECESSARY to prevent nasty overflow when changing sign. 
 
     auto stopTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
@@ -160,7 +160,7 @@ int Engine::alphaBeta(int alpha, int beta, int depth){
         score = -alphaBeta(-beta, -alpha, depth-1);
         hash = cr.Hash64Update(hash, mv);
         cr.PopMove(mv);
-        // std::cout << "Evaluation " << score << "\talpha " << alpha << "\tbeta " << beta << "\t depth " << depth << "\n";
+        /* FAIL-SOFT IMPLEMENTATION
         if (score > bestScore){ // If this is the best move found, save it
             bestScore = score;
         }
@@ -171,8 +171,12 @@ int Engine::alphaBeta(int alpha, int beta, int depth){
             // Save this as best
             return alpha;
         }
+        */
+       // std::cout << "Evaluation " << score << "\talpha " << alpha << "\tbeta " << beta << "\t depth " << depth << "\n";
+       if (score >= beta) return beta; // This move is too good, opponent won't allow it
+       if (score > alpha) alpha = score; // This move is better than the previous ones, save the score
     }
-    return bestScore;
+    return alpha;
 }
 
 int Engine::evaluate(){
