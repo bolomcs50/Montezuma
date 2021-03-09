@@ -1,30 +1,8 @@
-/* TODO
-    - Implement alpha-beta pruning in negamax search
-    - Implement/find transposition tables + zobrist hashing for storing evaluations
-    - Implement iterative deepening
-    - Retrieve PV-line
-    - Add support for opening book
-    
-
-    - Look into computational time benefits of multithreading
-    - Implement multithreading to always have good communicaiton
-    - Manage move time
-    
-    - Write a better eval function
-
-    DONE
-    - Add ability to import fen string
-    - Implement calculation timing for comparison between methods
-    - Consider additional measurements (nodes evaluated, eg)
-    - Implement test batteries (e.g. import list of FEN tactics and solve them)
-    - Implement proper communication with GUI (points, PV-line, depth, etc.)
-*/
-
-
 #include <iostream>
 #include <string>
 #include <bits/stdc++.h>
 #include <chrono>
+#include <thread>
 #include "thc.h"
 #include "engine.h"
 
@@ -32,6 +10,7 @@ Engine::Engine(){
     Engine::name = "Montezuma";
     author = "Michele Bolognini";
     nodes = 0;
+    hashTableSize = 64; // 64 MB default
 }
 
 int Engine::protocolLoop(){
@@ -46,6 +25,7 @@ int Engine::protocolLoop(){
             std::cout << "readyok\n";
         } else if (command.compare("ucinewgame") == 0){
             resetBoard();
+            initHashTable();
         } else if (command.find("debug", 0) == 0){
             //TODO
         } else if (command.find("setoption", 0) == 0){
@@ -92,6 +72,14 @@ void Engine::resetBoard(){
     cr = newcr;
 }
 
+// Resize and empty the hashTable. Do not call this if you don't want to empty the table!
+void Engine::initHashTable(){
+    numPositions = hashTableSize*0x100000/sizeof(hashEntry);
+    hashTable.resize(0);
+    hashTable.resize(numPositions);
+    tableEntries = 0;
+}
+
 // plays the moves contained in the string command on the board
 void Engine::updatePosition(const std::string command){
     if (command.find("startpos", 9) == 9){
@@ -117,33 +105,51 @@ void Engine::updatePosition(const std::string command){
 
 // Start move evaluation
 void Engine::inputGo(const std::string command){
-
-    unsigned int depth = 4;
+    unsigned int depth = 6;
     std::vector<thc::Move> moves;
     cr.GenLegalMoveListSorted(moves);
-    thc::Move bestMove;
     int score{0}, bestScore{INT_MIN};
     // Loop over sorted moves and choose best
     auto startTime = std::chrono::high_resolution_clock::now();
     nodes = 0;
+    tableHits = 0;
 
     bestScore = alphaBeta(INT_MIN+1, INT_MAX, depth);     // +1 is NECESSARY to prevent nasty overflow when changing sign. 
 
     auto stopTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
+    thc::Move pvMove = hashTable[hash%numPositions].bestMove;
     int printScore = bestScore;
     if (!cr.white) printScore *= -1;
-    std::cout << "bestmove " << bestMove.TerseOut() << std::endl;
-    std::cout << "info score cp " << printScore << " depth " << depth << " time "<< duration.count()
-        << " nodes " << nodes <<  " nps " << static_cast<int>(1000*nodes/duration.count())
-        << " pv " << bestMove.TerseOut() << "\n";
+    int nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
+
+    std::cout << "bestmove " << pvMove.TerseOut() << std::endl;
+    std::cout << "info score cp " << printScore << " depth " << depth << " time " << duration.count() << " nodes " << nodes << " nps " << nps
+              << " tableHits " << tableHits << " tableEntries " << tableEntries << std::endl;
+
+    /* auto tempHash = hash;
+    do {
+        std::cout << pvMove.TerseOut() << " ";
+        tempHash = cr.Hash64Update(tempHash, pvMove);
+        pvMove = hashTable[tempHash%numPositions].bestMove;
+    } while (pvMove.TerseOut() != "0000"); */    
 }
 
 int Engine::alphaBeta(int alpha, int beta, int depth){
     // Base Case
+    int score;
+    // If the table contains the current position and the score is useful, return it
+    if (probeHash(depth, alpha, beta, score)){
+        tableHits++;
+        return score;
+    }
+
     if (depth == 0) {
         nodes++;
-        return evaluate();
+        score = evaluate();
+        thc::Move bestMove; // Null Move
+        recordHash(depth, Flag::EXACT, score, bestMove ); // CHECK if it makes sense to store the leaf instead of evaluating it each time
+        return score;
     }
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
@@ -153,7 +159,9 @@ int Engine::alphaBeta(int alpha, int beta, int depth){
     }
     
     // Recursive Step
-    int score, bestScore = INT_MIN;
+    Flag flag = Flag::ALPHA;
+    //int bestScore = INT_MIN;
+    thc::Move bestMove;
     for (auto mv:moves){
         cr.PushMove(mv);
         hash = cr.Hash64Update(hash, mv);
@@ -172,10 +180,18 @@ int Engine::alphaBeta(int alpha, int beta, int depth){
             return alpha;
         }
         */
-       // std::cout << "Evaluation " << score << "\talpha " << alpha << "\tbeta " << beta << "\t depth " << depth << "\n";
-       if (score >= beta) return beta; // This move is too good, opponent won't allow it
-       if (score > alpha) alpha = score; // This move is better than the previous ones, save the score
+       // FAIL-HARD IMPLEMENTATION
+       if (score >= beta){
+           recordHash(depth, Flag::BETA, beta, mv);
+           return beta; // This move is too good, opponent won't allow it
+       }
+       if (score > alpha){
+           flag = Flag::EXACT;
+           bestMove = mv;
+           alpha = score; // This move is better than the previous ones, save the score
+       }
     }
+    recordHash(depth, flag, alpha, bestMove);
     return alpha;
 }
 
@@ -199,4 +215,35 @@ int Engine::evaluate(){
         if (!cr.white) return -(4*evalMat+evalPos); // Change sign to eval if its from black side
         return 4*evalMat+evalPos;
     }
+}
+
+bool Engine::probeHash(int depth, int alpha, int beta, int &score){
+    hashEntry *entry = &hashTable[hash%numPositions];
+    if (entry->key == hash){ // Check that the key is the same (not a type ? collision)
+        score = entry->score;
+        if (entry->depth >= depth){  // If it is useful
+            if (entry->flag == Flag::EXACT){
+                return true;
+            }
+            if (entry->flag == Flag::ALPHA && entry->score <= alpha){ // If it was an upper bound and worse than the current one
+                score = alpha;
+                return true;
+            }
+            if (entry->flag == Flag::BETA && entry->score >= beta){ // If it was a lower bound and worse than the current one
+                score = beta;
+                return true;
+            }
+        }
+        // RememberBestMove()???
+    }
+    return false;
+}
+void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
+    hashEntry *entry = &hashTable[hash%numPositions];
+    if (entry->flag == Flag::NONE) tableEntries++;
+    entry->key = hash;
+    entry->depth = depth;
+    entry->flag = flag;
+    entry->score = score;
+    entry->bestMove = bestMove;
 }
