@@ -18,11 +18,13 @@ class Engine{
     /* Called when Engine receives the "go" command */
     void inputGo(const std::string command);
     /* Search function */
-    int negaMax( int depth);
+    int alphaBeta(int alpha, int beta, int depth);
     /* Evaluation function, evaluates the engine's current board */
     int evaluate();
     thc::ChessEvaluation cr;
+    uint64_t hash;
     std::string name;
     std::string author;
     unsigned long long nodes;
+
 };
