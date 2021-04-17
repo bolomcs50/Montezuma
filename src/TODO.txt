@@ -1,0 +1,43 @@
+TODO
+- Correctly rank mates by number of moves.
+- Solve ttable problems that plague the engine: see ISSUES    
+- Implement educated guess on next move if table hits?
+- Implement quiescence search
+- Implement iterative deepening DONE
+
+
+- Test Engine with hashTable? How?
+- Retrieve PV-line
+- Add support for opening book
+
+- Implement multithreading to always have good communicaiton and exploit pondering
+- Study alpha-beta in depth (fail-soft vs fail-hard, ...)
+- Look into computational time benefits of multithreading
+- Manage move time
+- Write a better eval function
+- Consider reducing the size of ttable entries, to make better use of the limited memory
+
+- Probably you dont need to clean the board each time you get the "position" command, only with "ucinewgame"
+
+ISSUES
+- Incredibly often it gives illegal moves, even with big table size
+- Somehow it is non-deterministic, at least with depth-wise replacement scheme
+- It seems that draws by repetition are not accounted for correctly.
+The computer plays them regardless, stating it has an advantage.
+!!! I SHOULD CHECK IF THE NODE IS TERMINAL AT THE BEGINNING OF alphabeta, intead of counting moves. Nope, still gives the error,
+even if i check first thing. But in that case at least white sees it is a draw, after black moved. I suspect it is an issue with the transposition table,
+where it finds a position that was already analysed and does not see that if it is the third time it is actually reached, then it's a draw.
+Maybe with a different replacing scheme also accounting for age of the entries this is solved. http://www.open-aurec.com/wbforum/viewtopic.php?t=51447
+I hope solving these makes iterative deepening work well, because it is really fast.
+So to sum up 2 problem hypotheses: non-detection of draw by threefold repetition and key collisions of type 1 (same hash) ù
+Also, the second problem does not appear if the best move picked from the table is not searched first. Look more into this.
+
+DONE
+- Add ability to import fen string
+- Implement calculation timing for comparison between methods
+- Consider additional measurements (nodes evaluated, eg)
+- Implement test batteries (e.g. import list of FEN tactics and solve them)
+- Implement proper communication with GUI (points, PV-line, depth, etc.)
+- Implement alpha-beta pruning in negamax search
+- Implement transposition tables with hashing for storing evaluations
+- Implement a replacement scheme (by depth alone)
