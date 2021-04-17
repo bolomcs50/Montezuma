@@ -1,8 +1,13 @@
-/*
-- Implement educated guess on next move if table hits.
-- Test Engine with hashTable?
+TODO
+- Correctly rank mates by number of moves.
+- Solve ttable problems that plague the engine: see ISSUES    
+- Implement educated guess on next move if table hits?
+- Implement quiescence search
+- Implement iterative deepening DONE
+
+
+- Test Engine with hashTable? How?
 - Retrieve PV-line
-- Implement iterative deepening
 - Add support for opening book
 
 - Implement multithreading to always have good communicaiton and exploit pondering
@@ -10,9 +15,22 @@
 - Look into computational time benefits of multithreading
 - Manage move time
 - Write a better eval function
+- Consider reducing the size of ttable entries, to make better use of the limited memory
+
+- Probably you dont need to clean the board each time you get the "position" command, only with "ucinewgame"
 
 ISSUES
-Sometimes it freezes when trying to calculate nps??? Maybe some strange div/0 shit
+- Incredibly often it gives illegal moves, even with big table size
+- Somehow it is non-deterministic, at least with depth-wise replacement scheme
+- It seems that draws by repetition are not accounted for correctly.
+The computer plays them regardless, stating it has an advantage.
+!!! I SHOULD CHECK IF THE NODE IS TERMINAL AT THE BEGINNING OF alphabeta, intead of counting moves. Nope, still gives the error,
+even if i check first thing. But in that case at least white sees it is a draw, after black moved. I suspect it is an issue with the transposition table,
+where it finds a position that was already analysed and does not see that if it is the third time it is actually reached, then it's a draw.
+Maybe with a different replacing scheme also accounting for age of the entries this is solved. http://www.open-aurec.com/wbforum/viewtopic.php?t=51447
+I hope solving these makes iterative deepening work well, because it is really fast.
+So to sum up 2 problem hypotheses: non-detection of draw by threefold repetition and key collisions of type 1 (same hash) ù
+Also, the second problem does not appear if the best move picked from the table is not searched first. Look more into this.
 
 DONE
 - Add ability to import fen string
@@ -21,7 +39,5 @@ DONE
 - Implement test batteries (e.g. import list of FEN tactics and solve them)
 - Implement proper communication with GUI (points, PV-line, depth, etc.)
 - Implement alpha-beta pruning in negamax search
-- Implement transposition tables + zobrist hashing for storing evaluations
-*/
-
-position startpos moves d2d4 g8f6 b1c3 d7d5 e2e3 b8c6 f2f4 c8e6 f1e2 d8d7 g1f3 g7g6 e2b5 e6g4 b5c6 b7c6 d1e2 f8g7 e1g1 f6e4 c1d2 e8g8 c3e4 d5e4 c2c4 a8b8 d4d5 c6d5 c4d5 g7b2 a1b1 e4f3 g2f3 g4h3 f1e1 d7d5 e3e4 d5a2 d2e3 f7f5 e4e5 a7a6 e2f2 c7c5 e3c5 b2d4 c5d4 a2b1 d4e3 b1b2 f2g3 b2d2 e3d2 b8b2 e1e2 f8d8 d2a5 b2e2 a5d8 e2g2 g3g2 h3g2 g1g2 g8f7 g2f2 f7e6 f2e3 g6g5 e3d4 g5f4 d8a5 h7h6 a5b4 a6a5 b4a5 e6d7 d4d5
+- Implement transposition tables with hashing for storing evaluations
+- Implement a replacement scheme (by depth alone)

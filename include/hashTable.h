@@ -1,8 +1,9 @@
 #include "thc.h"
 
-#define hashfEXACT 0
+/*#define hashfEXACT 0
 #define hashfALPHA 1
 #define hashfBETA  2
+*/
 
 enum class Flag {
     NONE,

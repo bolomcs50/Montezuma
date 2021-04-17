@@ -21,16 +21,16 @@ class Engine{
     /* Called when Engine receives the "go" command */
     void inputGo(const std::string command);
     /* Search function */
-    int alphaBeta(int alpha, int beta, int depth);
+    int alphaBeta(int alpha, int beta, int depth, int initialDepth);
     /* Evaluation function, evaluates the engine's current board */
     int evaluate();
     /* Probes the table to see if "hash" is in it. If it is AND the score is useful, return true and its score */
-    bool probeHash(int depth, int alpha, int beta, int &score);
-    /**/
+    bool probeHash(int depth, int alpha, int beta, int &score, bool &moveSearch);
+    /* Record the hash into the table. Implement replacement scheme here */
     void recordHash(int depth, Flag flag, int score, thc::Move bestMove);
 
     thc::ChessEvaluation cr;
-    uint64_t hash;
+    uint64_t currentHash;  // Hash of the current
     std::string name;
     std::string author;
     unsigned long long nodes;
