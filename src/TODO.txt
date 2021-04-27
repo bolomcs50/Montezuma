@@ -10,17 +10,17 @@ TODO
 - Retrieve PV-line
 - Add support for opening book
 
-- Implement multithreading to always have good communicaiton and exploit pondering
+- Implement multithreading to always have good communicaiton and exploit pondering (= thinking in opponent's time)
 - Study alpha-beta in depth (fail-soft vs fail-hard, ...)
 - Look into computational time benefits of multithreading
 - Manage move time
-- Write a better eval function
-- Consider reducing the size of ttable entries, to make better use of the limited memory
+- Write a better eval function?
+- Consider reducing the size of ttable entries, to make better use of the limited memory. In particular, look into the "move" field and see if it can be stored with less data.
 
 - Probably you dont need to clean the board each time you get the "position" command, only with "ucinewgame"
 
 ISSUES
-- Incredibly often it gives illegal moves, even with big table size
+- Incredibly often it gives illegal moves, even with big table size 
 - Somehow it is non-deterministic, at least with depth-wise replacement scheme
 - It seems that draws by repetition are not accounted for correctly.
 The computer plays them regardless, stating it has an advantage.
@@ -29,7 +29,7 @@ even if i check first thing. But in that case at least white sees it is a draw, 
 where it finds a position that was already analysed and does not see that if it is the third time it is actually reached, then it's a draw.
 Maybe with a different replacing scheme also accounting for age of the entries this is solved. http://www.open-aurec.com/wbforum/viewtopic.php?t=51447
 I hope solving these makes iterative deepening work well, because it is really fast.
-So to sum up 2 problem hypotheses: non-detection of draw by threefold repetition and key collisions of type 1 (same hash) ù
+So to sum up 2 problem hypotheses: non-detection of draw by threefold repetition and key collisions of type 1 (same hash)
 Also, the second problem does not appear if the best move picked from the table is not searched first. Look more into this.
 
 DONE
