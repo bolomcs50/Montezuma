@@ -4,4 +4,6 @@ Based off billforsternz's TripleHappyChess project.
 
 ## Installation
 Clone the repository
-''' git clone https://github.com/bolomcs50/Montezuma/tree/develop '''
+'''
+git clone https://github.com/bolomcs50/Montezuma/tree/develop
+'''
