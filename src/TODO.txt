@@ -23,7 +23,7 @@ ISSUES
 - Incredibly often it gives illegal moves, even with big table size 
 - Somehow it is non-deterministic, at least with depth-wise replacement scheme
 - It seems that draws by repetition are not accounted for correctly.
-The computer plays them regardless, stating it has an advantage.
+The computer plays them regardless, stating it as an advantage.
 !!! I SHOULD CHECK IF THE NODE IS TERMINAL AT THE BEGINNING OF alphabeta, intead of counting moves. Nope, still gives the error,
 even if i check first thing. But in that case at least white sees it is a draw, after black moved. I suspect it is an issue with the transposition table,
 where it finds a position that was already analysed and does not see that if it is the third time it is actually reached, then it's a draw.
