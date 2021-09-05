@@ -12,7 +12,7 @@ Engine::Engine(){
     Engine::name = "Montezuma";
     author = "Michele Bolognini";
     nodes = 0;
-    hashTableSize = 640; // 64 MB default
+    hashTableSize = 6400; // 64 MB default
 }
 
 int Engine::protocolLoop(){
@@ -120,7 +120,7 @@ void Engine::inputGo(const std::string command){
 
     for (int d = 1; d <= depth; d++)
     {
-        bestScore = alphaBeta(INT_MIN+1, INT_MAX, d, d);     // +1 is NECESSARY to prevent nasty overflow when changing sign. 
+        bestScore = alphaBeta(INT_MIN+1, INT_MAX, d, d);     // +1 is necessary to prevent nasty overflow when changing sign. 
     }
     auto stopTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
@@ -129,13 +129,22 @@ void Engine::inputGo(const std::string command){
     thc::Move pvMove = hashTable[currentHash%numPositions].bestMove;    
     int printScore = bestScore;  
     if (!cr.white) printScore *= -1;
-
+    
+    // Check if the returned score signifies a mate and in how many moves
+    if (abs(printScore) > MATE_SCORE - 1000){
+        int movesToMate = (MATE_SCORE - abs(printScore) + 1)/2;
+        if (bestScore < 0) movesToMate *= -1; // If the engine is getting mated use negative values
+        std::cout << "info score mate " << movesToMate;
+    } else {
+        std::cout << "info score cp " << printScore;
+    }
+    // Print info to screen
+    std::cout << " depth " << depth << " time " << duration.count() << " nodes " << nodes << " nps " << nps
+              << " tableHits " << tableHits << " tableEntries " << tableEntries << std::endl;
     if (pvMove.TerseOut() != "0000"){
         std::cout << "bestmove " << pvMove.TerseOut() << std::endl;
     }
-    
-    std::cout << "info score cp " << printScore << " depth " << depth << " time " << duration.count() << " nodes " << nodes << " nps " << nps
-              << " tableHits " << tableHits << " tableEntries " << tableEntries << std::endl;
+
 
     /* auto tempHash = currentHash;
     do {
@@ -186,8 +195,8 @@ int Engine::alphaBeta(int alpha, int beta, int depth, int initialDepth){
         cr.PopMove(mv);
 
         // Apply score correction to convey info on distance of mate from current node
-        if (score >= MATE_SCORE - initialDepth) score--;
-        if (score <= -MATE_SCORE + initialDepth) score++;
+        if (score >= MATE_SCORE - 500) score--;
+        if (score <= -MATE_SCORE + 500) score++;
 
         /* FAIL-SOFT IMPLEMENTATION
         if (score > bestScore){ // If this is the best move found, save it

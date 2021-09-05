@@ -1,5 +1,4 @@
 TODO
-- Correctly rank mates by number of moves.
 - Solve ttable problems that plague the engine: see ISSUES    
 - Implement educated guess on next move if table hits?
 - Implement quiescence search
@@ -41,3 +40,4 @@ DONE
 - Implement alpha-beta pruning in negamax search
 - Implement transposition tables with hashing for storing evaluations
 - Implement a replacement scheme (by depth alone)
+- Correctly rank mates by number of moves.
