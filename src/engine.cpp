@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <bits/stdc++.h>
 #include <chrono>
 #include <thread>
 #include "thc.h"
@@ -29,7 +28,7 @@ int Engine::protocolLoop(){
             resetBoard();
             initHashTable();
         } else if (command.find("debug", 0) == 0){
-            //TODO
+            debug(command);
         } else if (command.find("setoption", 0) == 0){
             // This is called to set the internal options of the engine.
             // It is called once per option with the syntax:
@@ -37,7 +36,7 @@ int Engine::protocolLoop(){
             // TODO: implement option setting
             std::cout << "info string setoption command is not supported yet\n";
         } else if (command.find("register", 0) == 0){
-            //TODO: Find out wtf registration is and implement it
+            //TODO: Find out what registration is and implement it
             std::cout << "info string registration is not supported yet\n";
         } else if (command.find("position", 0) == 0){
             updatePosition(command);
@@ -107,121 +106,75 @@ void Engine::updatePosition(const std::string command){
 
 // Start move evaluation
 void Engine::inputGo(const std::string command){
-    unsigned int depth = 4;
-    std::vector<thc::Move> moves;
-    cr.GenLegalMoveListSorted(moves);
-    int score{0}, bestScore{INT_MIN};
-    // Loop over sorted moves and choose best
+    unsigned int searchDepth = 6;
+    int bestScore{INT_MIN};
+
+    // try all the moves and find the best one
     auto startTime = std::chrono::high_resolution_clock::now();
-    nodes = 0;
-    tableHits = 0;
-
-    // Add current position to history
-
-    for (int d = 1; d <= depth; d++)
-    {
-        bestScore = alphaBeta(INT_MIN+1, INT_MAX, d, d);     // +1 is necessary to prevent nasty overflow when changing sign. 
+    thc::Move bestMove;
+    std::vector<thc::Move> legalMoves;
+    cr.GenLegalMoveList(legalMoves);
+    for (auto mv:legalMoves){
+        cr.PushMove(mv);
+        int currentScore = -alphaBeta(-MATE_SCORE, MATE_SCORE, searchDepth); // +1 to avoid overflow when changing sign in recursive calls
+        cr.PopMove(mv);
+        if (currentScore > bestScore){
+            bestScore = currentScore;
+            bestMove = mv;
+        }
     }
     auto stopTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
-    int nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
+    auto nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
 
-    thc::Move pvMove = hashTable[currentHash%numPositions].bestMove;    
-    int printScore = bestScore;  
-    if (!cr.white) printScore *= -1;
-    
     // Check if the returned score signifies a mate and in how many moves
-    if (abs(printScore) > MATE_SCORE - 1000){
-        int movesToMate = (MATE_SCORE - abs(printScore) + 1)/2;
+    if (MATE_SCORE - abs(bestScore) < 200){
+        int movesToMate = (MATE_SCORE - abs(bestScore) + 1)/2;
         if (bestScore < 0) movesToMate *= -1; // If the engine is getting mated use negative values
         std::cout << "info score mate " << movesToMate;
     } else {
-        std::cout << "info score cp " << printScore;
+        std::cout << "info score cp " << bestScore ;
     }
-    // Print info to screen
-    std::cout << " depth " << depth << " time " << duration.count() << " nodes " << nodes << " nps " << nps
-              << " tableHits " << tableHits << " tableEntries " << tableEntries << std::endl;
-    if (pvMove.TerseOut() != "0000"){
-        std::cout << "bestmove " << pvMove.TerseOut() << std::endl;
-    }
-
-
-    /* auto tempHash = currentHash;
-    do {
-        std::cout << pvMove.TerseOut() << " ";
-        tempHash = cr.Hash64Update(tempHash, pvMove);
-        pvMove = hashTable[tempHash%numPositions].bestMove;
-    } while (pvMove.TerseOut() != "0000"); */    
+    std::cout << " time " << duration.count() << " nps " << nps << std::endl;
+    std::cout << "bestmove " << bestMove.TerseOut() << std::endl;
 }
 
-int Engine::alphaBeta(int alpha, int beta, int depth, int initialDepth){
-    // Base Case
-    int score;
-    bool moveSearch = false;
-    if (cr.GetRepetitionCount() >= 2) return 0;
-    // If the table contains the current position and the score is useful, return it
-    if (probeHash(depth, alpha, beta, score, moveSearch)){
-        tableHits++;
-        return score;
-    }
-
-    if (depth == 0) {
-        nodes++;
-        score = evaluate();
-        thc::Move bestMove; // Null Move
-        recordHash(depth, Flag::EXACT, score, bestMove ); // CHECK if it makes sense to store the leaf instead of evaluating it each time
-        return score;
-    }
-
-    std::vector<thc::Move> moves;
-    cr.GenLegalMoveList(moves);
-    if (moves.size() == 0) {
-        nodes++;
+int Engine::alphaBeta(int alpha, int beta, int depth){
+    // Base case
+    if (depth == 0){
         return evaluate();
     }
 
-    // If the analysed position is in the table but the result is not definitive, in some cases it can still be useful (see probeHash)
-    //if (moveSearch) moves.insert(moves.begin(), hashTable[currentHash%numPositions].bestMove); // Put it first in the vector, when it is found the second time it already is in the table.
-    
-    // Recursive Step
-    Flag flag = Flag::ALPHA;
-    //int bestScore = INT_MIN+1;
-    thc::Move bestMove;
-    for (auto mv:moves){
+    /*  Inductive step.
+        Alpha = the minimum guaranteed score I can force given my opponent's options. A lower bound: I can get at least alpha
+        Beta = the maximum score my opponent will allow me, given our options. An upper bound: I cannot get more than beta
+        As a consequence:
+        - I chose the move with highest alpha, trying to maximize it.
+        - If a move results in a score > Beta, my opponent won't allow it.
+    */
+    //int bestScore{-MATE_SCORE}; // Worst Case Scenario = I'm getting mated on the next move.
+    std::vector<thc::Move> legalMoves;
+    cr.GenLegalMoveList(legalMoves);
+    for (auto mv:legalMoves){
         cr.PushMove(mv);
-        currentHash = cr.Hash64Update(currentHash, mv);
-        score = -alphaBeta(-beta, -alpha, depth-1, initialDepth);
-        currentHash = cr.Hash64Update(currentHash, mv);
+        int currentScore = -alphaBeta(-beta, -alpha, depth-1);
         cr.PopMove(mv);
-
-        // Apply score correction to convey info on distance of mate from current node
-        if (score >= MATE_SCORE - 500) score--;
-        if (score <= -MATE_SCORE + 500) score++;
-
-        /* FAIL-SOFT IMPLEMENTATION
-        if (score > bestScore){ // If this is the best move found, save it
-            bestScore = score;
+        if (currentScore >= beta){
+            // The opponent will not allow this move, he has at least one better choice, therefore stop looking for other moves and return the upper bound as score,
+            // since my opponent does at least as good as that here.
+            return beta;
         }
-        if (bestScore > alpha){ // if score beats my minimum assured score, it is new best move and update minimum
-            alpha = bestScore;
+        if (currentScore > alpha){ // This move results in a higher minimum guaranteed score: make it new best. Implicitly, this is also < beta.
+            alpha = currentScore;
         }
-        if (alpha >= beta) {    // If my assured minimum beats the opponent's assured maximum estimated so far, it is the new best
-            // Save this as best
-            return alpha;
-        }
-        */
-       // FAIL-HARD IMPLEMENTATION
-       if (score >= beta){
-           recordHash(depth, Flag::BETA, beta, mv);
-           return beta; // This move is too good, opponent won't allow it
-       }
-       if (score > alpha){
-           flag = Flag::EXACT;
-           bestMove = mv;
-           alpha = score; // This move is better than the previous ones, save the score
-       }
     }
-    recordHash(depth, flag, alpha, bestMove);
+    /*  Apply mate score correction: if you are at most 200 plies away from mate, decrease the score by 1.
+        Otherwise, all positions n ply away from mate are equally good and in those position any move is equally good,
+        even if it does not actually lead to mate*/
+    if (MATE_SCORE - abs(alpha) < 200){
+        if (alpha < 0) alpha++;
+        else alpha--;
+    }
     return alpha;
 }
 
@@ -253,9 +206,9 @@ int Engine::evaluate(){
 bool Engine::probeHash(int depth, int alpha, int beta, int &score, bool &moveSearch){
     hashEntry *entry = &hashTable[currentHash%numPositions];
     if (entry->key == currentHash){ // Check that the key is the same (not a type ? collision)
-        score = entry->score;
         if (entry->depth >= depth){  // If it is useful
             if (entry->flag == Flag::EXACT){
+                score = entry->score;
                 return true;
             }
             if (entry->flag == Flag::ALPHA && entry->score <= alpha){ // If it was an upper bound and worse than the current one
@@ -271,15 +224,22 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score, bool &moveSea
     }
     return false;
 }
+
 void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
     hashEntry *entry = &hashTable[currentHash%numPositions];
     
     if (entry->flag == Flag::NONE) tableEntries++; // Count num of occupied cells
-    if (entry->flag == Flag::NONE || entry->depth < depth){ // Save the position if there is none in the cell or the depth of the new one is greater
+     if (entry->flag == Flag::NONE || entry->depth < depth){ // Save the position if there is none in the cell or the depth of the new one is greater
         entry->key = currentHash;
         entry->depth = depth;
         entry->flag = flag;
         entry->score = score;
         entry->bestMove = bestMove;
     }
+    
+}
+
+void Engine::debug(const std::string command){
+    std::cout << "Pippo" << std::endl;
+    displayPosition(cr, "Current position is");
 }
