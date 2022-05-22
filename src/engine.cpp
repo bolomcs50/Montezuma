@@ -116,11 +116,11 @@ void Engine::inputGo(const std::string command){
     // try all the moves and find the best one
     auto startTime = std::chrono::high_resolution_clock::now();
     thc::Move bestMove;
-    std::vector<thc::Move> legalMoves;
+    std::vector<thc::Move> legalMoves, pvLine;
     cr.GenLegalMoveList(legalMoves);
     for (auto mv:legalMoves){
         cr.PushMove(mv);
-        int currentScore = -alphaBeta(-MATE_SCORE, MATE_SCORE, searchDepth-1); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
+        int currentScore = -alphaBeta(-MATE_SCORE, MATE_SCORE, searchDepth-1, pvLine); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
         cr.PopMove(mv);
         if (currentScore > bestScore){
             bestScore = currentScore;
@@ -138,13 +138,18 @@ void Engine::inputGo(const std::string command){
     } else {
         std::cout << "info score cp " << bestScore ;
     }
-    std::cout << " time " << duration.count() << " nps " << nps << " info bestScore " << bestScore << std::endl;
-    std::cout << "pv " << bestMove.TerseOut() << std::endl;
+    std::cout << " time " << duration.count() << " nps " << nps << " pv ";
+    for (auto mv:pvLine){
+        std::cout << mv.TerseOut() << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "bestmove " << bestMove.TerseOut() << std::endl;
 }
 
-int Engine::alphaBeta(int alpha, int beta, int depth){
+int Engine::alphaBeta(int alpha, int beta, int depth, std::vector<thc::Move> &pvLine){
     // Base case
     if (depth == 0){
+        pvLine.clear();
         return evaluate();
     }
     /*  Inductive step.
@@ -155,11 +160,11 @@ int Engine::alphaBeta(int alpha, int beta, int depth){
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
     
-    std::vector<thc::Move> legalMoves;
+    std::vector<thc::Move> legalMoves, line;
     cr.GenLegalMoveList(legalMoves);
     for (auto mv:legalMoves){
         cr.PushMove(mv);
-        int currentScore = -alphaBeta(-beta, -alpha, depth-1);
+        int currentScore = -alphaBeta(-beta, -alpha, depth-1, line);
         cr.PopMove(mv);
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,
@@ -169,6 +174,9 @@ int Engine::alphaBeta(int alpha, int beta, int depth){
         }
         if (currentScore > alpha){ // This move results in a higher minimum guaranteed score: make it new best. Implicitly, this is also < beta.
             alpha = currentScore;
+            pvLine.clear();
+            pvLine.push_back(mv);
+            pvLine.insert(pvLine.begin()+1, line.begin(), line.end());
         }
     }
     return alpha;

@@ -26,7 +26,7 @@ class Engine{
     /* Called when Engine receives the "go" command */
     void inputGo(const std::string command);
     /* Search function */
-    int alphaBeta(int alpha, int beta, int depth);
+    int alphaBeta(int alpha, int beta, int depth, std::vector<thc::Move> &pvLine);
     /* Evaluation function, evaluates the engine's current board */
     int evaluate();
     /* Probes the table to see if "hash" is in it. If it is AND the score is useful, return true and its score */

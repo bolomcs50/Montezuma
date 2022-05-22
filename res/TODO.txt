@@ -4,12 +4,14 @@ TODO
 - Implement iterative deepening
 - Flesh out the test suite to perform fully automatic testing with tactics
 - Fix fen + moves reading
+- Manage move time
+- Implement multithreading to always have good communicaiton and exploit pondering (= thinking in opponent's time)
 
 
 - Implement hasTables
 - Implement quiescence search
-- Manage move time
-- Implement multithreading to always have good communicaiton and exploit pondering (= thinking in opponent's time)
+
+
 
 
 
