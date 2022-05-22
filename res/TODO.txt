@@ -1,0 +1,27 @@
+TODO
+
+- Retrieve PV-line
+- Implement iterative deepening
+- Flesh out the test suite to perform fully automatic testing with tactics
+- Fix fen + moves reading
+
+
+- Implement hasTables
+- Implement quiescence search
+- Manage move time
+- Implement multithreading to always have good communicaiton and exploit pondering (= thinking in opponent's time)
+
+
+
+- Add support for opening book
+- Write a better eval function?
+
+
+/* OLD, at the moment not present
+ISSUES
+where it finds a position that was already analysed and does not see that if it is the third time it is actually reached, then it's a draw.
+Maybe with a different replacing scheme also accounting for age of the entries this is solved. http://www.open-aurec.com/wbforum/viewtopic.php?t=51447
+I hope solving these makes iterative deepening work well, because it is really fast.
+So to sum up 2 problem hypotheses: non-detection of draw by threefold repetition and key collisions of type 1 (same hash)
+Also, the second problem does not appear if the best move picked from the table is not searched first. Look more into this.
+*/

@@ -2,10 +2,11 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <limits.h>
 #include "thc.h"
 #include "engine.h"
 
-#define MATE_SCORE 1000000
+#define MATE_SCORE 100000
 
 Engine::Engine(){
     Engine::name = "Montezuma";
@@ -20,6 +21,8 @@ int Engine::protocolLoop(){
         std::getline(std::cin, command);
         if (command.compare("uci") == 0){
             uciHandShake();
+            resetBoard();
+            initHashTable();
         } else if (command.compare("isready") == 0){
             // Called once before the GUI asks to calculate a move the first time.
             // Also if the engine is taking time when it is expected to answer, to check if it is alive.
@@ -106,8 +109,9 @@ void Engine::updatePosition(const std::string command){
 
 // Start move evaluation
 void Engine::inputGo(const std::string command){
-    unsigned int searchDepth = 6;
-    int bestScore{INT_MIN};
+    unsigned int searchDepth = 4;
+    int bestScore{INT_MIN}; //int bestScore{-MATE_SCORE}; // Worst Case Scenario = I'm getting mated on the next move.
+
 
     // try all the moves and find the best one
     auto startTime = std::chrono::high_resolution_clock::now();
@@ -116,7 +120,7 @@ void Engine::inputGo(const std::string command){
     cr.GenLegalMoveList(legalMoves);
     for (auto mv:legalMoves){
         cr.PushMove(mv);
-        int currentScore = -alphaBeta(-MATE_SCORE, MATE_SCORE, searchDepth); // +1 to avoid overflow when changing sign in recursive calls
+        int currentScore = -alphaBeta(-MATE_SCORE, MATE_SCORE, searchDepth-1); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
         cr.PopMove(mv);
         if (currentScore > bestScore){
             bestScore = currentScore;
@@ -128,15 +132,14 @@ void Engine::inputGo(const std::string command){
     auto nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
 
     // Check if the returned score signifies a mate and in how many moves
-    if (MATE_SCORE - abs(bestScore) < 200){
-        int movesToMate = (MATE_SCORE - abs(bestScore) + 1)/2;
-        if (bestScore < 0) movesToMate *= -1; // If the engine is getting mated use negative values
+    if (MATE_SCORE == abs(bestScore)){
+        int movesToMate = 100;
         std::cout << "info score mate " << movesToMate;
     } else {
         std::cout << "info score cp " << bestScore ;
     }
-    std::cout << " time " << duration.count() << " nps " << nps << std::endl;
-    std::cout << "bestmove " << bestMove.TerseOut() << std::endl;
+    std::cout << " time " << duration.count() << " nps " << nps << " info bestScore " << bestScore << std::endl;
+    std::cout << "pv " << bestMove.TerseOut() << std::endl;
 }
 
 int Engine::alphaBeta(int alpha, int beta, int depth){
@@ -144,15 +147,14 @@ int Engine::alphaBeta(int alpha, int beta, int depth){
     if (depth == 0){
         return evaluate();
     }
-
     /*  Inductive step.
-        Alpha = the minimum guaranteed score I can force given my opponent's options. A lower bound: I can get at least alpha
-        Beta = the maximum score my opponent will allow me, given our options. An upper bound: I cannot get more than beta
+        Alpha = the minimum guaranteed score I can force given my opponent's options. A lower bound, because I can get at least alpha
+        Beta = the maximum score my opponent will allow me, given my options. An upper bound, because I cannot my opponent won't let me get more than beta
         As a consequence:
         - I chose the move with highest alpha, trying to maximize it.
-        - If a move results in a score > Beta, my opponent won't allow it.
+        - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
-    //int bestScore{-MATE_SCORE}; // Worst Case Scenario = I'm getting mated on the next move.
+    
     std::vector<thc::Move> legalMoves;
     cr.GenLegalMoveList(legalMoves);
     for (auto mv:legalMoves){
@@ -160,20 +162,14 @@ int Engine::alphaBeta(int alpha, int beta, int depth){
         int currentScore = -alphaBeta(-beta, -alpha, depth-1);
         cr.PopMove(mv);
         if (currentScore >= beta){
-            // The opponent will not allow this move, he has at least one better choice, therefore stop looking for other moves and return the upper bound as score,
-            // since my opponent does at least as good as that here.
+            /* The opponent will not allow this move, he has at least one better choice,
+            therefore stop looking for other moves and a precise score: return the upper bound as score approximation,
+            since my opponent does at least as good as that here. */
             return beta;
         }
         if (currentScore > alpha){ // This move results in a higher minimum guaranteed score: make it new best. Implicitly, this is also < beta.
             alpha = currentScore;
         }
-    }
-    /*  Apply mate score correction: if you are at most 200 plies away from mate, decrease the score by 1.
-        Otherwise, all positions n ply away from mate are equally good and in those position any move is equally good,
-        even if it does not actually lead to mate*/
-    if (MATE_SCORE - abs(alpha) < 200){
-        if (alpha < 0) alpha++;
-        else alpha--;
     }
     return alpha;
 }
@@ -188,18 +184,18 @@ int Engine::evaluate(){
     thc::TERMINAL terminalScore;
     cr.Evaluate(terminalScore);    // Evaluates if position is legal, and if it is terminal
     if( terminalScore == thc::TERMINAL::TERMINAL_WCHECKMATE ){ // White is checkmated
-        if (!cr.white) return MATE_SCORE;
-        return -MATE_SCORE;
+        if (cr.white) return -MATE_SCORE;
+        return MATE_SCORE;
     }
     else if( terminalScore == thc::TERMINAL::TERMINAL_BCHECKMATE ){ // Black is checkmated
-        if (!cr.white) return -MATE_SCORE;
-        return MATE_SCORE;
+        if (cr.white) return MATE_SCORE;
+        return -MATE_SCORE;
     }
 
     else {
         cr.EvaluateLeaf(evalMat, evalPos);
-        if (!cr.white) return -(4*evalMat+evalPos); // Change sign to eval if its from black side
-        return 4*evalMat+evalPos;
+        if (cr.white) return 4*evalMat+evalPos; // Change sign to eval if its from black side
+        return -4*evalMat+evalPos;
     }
 }
 
