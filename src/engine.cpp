@@ -88,21 +88,22 @@ void Engine::initHashTable(){
 void Engine::updatePosition(const std::string command){
     if (command.find("startpos", 9) == 9){
         resetBoard();
-        if (command.find("moves", 18) == 18){    // If moves are specified, play them on the board
-            std::string movelist = command.substr(24);
-            thc::Move mv;
-            std::vector<std::string> moves;
-            size_t start;
-            size_t end = 0;
-            while ((start = movelist.find_first_not_of(" ", end)) != std::string::npos)
-            {
-                end = movelist.find(" ", start);
-                mv.TerseIn(&cr, movelist.substr(start, end - start).c_str());
-                cr.PlayMove(mv);
-            }                
-        }
     } else if (command.find("fen", 9) == 9) {
         bool ok = cr.Forsyth(command.substr(13).c_str());
+    }
+    std::size_t found = command.find("moves");
+    if (found!=std::string::npos){    // If moves are specified, play them on the board
+        std::string movelist = command.substr(found+6);
+        thc::Move mv;
+        std::vector<std::string> moves;
+        size_t start;
+        size_t end = 0;
+        while ((start = movelist.find_first_not_of(" ", end)) != std::string::npos)
+        {
+            end = movelist.find(" ", start);
+            mv.TerseIn(&cr, movelist.substr(start, end - start).c_str());
+            cr.PlayMove(mv);
+        }                
     }
     currentHash = cr.Hash64Calculate();
 }
@@ -110,46 +111,39 @@ void Engine::updatePosition(const std::string command){
 // Start move evaluation
 void Engine::inputGo(const std::string command){
     unsigned int searchDepth = 4;
-    int bestScore{INT_MIN}; //int bestScore{-MATE_SCORE}; // Worst Case Scenario = I'm getting mated on the next move.
-
 
     // try all the moves and find the best one
     auto startTime = std::chrono::high_resolution_clock::now();
-    thc::Move bestMove;
-    std::vector<thc::Move> legalMoves, pvLine;
-    cr.GenLegalMoveList(legalMoves);
-    for (auto mv:legalMoves){
-        cr.PushMove(mv);
-        int currentScore = -alphaBeta(-MATE_SCORE, MATE_SCORE, searchDepth-1, pvLine); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
-        cr.PopMove(mv);
-        if (currentScore > bestScore){
-            bestScore = currentScore;
-            bestMove = mv;
-        }
-    }
+    LINE pvLine;
+    int bestScore = -alphaBeta(-2*MATE_SCORE, 2*MATE_SCORE, searchDepth, &pvLine); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
     auto stopTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
     auto nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
 
     // Check if the returned score signifies a mate and in how many moves
     if (MATE_SCORE == abs(bestScore)){
-        int movesToMate = 100;
+        int movesToMate = (pvLine.moveCount+1)/2;
         std::cout << "info score mate " << movesToMate;
     } else {
         std::cout << "info score cp " << bestScore ;
     }
     std::cout << " time " << duration.count() << " nps " << nps << " pv ";
-    for (auto mv:pvLine){
-        std::cout << mv.TerseOut() << " ";
+    for (int i=0; i < pvLine.moveCount; i++){
+        std::cout << pvLine.moves[i].TerseOut() << " ";
     }
     std::cout << std::endl;
-    std::cout << "bestmove " << bestMove.TerseOut() << std::endl;
+    std::cout << "bestmove " << pvLine.moves[0].TerseOut() << std::endl;
 }
 
-int Engine::alphaBeta(int alpha, int beta, int depth, std::vector<thc::Move> &pvLine){
+bool toprint = false;
+
+int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine){
     // Base case
-    if (depth == 0){
-        pvLine.clear();
+    std::vector<thc::Move> legalMoves;
+    LINE line;
+    cr.GenLegalMoveList(legalMoves);
+    if (depth == 0 || legalMoves.size() == 0){
+        pvLine->moveCount = 0;
         return evaluate();
     }
     /*  Inductive step.
@@ -159,12 +153,9 @@ int Engine::alphaBeta(int alpha, int beta, int depth, std::vector<thc::Move> &pv
         - I chose the move with highest alpha, trying to maximize it.
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
-    
-    std::vector<thc::Move> legalMoves, line;
-    cr.GenLegalMoveList(legalMoves);
     for (auto mv:legalMoves){
         cr.PushMove(mv);
-        int currentScore = -alphaBeta(-beta, -alpha, depth-1, line);
+        int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line);
         cr.PopMove(mv);
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,
@@ -173,10 +164,11 @@ int Engine::alphaBeta(int alpha, int beta, int depth, std::vector<thc::Move> &pv
             return beta;
         }
         if (currentScore > alpha){ // This move results in a higher minimum guaranteed score: make it new best. Implicitly, this is also < beta.
+            
             alpha = currentScore;
-            pvLine.clear();
-            pvLine.push_back(mv);
-            pvLine.insert(pvLine.begin()+1, line.begin(), line.end());
+            pvLine->moves[0] = mv;
+            memcpy(pvLine->moves + 1, line.moves, line.moveCount * sizeof(thc::Move));
+            pvLine->moveCount = line.moveCount + 1;
         }
     }
     return alpha;
@@ -192,12 +184,12 @@ int Engine::evaluate(){
     thc::TERMINAL terminalScore;
     cr.Evaluate(terminalScore);    // Evaluates if position is legal, and if it is terminal
     if( terminalScore == thc::TERMINAL::TERMINAL_WCHECKMATE ){ // White is checkmated
-        if (cr.white) return -MATE_SCORE;
-        return MATE_SCORE;
+        if (!cr.white) return MATE_SCORE;
+        return -MATE_SCORE;
     }
     else if( terminalScore == thc::TERMINAL::TERMINAL_BCHECKMATE ){ // Black is checkmated
-        if (cr.white) return MATE_SCORE;
-        return -MATE_SCORE;
+        if (!cr.white) return -MATE_SCORE;
+        return MATE_SCORE;
     }
 
     else {

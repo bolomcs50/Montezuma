@@ -1,442 +1,442 @@
-info score mate 100 time 1350 nps 0 info bestScore 100000
-pv d5f6
-info score mate 100 time 42 nps 0 info bestScore 100000
-pv b5d5
-info score mate 100 time 1027 nps 0 info bestScore 100000
-pv b3b8
-info score mate 100 time 1626 nps 0 info bestScore 100000
-pv d5d8
-info score mate 100 time 533 nps 0 info bestScore 100000
-pv g5g6
-info score mate 100 time 1641 nps 0 info bestScore 100000
-pv g4d7
-info score mate 100 time 840 nps 0 info bestScore 100000
-pv f2f8
-info score mate 100 time 1349 nps 0 info bestScore 100000
-pv a4d7
-info score mate 100 time 559 nps 0 info bestScore 100000
-pv g3g6
-info score mate 100 time 425 nps 0 info bestScore 100000
-pv h5h6
-info score mate 100 time 468 nps 0 info bestScore 100000
-pv d1g4
-info score mate 100 time 165 nps 0 info bestScore 100000
-pv h4h6
-info score mate 100 time 1044 nps 0 info bestScore 100000
-pv f5g6
-info score mate 100 time 256 nps 0 info bestScore 100000
-pv g2g1
-info score mate 100 time 813 nps 0 info bestScore 100000
-pv d1h5
-info score mate 100 time 1049 nps 0 info bestScore 100000
-pv g6e7
-info score mate 100 time 99 nps 0 info bestScore 100000
-pv c1c3
-info score mate 100 time 814 nps 0 info bestScore 100000
-pv f2f5
-info score mate 100 time 2224 nps 0 info bestScore 100000
-pv e5f6
-info score mate 100 time 619 nps 0 info bestScore 100000
-pv c7c8
-info score mate 100 time 1220 nps 0 info bestScore 100000
-pv e1e8
-info score mate 100 time 208 nps 0 info bestScore 100000
-pv c3c1
-info score mate 100 time 455 nps 0 info bestScore 100000
-pv c1f4
-info score mate 100 time 180 nps 0 info bestScore 100000
-pv g5e6
-info score mate 100 time 677 nps 0 info bestScore 100000
-pv a3f8
-info score mate 100 time 464 nps 0 info bestScore 100000
-pv c8f5
-info score mate 100 time 1267 nps 0 info bestScore 100000
-pv e4c6
-info score mate 100 time 660 nps 0 info bestScore 100000
-pv g3b8
-info score mate 100 time 1398 nps 0 info bestScore 100000
-pv d5d6
-info score mate 100 time 237 nps 0 info bestScore 100000
-pv d1d8
-info score mate 100 time 1269 nps 0 info bestScore 100000
-pv b4d3
-info score mate 100 time 335 nps 0 info bestScore 100000
-pv b1b6
-info score mate 100 time 1386 nps 0 info bestScore 100000
-pv f2f7
-info score mate 100 time 591 nps 0 info bestScore 100000
-pv d5f6
-info score mate 100 time 832 nps 0 info bestScore 100000
-pv f7e7
-info score mate 100 time 481 nps 0 info bestScore 100000
-pv g3g8
-info score mate 100 time 1173 nps 0 info bestScore 100000
-pv d5f7
-info score mate 100 time 678 nps 0 info bestScore 100000
-pv d4e3
-info score mate 100 time 903 nps 0 info bestScore 100000
-pv g2h4
-info score mate 100 time 1034 nps 0 info bestScore 100000
-pv e4e6
-info score mate 100 time 380 nps 0 info bestScore 100000
-pv a3f8
-info score mate 100 time 448 nps 0 info bestScore 100000
-pv h4f6
-info score mate 100 time 444 nps 0 info bestScore 100000
-pv d4b5
-info score mate 100 time 634 nps 0 info bestScore 100000
-pv h6h7
-info score mate 100 time 543 nps 0 info bestScore 100000
-pv b3b7
-info score mate 100 time 516 nps 0 info bestScore 100000
-pv d4g1
-info score mate 100 time 1469 nps 0 info bestScore 100000
-pv c1h6
-info score mate 100 time 504 nps 0 info bestScore 100000
-pv f2f6
-info score mate 100 time 372 nps 0 info bestScore 100000
-pv h4h6
-info score mate 100 time 235 nps 0 info bestScore 100000
-pv h4h5
-info score mate 100 time 1180 nps 0 info bestScore 100000
-pv e5d7
-info score mate 100 time 880 nps 0 info bestScore 100000
-pv h6h2
-info score mate 100 time 218 nps 0 info bestScore 100000
-pv c6b5
-info score mate 100 time 2265 nps 0 info bestScore 100000
-pv g2g8
-info score mate 100 time 172 nps 0 info bestScore 100000
-pv h1h8
-info score mate 100 time 1086 nps 0 info bestScore 100000
-pv f3h5
-info score mate 100 time 756 nps 0 info bestScore 100000
-pv e4h7
-info score mate 100 time 1461 nps 0 info bestScore 100000
-pv h4h7
-info score mate 100 time 846 nps 0 info bestScore 100000
-pv g6e5
-info score mate 100 time 1785 nps 0 info bestScore 100000
-pv g4g7
-info score mate 100 time 1150 nps 0 info bestScore 100000
-pv h6h8
-info score mate 100 time 504 nps 0 info bestScore 100000
-pv g6h6
-info score mate 100 time 915 nps 0 info bestScore 100000
-pv h5e8
-info score mate 100 time 1594 nps 0 info bestScore 100000
-pv e1e8
-info score mate 100 time 844 nps 0 info bestScore 100000
-pv c1h6
-info score mate 100 time 390 nps 0 info bestScore 100000
-pv f7h7
-info score mate 100 time 221 nps 0 info bestScore 100000
-pv g7h6
-info score mate 100 time 47 nps 0 info bestScore 100000
-pv b4e1
-info score mate 100 time 640 nps 0 info bestScore 100000
-pv g2g7
-info score mate 100 time 313 nps 0 info bestScore 100000
-pv h8g7
-info score mate 100 time 225 nps 0 info bestScore 100000
-pv h7g7
-info score mate 100 time 1308 nps 0 info bestScore 100000
-pv f4d6
-info score mate 100 time 394 nps 0 info bestScore 100000
-pv f4g6
-info score mate 100 time 122 nps 0 info bestScore 100000
-pv h4h3
-info score mate 100 time 327 nps 0 info bestScore 100000
-pv g4g1
-info score mate 100 time 368 nps 0 info bestScore 100000
-pv d4g1
-info score mate 100 time 890 nps 0 info bestScore 100000
-pv d8h8
-info score mate 100 time 386 nps 0 info bestScore 100000
-pv f1f6
-info score mate 100 time 403 nps 0 info bestScore 100000
-pv a7e7
-info score mate 100 time 899 nps 0 info bestScore 100000
-pv h5h6
-info score mate 100 time 396 nps 0 info bestScore 100000
-pv h3h7
-info score mate 100 time 168 nps 0 info bestScore 100000
-pv f8f6
-info score mate 100 time 246 nps 0 info bestScore 100000
-pv f5f7
-info score mate 100 time 332 nps 0 info bestScore 100000
-pv e3b6
-info score mate 100 time 1581 nps 0 info bestScore 100000
-pv g3g6
-info score mate 100 time 575 nps 0 info bestScore 100000
-pv d4h8
-info score mate 100 time 1470 nps 0 info bestScore 100000
-pv h8h3
-info score mate 100 time 765 nps 0 info bestScore 100000
-pv h3h7
-info score mate 100 time 228 nps 0 info bestScore 100000
-pv e3f5
-info score mate 100 time 722 nps 0 info bestScore 100000
-pv g7f7
-info score mate 100 time 768 nps 0 info bestScore 100000
-pv e7f7
-info score mate 100 time 44 nps 0 info bestScore 100000
-pv f4f5
-info score mate 100 time 550 nps 0 info bestScore 100000
-pv h7h8
-info score mate 100 time 748 nps 0 info bestScore 100000
-pv f5f2
-info score mate 100 time 795 nps 0 info bestScore 100000
-pv h6f8
-info score mate 100 time 441 nps 0 info bestScore 100000
-pv e7e8
-info score mate 100 time 632 nps 0 info bestScore 100000
-pv f1f6
-info score mate 100 time 1696 nps 0 info bestScore 100000
-pv e6h3
-info score mate 100 time 780 nps 0 info bestScore 100000
-pv e5f3
-info score mate 100 time 1556 nps 0 info bestScore 100000
-pv e2e6
-info score mate 100 time 50 nps 0 info bestScore 100000
-pv g2g8
-info score mate 100 time 327 nps 0 info bestScore 100000
-pv e1e8
-info score mate 100 time 682 nps 0 info bestScore 100000
-pv f4f5
-info score mate 100 time 1070 nps 0 info bestScore 100000
-pv e5h2
-info score mate 100 time 369 nps 0 info bestScore 100000
-pv d8f8
-info score mate 100 time 785 nps 0 info bestScore 100000
-pv f6g6
-info score mate 100 time 837 nps 0 info bestScore 100000
-pv c5f2
-info score mate 100 time 611 nps 0 info bestScore 100000
-pv a5c3
-info score mate 100 time 146 nps 0 info bestScore 100000
-pv c6d4
-info score mate 100 time 2352 nps 0 info bestScore 100000
-pv h4h3
-info score mate 100 time 364 nps 0 info bestScore 100000
-pv d5f4
-info score mate 100 time 215 nps 0 info bestScore 100000
-pv c2g2
-info score mate 100 time 797 nps 0 info bestScore 100000
-pv h4h7
-info score mate 100 time 1016 nps 0 info bestScore 100000
-pv f2h2
-info score mate 100 time 1264 nps 0 info bestScore 100000
-pv a8h1
-info score mate 100 time 351 nps 0 info bestScore 100000
-pv f5h3
-info score mate 100 time 71 nps 0 info bestScore 100000
-pv c7g7
-info score mate 100 time 1317 nps 0 info bestScore 100000
-pv d3d8
-info score mate 100 time 692 nps 0 info bestScore 100000
-pv d1d8
-info score mate 100 time 1369 nps 0 info bestScore 100000
-pv d1d8
-info score mate 100 time 564 nps 0 info bestScore 100000
-pv e7d5
-info score mate 100 time 472 nps 0 info bestScore 100000
-pv c1c8
-info score mate 100 time 326 nps 0 info bestScore 100000
-pv g4g5
-info score mate 100 time 255 nps 0 info bestScore 100000
-pv e4h4
-info score mate 100 time 290 nps 0 info bestScore 100000
-pv h4g6
-info score mate 100 time 1387 nps 0 info bestScore 100000
-pv e3e6
-info score mate 100 time 681 nps 0 info bestScore 100000
-pv e6f7
-info score mate 100 time 886 nps 0 info bestScore 100000
-pv d5e7
-info score mate 100 time 938 nps 0 info bestScore 100000
-pv g6h8
-info score mate 100 time 813 nps 0 info bestScore 100000
-pv d1f1
-info score mate 100 time 1590 nps 0 info bestScore 100000
-pv b1g6
-info score mate 100 time 340 nps 0 info bestScore 100000
-pv g5f7
-info score mate 100 time 255 nps 0 info bestScore 100000
-pv f5e5
-info score mate 100 time 880 nps 0 info bestScore 100000
-pv f1f8
-info score mate 100 time 187 nps 0 info bestScore 100000
-pv e1e6
-info score mate 100 time 805 nps 0 info bestScore 100000
-pv h3h7
-info score mate 100 time 851 nps 0 info bestScore 100000
-pv d6b7
-info score mate 100 time 652 nps 0 info bestScore 100000
-pv h7g8
-info score mate 100 time 603 nps 0 info bestScore 100000
-pv h3h6
-info score mate 100 time 516 nps 0 info bestScore 100000
-pv a2a1
-info score mate 100 time 812 nps 0 info bestScore 100000
-pv g8h8
-info score mate 100 time 900 nps 0 info bestScore 100000
-pv e4g6
-info score mate 100 time 504 nps 0 info bestScore 100000
-pv a5d8
-info score mate 100 time 2667 nps 0 info bestScore 100000
-pv b5h5
-info score mate 100 time 1768 nps 0 info bestScore 100000
-pv g3g6
-info score mate 100 time 1891 nps 0 info bestScore 100000
-pv d6a3
-info score mate 100 time 732 nps 0 info bestScore 100000
-pv h5g6
-info score mate 100 time 336 nps 0 info bestScore 100000
-pv e2f4
-info score mate 100 time 1724 nps 0 info bestScore 100000
-pv e5c3
-info score mate 100 time 182 nps 0 info bestScore 100000
-pv d4e6
-info score mate 100 time 341 nps 0 info bestScore 100000
-pv e5f7
-info score mate 100 time 806 nps 0 info bestScore 100000
-pv d1d8
-info score mate 100 time 1176 nps 0 info bestScore 100000
-pv f5g3
-info score mate 100 time 608 nps 0 info bestScore 100000
-pv e7e8
-info score mate 100 time 1786 nps 0 info bestScore 100000
-pv h5f3
-info score mate 100 time 435 nps 0 info bestScore 100000
-pv d2h2
-info score mate 100 time 175 nps 0 info bestScore 100000
-pv e1e8
-info score mate 100 time 220 nps 0 info bestScore 100000
-pv g5h6
-info score mate 100 time 1928 nps 0 info bestScore 100000
-pv b1b5
-info score mate 100 time 1098 nps 0 info bestScore 100000
-pv g5h6
-info score mate 100 time 521 nps 0 info bestScore 100000
-pv f7h7
-info score mate 100 time 524 nps 0 info bestScore 100000
-pv f6f7
-info score mate 100 time 659 nps 0 info bestScore 100000
-pv f7f8
-info score mate 100 time 69 nps 0 info bestScore 100000
-pv h8h6
-info score mate 100 time 210 nps 0 info bestScore 100000
-pv d3f5
-info score mate 100 time 341 nps 0 info bestScore 100000
-pv h5h6
-info score mate 100 time 389 nps 0 info bestScore 100000
-pv g6e6
-info score mate 100 time 126 nps 0 info bestScore 100000
-pv e7a7
-info score mate 100 time 300 nps 0 info bestScore 100000
-pv g3g2
-info score mate 100 time 381 nps 0 info bestScore 100000
-pv d7g4
-info score mate 100 time 352 nps 0 info bestScore 100000
-pv h3h1
-info score mate 100 time 356 nps 0 info bestScore 100000
-pv g2g4
-info score mate 100 time 166 nps 0 info bestScore 100000
-pv b6c6
-info score mate 100 time 1114 nps 0 info bestScore 100000
-pv g4g8
-info score mate 100 time 716 nps 0 info bestScore 100000
-pv g5f6
-info score mate 100 time 97 nps 0 info bestScore 100000
-pv h6c6
-info score mate 100 time 346 nps 0 info bestScore 100000
-pv f3f2
-info score mate 100 time 584 nps 0 info bestScore 100000
-pv d4e2
-info score mate 100 time 572 nps 0 info bestScore 100000
-pv h1h6
-info score mate 100 time 1055 nps 0 info bestScore 100000
-pv c8c1
-info score mate 100 time 646 nps 0 info bestScore 100000
-pv f6e4
-info score mate 100 time 75 nps 0 info bestScore 100000
-pv e3g4
-info score mate 100 time 457 nps 0 info bestScore 100000
-pv f2f7
-info score mate 100 time 379 nps 0 info bestScore 100000
-pv c8d8
-info score mate 100 time 254 nps 0 info bestScore 100000
-pv c6h6
-info score mate 100 time 592 nps 0 info bestScore 100000
-pv g3g7
-info score mate 100 time 282 nps 0 info bestScore 100000
-pv f4e5
-info score mate 100 time 617 nps 0 info bestScore 100000
-pv e6h6
-info score mate 100 time 152 nps 0 info bestScore 100000
-pv e1e4
-info score mate 100 time 356 nps 0 info bestScore 100000
-pv e5f7
-info score mate 100 time 1370 nps 0 info bestScore 100000
-pv h3h6
-info score mate 100 time 281 nps 0 info bestScore 100000
-pv f4f1
-info score mate 100 time 291 nps 0 info bestScore 100000
-pv g3g8
-info score mate 100 time 262 nps 0 info bestScore 100000
-pv b3e6
-info score mate 100 time 137 nps 0 info bestScore 100000
-pv h7h5
-info score mate 100 time 132 nps 0 info bestScore 100000
-pv e5g7
-info score mate 100 time 287 nps 0 info bestScore 100000
-pv h4f2
-info score mate 100 time 311 nps 0 info bestScore 100000
-pv a6d3
-info score mate 100 time 352 nps 0 info bestScore 100000
-pv g2b7
-info score mate 100 time 360 nps 0 info bestScore 100000
-pv f4d6
-info score mate 100 time 74 nps 0 info bestScore 100000
-pv h4h5
-info score mate 100 time 634 nps 0 info bestScore 100000
-pv h6h1
-info score mate 100 time 367 nps 0 info bestScore 100000
-pv h4h8
-info score mate 100 time 1417 nps 0 info bestScore 100000
-pv d7h3
-info score mate 100 time 445 nps 0 info bestScore 100000
-pv f7f8
-info score mate 100 time 275 nps 0 info bestScore 100000
-pv a3e7
-info score mate 100 time 281 nps 0 info bestScore 100000
-pv h3h8
-info score mate 100 time 1701 nps 0 info bestScore 100000
-pv c6g2
-info score mate 100 time 776 nps 0 info bestScore 100000
-pv d4f4
-info score mate 100 time 895 nps 0 info bestScore 100000
-pv g5g3
-info score mate 100 time 207 nps 0 info bestScore 100000
-pv h6h8
-info score mate 100 time 631 nps 0 info bestScore 100000
-pv c3c6
-info score mate 100 time 1015 nps 0 info bestScore 100000
-pv g5g8
-info score mate 100 time 1124 nps 0 info bestScore 100000
-pv d4b3
-info score mate 100 time 831 nps 0 info bestScore 100000
-pv b4c2
-info score mate 100 time 451 nps 0 info bestScore 100000
-pv d8d1
-info score mate 100 time 75 nps 0 info bestScore 100000
-pv g6g7
-info score mate 100 time 341 nps 0 info bestScore 100000
-pv h2h5
-info score mate 100 time 774 nps 0 info bestScore 100000
-pv e3h6
-info score mate 100 time 2028 nps 0 info bestScore 100000
-pv e6e8
-info score mate 100 time 40 nps 0 info bestScore 100000
-pv f6f7
+info score mate 2 time 241 nps 0 pv d5f6 g7f6 c4f7 
+bestmove d5f6
+info score mate 2 time 23 nps 0 pv b5d5 b7a6 c7b8n 
+bestmove b5d5
+info score mate 2 time 467 nps 0 pv b3b8 d7b8 d1d8 
+bestmove b3b8
+info score mate 2 time 768 nps 0 pv d5d8 e7d8 e1e8 
+bestmove d5d8
+info score mate 2 time 136 nps 0 pv g5g6 f7g6 e7g7 
+bestmove g5g6
+info score mate 2 time 916 nps 0 pv g4d7 d8d7 d3b5 
+bestmove g4d7
+info score mate 2 time 724 nps 0 pv f2f8 g7f8 f1f8 
+bestmove f2f8
+info score mate 2 time 346 nps 0 pv a4d7 e6d7 e5f7 
+bestmove a4d7
+info score mate 2 time 243 nps 0 pv g3g6 h7g6 f5g6 
+bestmove g3g6
+info score mate 2 time 102 nps 0 pv h5h6 h8h6 g1g8 
+bestmove h5h6
+info score mate 2 time 147 nps 0 pv d1g4 f5g4 c4f7 
+bestmove d1g4
+info score mate 2 time 45 nps 0 pv h4h6 h7h6 g3h3 
+bestmove h4h6
+info score mate 2 time 227 nps 0 pv f5g6 h7g6 c2g6 
+bestmove f5g6
+info score mate 2 time 143 nps 0 pv g2g1 h1g1 f2f1 
+bestmove g2g1
+info score mate 2 time 331 nps 0 pv d1h5 h6g6 h5g6 
+bestmove d1h5
+info score mate 2 time 433 nps 0 pv g6e7 a8b8 f7g6 
+bestmove g6e7
+info score mate 2 time 20 nps 0 pv c1c3 b2b3 c7a7 
+bestmove c1c3
+info score mate 2 time 250 nps 0 pv f2f5 d4f5 e5e6 
+bestmove f2f5
+info score mate 2 time 1384 nps 0 pv e5f6 d4f6 g3c7 
+bestmove e5f6
+info score mate 2 time 71 nps 0 pv c7c8 d7c8 d5c7 
+bestmove c7c8
+info score mate 2 time 1561 nps 0 pv e1e8 d7e8 f7c7 
+bestmove e1e8
+info score mate 2 time 130 nps 0 pv c3c1 d1c1 f6b2 
+bestmove c3c1
+info score mate 2 time 125 nps 0 pv c1f4 h6f4 g3f4 
+bestmove c1f4
+info score mate 2 time 33 nps 0 pv g5e6 g4e6 c1h6 
+bestmove g5e6
+info score mate 2 time 199 nps 0 pv a3f8 g8f8 h3h8 
+bestmove a3f8
+info score mate 2 time 204 nps 0 pv c8f5 d3c3 f2e3 
+bestmove c8f5
+info score mate 2 time 548 nps 0 pv e4c6 b7c6 d3a6 
+bestmove e4c6
+info score mate 2 time 275 nps 0 pv g3b8 a8b8 c4b5 
+bestmove g3b8
+info score mate 2 time 1053 nps 0 pv d5d6 e7d6 e3c5 
+bestmove d5d6
+info score mate 2 time 168 nps 0 pv d1d8 e7d8 c7f7 
+bestmove d1d8
+info score mate 2 time 405 nps 0 pv b4d3 e3d3 b6f2 
+bestmove b4d3
+info score mate 2 time 366 nps 0 pv b1b6 b7b6 c6a8 
+bestmove b1b6
+info score mate 2 time 521 nps 0 pv f2f7 f8f7 e1e8 
+bestmove f2f7
+info score mate 2 time 122 nps 0 pv d5f6 g7f6 b3f7 
+bestmove d5f6
+info score mate 2 time 29 nps 0 pv f7e7 f6e7 e5f7 
+bestmove f7e7
+info score mate 2 time 496 nps 0 pv g3g8 f8g8 d7e8 
+bestmove g3g8
+info score mate 2 time 324 nps 0 pv d5f7 f8f7 e4e8 
+bestmove d5f7
+info score mate 2 time 135 nps 0 pv d4e3 f3e3 h3g4 
+bestmove d4e3
+info score mate 2 time 438 nps 0 pv g2h4 f1e1 h4f3 
+bestmove g2h4
+info score mate 2 time 381 nps 0 pv e4e6 f8e7 e6e7 
+bestmove e4e6
+info score mate 2 time 306 nps 0 pv a3f8 g8h7 f8g7 
+bestmove a3f8
+info score mate 2 time 445 nps 0 pv h4f6 g7g8 h6h8 
+bestmove h4f6
+info score mate 2 time 197 nps 0 pv d4b5 c3c4 b5d6 
+bestmove d4b5
+info score mate 2 time 76 nps 0 pv h6h7 h8h7 h5g6 
+bestmove h6h7
+info score mate 2 time 319 nps 0 pv b3b7 a8b7 a7a8q 
+bestmove b3b7
+info score mate 2 time 612 nps 0 pv d4g1 f1g1 e4f2 
+bestmove d4g1
+info score mate 2 time 818 nps 0 pv c1h6 g7f6 h5g5 
+bestmove c1h6
+info score mate 2 time 172 nps 0 pv f2f6 d7f6 g4g5 
+bestmove f2f6
+info score mate 2 time 83 nps 0 pv h4h6 h7g8 h6g7 
+bestmove h4h6
+info score mate 2 time 93 nps 0 pv h4h5 g6h6 d6f7 
+bestmove h4h5
+info score mate 2 time 405 nps 0 pv e5d7 d8e7 e2e7 
+bestmove e5d7
+info score mate 2 time 296 nps 0 pv h6h2 h1h2 e4h4 
+bestmove h6h2
+info score mate 2 time 59 nps 0 pv c6b5 e5c4 f2d2 
+bestmove c6b5
+info score mate 2 time 3500 nps 0 pv g2g8 f8g8 e5f7 
+bestmove g2g8
+info score mate 2 time 107 nps 0 pv h1h8 e8h8 b7f7 
+bestmove h1h8
+info score mate 2 time 549 nps 0 pv f3h5 e8e7 d4d6 
+bestmove f3h5
+info score mate 2 time 172 nps 0 pv e4h7 g7f6 c3e4 
+bestmove e4h7
+info score mate 2 time 653 nps 0 pv h4h7 g6h7 g5f7 
+bestmove h4h7
+info score mate 2 time 37 nps 0 pv g6e5 f6h5 c4f7 
+bestmove g6e5
+info score mate 2 time 1434 nps 0 pv g4g7 g8g7 e5g5 
+bestmove g4g7
+info score mate 2 time 395 nps 0 pv h6h8 g7h8 g5h7 
+bestmove h6h8
+info score mate 2 time 165 nps 0 pv g6h6 g7h6 h5g6 
+bestmove g6h6
+info score mate 2 time 392 nps 0 pv h5e8 e7e8 f2c5 
+bestmove h5e8
+info score mate 2 time 2534 nps 0 pv e1e8 d8e8 d6f6 
+bestmove e1e8
+info score mate 2 time 484 nps 0 pv c1h6 h7g8 h6h8 
+bestmove c1h6
+info score mate 2 time 109 nps 0 pv f7h7 h8h7 d3h3 
+bestmove f7h7
+info score mate 2 time 108 nps 0 pv g7h6 c4c5 g6g5 
+bestmove g7h6
+info score mate 2 time 28 nps 0 pv b4e1 e2f2 e1f2 
+bestmove b4e1
+info score mate 2 time 400 nps 0 pv g2g7 f7g7 h5f6 
+bestmove g2g7
+info score mate 2 time 56 nps 0 pv h8g7 f6g7 d7f7 
+bestmove h8g7
+info score mate 2 time 44 nps 0 pv h7g7 e8d8 h3f3 
+bestmove h7g7
+info score mate 2 time 971 nps 0 pv f4d6 f8g7 h5h7 
+bestmove f4d6
+info score mate 2 time 425 nps 0 pv f4g6 h7g6 d4h4 
+bestmove f4g6
+info score mate 2 time 52 nps 0 pv h4h3 e6f6 h3h6 
+bestmove h4h3
+info score mate 2 time 319 nps 0 pv g4g1 f1g1 e4f2 
+bestmove g4g1
+info score mate 2 time 192 nps 0 pv d4g1 e1e2 f4f3 
+bestmove d4g1
+info score mate 2 time 704 nps 0 pv d8h8 g7h8 c8h8 
+bestmove d8h8
+info score mate 2 time 172 nps 0 pv f1f6 a8b8 h6h8 
+bestmove f1f6
+info score mate 2 time 102 nps 0 pv a7e7 f8e7 f5g7 
+bestmove a7e7
+info score mate 2 time 686 nps 0 pv h5h6 g7f7 f5e6 
+bestmove h5h6
+info score mate 2 time 209 nps 0 pv h3h7 h8h7 e2h2 
+bestmove h3h7
+info score mate 2 time 49 nps 0 pv f8f6 g6h7 f6h6 
+bestmove f8f6
+info score mate 2 time 84 nps 0 pv f5f7 f8f7 e6f7 
+bestmove f5f7
+info score mate 2 time 100 nps 0 pv e3b6 b7c7 b6c7 
+bestmove e3b6
+info score mate 2 time 2139 nps 0 pv g3g6 f7g6 f5e6 
+bestmove g3g6
+info score mate 2 time 389 nps 0 pv d4h8 g8f7 h8g7 
+bestmove d4h8
+info score mate 2 time 363 nps 0 pv h8h3 g2h3 f6f3 
+bestmove h8h3
+info score mate 2 time 343 nps 0 pv h3h7 h8h7 e4h4 
+bestmove h3h7
+info score mate 2 time 230 nps 0 pv e3f5 g6f5 f7h5 
+bestmove e3f5
+info score mate 2 time 22 nps 0 pv g7f7 f8f7 g3g7 
+bestmove g7f7
+info score mate 2 time 131 nps 0 pv e7f7 f8f7 e5e7 
+bestmove e7f7
+info score mate 2 time 36 nps 0 pv f4f5 g6f6 c5d4 
+bestmove f4f5
+info score mate 2 time 37 nps 0 pv h7h8 g7h8 h1h8 
+bestmove h7h8
+info score mate 2 time 756 nps 0 pv f5f2 f1f2 e8e1 
+bestmove f5f2
+info score mate 2 time 120 nps 0 pv h6f8 d7f8 g5f7 
+bestmove h6f8
+info score mate 2 time 228 nps 0 pv e7e8 f8e8 d4d8 
+bestmove e7e8
+info score mate 2 time 249 nps 0 pv f1f6 g7f6 e7g6 
+bestmove f1f6
+info score mate 2 time 583 nps 0 pv e6h3 g2h3 g5f3 
+bestmove e6h3
+info score mate 2 time 506 nps 0 pv e5f3 c8b8 h4g5 
+bestmove e5f3
+info score mate 2 time 1903 nps 0 pv e2e6 e8e6 f4f8 
+bestmove e2e6
+info score mate 2 time 75 nps 0 pv g2g8 f8g8 h6f7 
+bestmove g2g8
+info score mate 2 time 321 nps 0 pv e1e8 g6h6 d4f5 
+bestmove e1e8
+info score mate 2 time 209 nps 0 pv f4f5 g6f5 c8g8 
+bestmove f4f5
+info score mate 2 time 269 nps 0 pv e5h2 h1h2 e4h4 
+bestmove e5h2
+info score mate 2 time 48 nps 0 pv d8f8 g8h7 d1h5 
+bestmove d8f8
+info score mate 2 time 90 nps 0 pv f6g6 f7g6 f2f8 
+bestmove f6g6
+info score mate 2 time 315 nps 0 pv c5f2 e1d2 b6e3 
+bestmove c5f2
+info score mate 2 time 189 nps 0 pv a5c3 f4d2 c3d2 
+bestmove a5c3
+info score mate 2 time 41 nps 0 pv c6d4 e2d1 e4c2 
+bestmove c6d4
+info score mate 2 time 1500 nps 0 pv h4h3 h2g1 h3g2 
+bestmove h4h3
+info score mate 2 time 61 nps 0 pv d5f4 e6e7 d3d8 
+bestmove d5f4
+info score mate 2 time 100 nps 0 pv c2g2 g3f4 g2g5 
+bestmove c2g2
+info score mate 2 time 339 nps 0 pv h4h7 h8h7 a3h3 
+bestmove h4h7
+info score mate 2 time 456 nps 0 pv f2h2 f4h2 g4f2 
+bestmove f2h2
+info score mate 2 time 129 nps 0 pv a8h1 f1e2 h1g2 
+bestmove a8h1
+info score mate 2 time 46 nps 0 pv f5h3 g2h3 c2h2 
+bestmove f5h3
+info score mate 2 time 21 nps 0 pv c7g7 g6f5 g7g5 
+bestmove c7g7
+info score mate 2 time 446 nps 0 pv d3d8 e7d8 d1d8 
+bestmove d3d8
+info score mate 2 time 297 nps 0 pv d1d8 e8d8 e6c8 
+bestmove d1d8
+info score mate 2 time 755 nps 0 pv d1d8 c6d8 a3e7 
+bestmove d1d8
+info score mate 2 time 291 nps 0 pv e7d5 e4d5 b4f4 
+bestmove e7d5
+info score mate 2 time 361 nps 0 pv c1c8 e7c8 h4d8 
+bestmove c1c8
+info score mate 2 time 230 nps 0 pv g4g5 h6g5 e5g4 
+bestmove g4g5
+info score mate 2 time 73 nps 0 pv e4h4 g5h4 g3g4 
+bestmove e4h4
+info score mate 2 time 89 nps 0 pv h4g6 g8g6 h6h7 
+bestmove h4g6
+info score mate 2 time 542 nps 0 pv e3e6 f7e6 c2g6 
+bestmove e3e6
+info score mate 2 time 79 nps 0 pv e6f7 e8f7 e5e6 
+bestmove e6f7
+info score mate 2 time 179 nps 0 pv d5e7 g6e7 e4h7 
+bestmove d5e7
+info score mate 2 time 335 nps 0 pv g6h8 g8h8 g5g6 
+bestmove g6h8
+info score mate 2 time 761 nps 0 pv d1f1 g1h2 e4h1 
+bestmove d1f1
+info score mate 2 time 2133 nps 0 pv b1g6 f7g6 h3h5 
+bestmove b1g6
+info score mate 2 time 39 nps 0 pv g5f7 c8g4 f7h6 
+bestmove g5f7
+info score mate 2 time 21 nps 0 pv f5e5 g6h6 f1f6 
+bestmove f5e5
+info score mate 2 time 2003 nps 0 pv f1f8 e6f8 h6g7 
+bestmove f1f8
+info score mate 2 time 77 nps 0 pv e1e6 f7e6 f6f7 
+bestmove e1e6
+info score mate 2 time 349 nps 0 pv h3h7 h8h7 g5h5 
+bestmove h3h7
+info score mate 2 time 53 nps 0 pv d6b7 c8b7 e6d7 
+bestmove d6b7
+info score mate 2 time 186 nps 0 pv h7g8 f8e7 g8d8 
+bestmove h7g8
+info score mate 2 time 173 nps 0 pv h3h6 h7g8 h6h8 
+bestmove h3h6
+info score mate 2 time 313 nps 0 pv a2a1 b1a1 c4a2 
+bestmove a2a1
+info score mate 2 time 262 nps 0 pv g8h8 h7h8 g3g8 
+bestmove g8h8
+info score mate 2 time 365 nps 0 pv e4g6 f7g6 c5h5 
+bestmove e4g6
+info score mate 2 time 174 nps 0 pv a5d8 c8d8 d5c7 
+bestmove a5d8
+info score mate 2 time 3550 nps 0 pv b5h5 g4h5 e4h4 
+bestmove b5h5
+info score mate 2 time 861 nps 0 pv g3g6 f8g7 g6g7 
+bestmove g3g6
+info score mate 2 time 1539 nps 0 pv d6a3 a2a3 g1a1 
+bestmove d6a3
+info score mate 2 time 425 nps 0 pv h5g6 f7g6 f5g6 
+bestmove h5g6
+info score mate 2 time 68 nps 0 pv e2f4 d5e4 b5d3 
+bestmove e2f4
+info score mate 2 time 529 nps 0 pv e5c3 b3c2 c3c2 
+bestmove e5c3
+info score mate 2 time 81 nps 0 pv d4e6 g7h6 f8h8 
+bestmove d4e6
+info score mate 2 time 87 nps 0 pv e5f7 f8f7 c4c5 
+bestmove e5f7
+info score mate 2 time 513 nps 0 pv d1d8 c7d8 f6f7 
+bestmove d1d8
+info score mate 2 time 927 nps 0 pv f5g3 h2g3 b5h5 
+bestmove f5g3
+info score mate 2 time 108 nps 0 pv e7e8 f8e8 g7b7 
+bestmove e7e8
+info score mate 2 time 912 nps 0 pv h5f3 f2g2 e5h2 
+bestmove h5f3
+info score mate 2 time 318 nps 0 pv d2h2 g4h2 g3g2 
+bestmove d2h2
+info score mate 2 time 107 nps 0 pv e1e8 g7e8 f6f8 
+bestmove e1e8
+info score mate 2 time 164 nps 0 pv g5h6 a7a6 f6g7 
+bestmove g5h6
+info score mate 2 time 1261 nps 0 pv b1b5 a6b5 a4b5 
+bestmove b1b5
+info score mate 2 time 573 nps 0 pv g5h6 h8h6 c1h6 
+bestmove g5h6
+info score mate 2 time 49 nps 0 pv f7h7 h8h7 h6f8 
+bestmove f7h7
+info score mate 2 time 174 nps 0 pv f6f7 f8f7 d4h8 
+bestmove f6f7
+info score mate 2 time 172 nps 0 pv f7f8 g8f8 b3f7 
+bestmove f7f8
+info score mate 2 time 23 nps 0 pv h8h6 d7c7 h6e6 
+bestmove h8h6
+info score mate 2 time 167 nps 0 pv d3f5 e6f6 g3h5 
+bestmove d3f5
+info score mate 2 time 145 nps 0 pv h5h6 h7g8 e4a8 
+bestmove h5h6
+info score mate 2 time 47 nps 0 pv g6e6 g8h8 h4g6 
+bestmove g6e6
+info score mate 2 time 58 nps 0 pv e7a7 c5a7 b8b5 
+bestmove e7a7
+info score mate 2 time 555 nps 0 pv g3g2 h2h1 g2h2 
+bestmove g3g2
+info score mate 2 time 228 nps 0 pv d7g4 g6h7 g4g8 
+bestmove d7g4
+info score mate 2 time 341 nps 0 pv h3h1 g1h1 h4f2 
+bestmove h3h1
+info score mate 2 time 512 nps 0 pv g2g4 h4g3 e4g3 
+bestmove g2g4
+info score mate 2 time 33 nps 0 pv b6c6 d7d8 f6d6 
+bestmove b6c6
+info score mate 2 time 827 nps 0 pv g4g8 f8g8 d6f7 
+bestmove g4g8
+info score mate 2 time 92 nps 0 pv g5f6 g7f6 h6g8 
+bestmove g5f6
+info score mate 2 time 50 nps 0 pv h6c6 a7b8 c6b7 
+bestmove h6c6
+info score mate 2 time 154 nps 0 pv f3f2 c2f2 g3h2 
+bestmove f3f2
+info score mate 2 time 615 nps 0 pv d4e2 g1h2 f4h4 
+bestmove d4e2
+info score mate 2 time 1192 nps 0 pv h1h6 g6g5 d4h4 
+bestmove h1h6
+info score mate 2 time 643 nps 0 pv c8c1 e3c1 g2e2 
+bestmove c8c1
+info score mate 2 time 422 nps 0 pv f6e4 f2e1 f4d2 
+bestmove f6e4
+info score mate 2 time 47 nps 0 pv e3g4 f5f6 g3g1 
+bestmove e3g4
+info score mate 2 time 228 nps 0 pv f2f7 e7d6 g5e4 
+bestmove f2f7
+info score mate 2 time 63 nps 0 pv c8d8 d6e7 d8h8 
+bestmove c8d8
+info score mate 2 time 251 nps 0 pv c6h6 h7h6 f7h5 
+bestmove c6h6
+info score mate 2 time 436 nps 0 pv g3g7 f8e8 g7g8 
+bestmove g3g7
+info score mate 2 time 37 nps 0 pv f4e5 g7f7 f3g5 
+bestmove f4e5
+info score mate 2 time 198 nps 0 pv e6h6 g7h6 f4h6 
+bestmove e6h6
+info score mate 2 time 171 nps 0 pv e1e4 f4e4 f2d4 
+bestmove e1e4
+info score mate 2 time 52 nps 0 pv e5f7 h8g8 f7h6 
+bestmove e5f7
+info score mate 2 time 718 nps 0 pv h3h6 g7h6 f4h6 
+bestmove h3h6
+info score mate 2 time 250 nps 0 pv f4f1 g1f1 g3f2 
+bestmove f4f1
+info score mate 2 time 88 nps 0 pv g3g8 f8e7 h4f5 
+bestmove g3g8
+info score mate 2 time 238 nps 0 pv b3e6 f5e5 g4e4 
+bestmove b3e6
+info score mate 2 time 30 nps 0 pv h7h5 g4h3 c4c3 
+bestmove h7h5
+info score mate 2 time 58 nps 0 pv e5g7 h6g6 f4f5 
+bestmove e5g7
+info score mate 2 time 294 nps 0 pv h4f2 f4h6 g4g3 
+bestmove h4f2
+info score mate 2 time 85 nps 0 pv a6d3 e2e1 d4e3 
+bestmove a6d3
+info score mate 2 time 372 nps 0 pv g2b7 a8b8 c7d7 
+bestmove g2b7
+info score mate 2 time 155 nps 0 pv f4d6 e8e7 h7f7 
+bestmove f4d6
+info score mate 2 time 25 nps 0 pv h4h5 g6h5 d5f7 
+bestmove h4h5
+info score mate 2 time 713 nps 0 pv h6h1 g1h1 g3h2 
+bestmove h6h1
+info score mate 2 time 207 nps 0 pv h4h8 g8h8 f2f8 
+bestmove h4h8
+info score mate 2 time 540 nps 0 pv d7h3 h2g2 e3f2 
+bestmove d7h3
+info score mate 2 time 350 nps 0 pv f7f8 e8f8 a7h7 
+bestmove f7f8
+info score mate 2 time 204 nps 0 pv a3e7 c7b8 e7a7 
+bestmove a3e7
+info score mate 2 time 106 nps 0 pv h3h8 g8h8 g6h7 
+bestmove h3h8
+info score mate 2 time 729 nps 0 pv c6g2 e2g2 c1e1 
+bestmove c6g2
+info score mate 2 time 681 nps 0 pv d4f4 g2g3 f4f2 
+bestmove d4f4
+info score mate 2 time 650 nps 0 pv g5g3 a4a5 g3g1 
+bestmove g5g3
+info score mate 2 time 143 nps 0 pv h6h8 g8h8 e7e8 
+bestmove h6h8
+info score mate 2 time 869 nps 0 pv c3c6 b7c6 d5c6 
+bestmove c3c6
+info score mate 2 time 443 nps 0 pv g5g8 f8g8 d6f7 
+bestmove g5g8
+info score mate 2 time 329 nps 0 pv d4b3 a2b3 c6a6 
+bestmove d4b3
+info score mate 2 time 577 nps 0 pv b4c2 a1a2 c5a3 
+bestmove b4c2
+info score mate 2 time 135 nps 0 pv d8d1 c2d1 f3f2 
+bestmove d8d1
+info score mate 2 time 28 nps 0 pv g6g7 f8g8 d5f6 
+bestmove g6g7
+info score mate 2 time 263 nps 0 pv h2h5 g4f4 h5f5 
+bestmove h2h5
+info score mate 2 time 411 nps 0 pv e3h6 h8g8 h6g7 
+bestmove e3h6
+info score mate 2 time 1182 nps 0 pv e6e8 d8e8 c6e8 
+bestmove e6e8
+info score mate 2 time 9 nps 0 pv f6f7 g8h8 g6h5 
+bestmove f6f7

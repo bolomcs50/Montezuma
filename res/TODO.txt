@@ -1,7 +1,7 @@
 TODO
 
+- Implement iterative deepening, this should fix he wrong pvline bug. atm if you search a mate in 1 with depth=4 you probably don't see it and return alpha (=- previous beta).
 - Retrieve PV-line
-- Implement iterative deepening
 - Flesh out the test suite to perform fully automatic testing with tactics
 - Fix fen + moves reading
 - Manage move time

@@ -1,10 +1,12 @@
 #include "thc.h"
 #include "hashTable.h"
 
-struct line {
-    int moveCount;
-    std::vector<thc::Move> moves;
-};
+#define MOVE_MAX 10000
+
+typedef struct LINE {
+    int moveCount;              // Number of moves in the line.
+    thc::Move moves[MOVE_MAX];  // The line.
+}   LINE;
 
 class Engine{
     public:
@@ -26,7 +28,7 @@ class Engine{
     /* Called when Engine receives the "go" command */
     void inputGo(const std::string command);
     /* Search function */
-    int alphaBeta(int alpha, int beta, int depth, std::vector<thc::Move> &pvLine);
+    int alphaBeta(int alpha, int beta, int depth, LINE * pvLine);
     /* Evaluation function, evaluates the engine's current board */
     int evaluate();
     /* Probes the table to see if "hash" is in it. If it is AND the score is useful, return true and its score */
