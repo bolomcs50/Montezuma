@@ -32,5 +32,10 @@
 *.app
 
 # Folders
+out/
 build/
 .vscode/
+
+# sublime stuff
+*.sublime-project
+*.sublime-workspace

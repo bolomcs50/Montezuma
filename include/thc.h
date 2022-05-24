@@ -335,7 +335,8 @@ public:
     void Init()
     {
         white = true;
-        strcpy_s( squares, sizeof(squares),
+        //strcpy_s( squares, sizeof(squares),
+        strcpy( squares,
            "rnbqkbnr"
            "pppppppp"
            "        "
