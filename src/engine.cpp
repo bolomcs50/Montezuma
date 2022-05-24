@@ -6,7 +6,6 @@
 #include "thc.h"
 #include "engine.h"
 
-#define MATE_SCORE 100000
 
 Engine::Engine(){
     Engine::name = "Montezuma";
@@ -91,7 +90,7 @@ void Engine::updatePosition(const std::string command){
     } else if (command.find("fen", 9) == 9) {
         bool ok = cr.Forsyth(command.substr(13).c_str());
     }
-    std::size_t found = command.find("moves");
+    std::size_t found = command.find("moves ");
     if (found!=std::string::npos){    // If moves are specified, play them on the board
         std::string movelist = command.substr(found+6);
         thc::Move mv;
@@ -111,33 +110,41 @@ void Engine::updatePosition(const std::string command){
 // Start move evaluation
 void Engine::inputGo(const std::string command){
     unsigned int searchDepth = 4;
+    usingPreviousLine = false;
 
     // try all the moves and find the best one
-    auto startTime = std::chrono::high_resolution_clock::now();
     LINE pvLine;
-    int bestScore = -alphaBeta(-2*MATE_SCORE, 2*MATE_SCORE, searchDepth, &pvLine); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
-    auto stopTime = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
-    auto nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
+    for (int incrementalDepth = 1; incrementalDepth <= searchDepth; incrementalDepth++){
+        auto startTime = std::chrono::high_resolution_clock::now();
+        
+        int bestScore = -alphaBeta(-2*MATE_SCORE, 2*MATE_SCORE, incrementalDepth, &pvLine, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
+        memcpy(globalPvLine.moves, pvLine.moves, pvLine.moveCount * sizeof(thc::Move));
+        globalPvLine.moveCount = pvLine.moveCount;
+        auto stopTime = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
+        auto nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
+        // Check if the returned score signifies a mate and in how many moves
+        if (MATE_SCORE == abs(bestScore)){
+            int movesToMate = (pvLine.moveCount+1)/2;
+            std::cout << "info score mate " << movesToMate;
+        } else {
+            std::cout << "info score cp " << bestScore;
+        }
+        std::cout << " depth " << incrementalDepth << " time " << duration.count() << " nps " << nps << " pv ";
+        for (int i=0; i < pvLine.moveCount; i++){
+            std::cout << pvLine.moves[i].TerseOut() << " ";
+        }
+        std::cout << std::endl;
+        usingPreviousLine = true;
+        // TODO: Check if time is up
+    }
 
-    // Check if the returned score signifies a mate and in how many moves
-    if (MATE_SCORE == abs(bestScore)){
-        int movesToMate = (pvLine.moveCount+1)/2;
-        std::cout << "info score mate " << movesToMate;
-    } else {
-        std::cout << "info score cp " << bestScore ;
-    }
-    std::cout << " time " << duration.count() << " nps " << nps << " pv ";
-    for (int i=0; i < pvLine.moveCount; i++){
-        std::cout << pvLine.moves[i].TerseOut() << " ";
-    }
-    std::cout << std::endl;
     std::cout << "bestmove " << pvLine.moves[0].TerseOut() << std::endl;
 }
 
 bool toprint = false;
 
-int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine){
+int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initialDepth){
     // Base case
     std::vector<thc::Move> legalMoves;
     LINE line;
@@ -146,6 +153,9 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine){
         pvLine->moveCount = 0;
         return evaluate();
     }
+    int moveDepth = initialDepth-depth; // Number of plies played from root position
+    if (usingPreviousLine && moveDepth < globalPvLine.moveCount)
+        legalMoves.insert(legalMoves.begin(), globalPvLine.moves[moveDepth]);
     /*  Inductive step.
         Alpha = the minimum guaranteed score I can force given my opponent's options. A lower bound, because I can get at least alpha
         Beta = the maximum score my opponent will allow me, given my options. An upper bound, because I cannot my opponent won't let me get more than beta
@@ -155,7 +165,7 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine){
     */
     for (auto mv:legalMoves){
         cr.PushMove(mv);
-        int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line);
+        int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         cr.PopMove(mv);
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,
@@ -164,11 +174,11 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine){
             return beta;
         }
         if (currentScore > alpha){ // This move results in a higher minimum guaranteed score: make it new best. Implicitly, this is also < beta.
-            
             alpha = currentScore;
             pvLine->moves[0] = mv;
             memcpy(pvLine->moves + 1, line.moves, line.moveCount * sizeof(thc::Move));
             pvLine->moveCount = line.moveCount + 1;
+            usingPreviousLine = false;
         }
     }
     return alpha;
@@ -178,7 +188,9 @@ int Engine::evaluate(){
     int evalMat{0}, evalPos{0};
     thc::DRAWTYPE drawType;
     if (cr.IsDraw(cr.white, drawType)){
-    return 0;
+        std::cout << "Detected a draw of type " << drawType << std::endl;
+        debug("Here");
+        return 0;
     }
 
     thc::TERMINAL terminalScore;
@@ -186,11 +198,11 @@ int Engine::evaluate(){
     if( terminalScore == thc::TERMINAL::TERMINAL_WCHECKMATE ){ // White is checkmated
         if (!cr.white) return MATE_SCORE;
         return -MATE_SCORE;
-    }
-    else if( terminalScore == thc::TERMINAL::TERMINAL_BCHECKMATE ){ // Black is checkmated
+    } else if( terminalScore == thc::TERMINAL::TERMINAL_BCHECKMATE ){ // Black is checkmated
         if (!cr.white) return -MATE_SCORE;
         return MATE_SCORE;
-    }
+    } else if (terminalScore == thc::TERMINAL::TERMINAL_WSTALEMATE || terminalScore == thc::TERMINAL::TERMINAL_BSTALEMATE)
+        return 0;
 
     else {
         cr.EvaluateLeaf(evalMat, evalPos);
@@ -236,6 +248,5 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
 }
 
 void Engine::debug(const std::string command){
-    std::cout << "Pippo" << std::endl;
     displayPosition(cr, "Current position is");
 }

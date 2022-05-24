@@ -1,29 +1,20 @@
+ISSUES
+
 TODO
 
-- Implement iterative deepening, this should fix he wrong pvline bug. atm if you search a mate in 1 with depth=4 you probably don't see it and return alpha (=- previous beta).
-- Retrieve PV-line
-- Flesh out the test suite to perform fully automatic testing with tactics
-- Fix fen + moves reading
+- Output correct info
 - Manage move time
 - Implement multithreading to always have good communicaiton and exploit pondering (= thinking in opponent's time)
 
 
 - Implement hasTables
 - Implement quiescence search
-
-
-
-
-
 - Add support for opening book
 - Write a better eval function?
 
 
-/* OLD, at the moment not present
-ISSUES
-where it finds a position that was already analysed and does not see that if it is the third time it is actually reached, then it's a draw.
-Maybe with a different replacing scheme also accounting for age of the entries this is solved. http://www.open-aurec.com/wbforum/viewtopic.php?t=51447
-I hope solving these makes iterative deepening work well, because it is really fast.
-So to sum up 2 problem hypotheses: non-detection of draw by threefold repetition and key collisions of type 1 (same hash)
-Also, the second problem does not appear if the best move picked from the table is not searched first. Look more into this.
-*/
+
+SOLVED ISSUES
+- Very rarely it still happens that the engine sees a mate but can't play it correctly and draws by repetition. Hypothesis:
+	* As long as he sees a mate, the engine plays the first one it sees, even if it is longer than the shortest one.
+	* It does not account for draws by repetition correctly. In fact: it only calls "evaluate" if maxDepth has been reached or if no legal moves are available. Therefore, if a position was repeated twice, repeating it a third time AND THEN mating still evaluates as a mate. Repeating it a third, fourth,... n-th until maxdepth is reached is correctly evaluates as a draw instead. This issue should be solved with the combination of iterative deepening (to actually evaluate all positions at incremental depths) and move ordering (to evaluate the previously found best move first. This should at some point push the draw down the list of next-best moves).
