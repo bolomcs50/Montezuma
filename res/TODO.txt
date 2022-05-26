@@ -1,17 +1,21 @@
 ISSUES
+- Move time allocation does not really work, develop a better method.
 
 TODO
 
-- Output correct info
-- Manage move time
-- Implement multithreading to always have good communicaiton and exploit pondering (= thinking in opponent's time)
 
+- Make a lichess bot account for Montezuma!
+0.1
+
+- Manage move time wisely
+- Implement multithreading to always have good communicaiton and exploit pondering (= thinking in opponent's time)
+0.2
 
 - Implement hasTables
 - Implement quiescence search
 - Add support for opening book
 - Write a better eval function?
-
+1.0
 
 
 SOLVED ISSUES
