@@ -221,8 +221,6 @@ int Engine::evaluate(){
     int evalMat{0}, evalPos{0};
     thc::DRAWTYPE drawType;
     if (cr.IsDraw(cr.white, drawType)){
-        std::cout << "Detected a draw of type " << drawType << std::endl;
-        debug("Here");
         return 0;
     }
 
