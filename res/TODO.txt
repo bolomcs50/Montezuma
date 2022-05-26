@@ -4,17 +4,24 @@ ISSUES
 TODO
 
 
-- Make a lichess bot account for Montezuma!
-0.1
-
 - Manage move time wisely
 - Implement multithreading to always have good communicaiton and exploit pondering (= thinking in opponent's time)
 0.2
 
-- Implement hasTables
 - Implement quiescence search
+0.3
+
+
+- Implement hasTables
+0.4
+
+
 - Add support for opening book
+0.5
+
+
 - Write a better eval function?
+- Enter in ScacchiPolimi
 1.0
 
 

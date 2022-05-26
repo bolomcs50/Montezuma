@@ -115,9 +115,11 @@ void Engine::updatePosition(const std::string command){
 void Engine::inputGo(const std::string command){
     // Save available time
     unsigned int maxSearchDepth = 6;
+    bool usingTime = false;
     size_t pos = command.find("wtime");
     if (pos != std::string::npos){
         //maxSearchDepth = 6;
+        usingTime = true;
         wTime = std::stoi(command.substr(pos+6, command.find_first_of(" ", pos+6)-pos+6));
         pos = command.find("btime"); // Supposing that, if wtime is given, btime is given too in the same string
         bTime = std::stoi(command.substr(pos+6, command.find_first_of(" ", pos+6)-pos+6));
@@ -145,7 +147,7 @@ void Engine::inputGo(const std::string command){
     auto startTimeSearch = std::chrono::high_resolution_clock::now();
     for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++){
         auto startTimeThisDepth = std::chrono::high_resolution_clock::now();
-        int bestScore = -alphaBeta(-2*MATE_SCORE, 2*MATE_SCORE, incrementalDepth, &pvLine, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
+        int bestScore = alphaBeta(-2*MATE_SCORE, 2*MATE_SCORE, incrementalDepth, &pvLine, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
         memcpy(globalPvLine.moves, pvLine.moves, pvLine.moveCount * sizeof(thc::Move));
         globalPvLine.moveCount = pvLine.moveCount;
         auto stopTime = std::chrono::high_resolution_clock::now();
@@ -153,10 +155,10 @@ void Engine::inputGo(const std::string command){
         auto nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
         // Check if the returned score signifies a mate and in how many moves
         if (MATE_SCORE == abs(bestScore)){
-            int movesToMate = (pvLine.moveCount+1)/2;
-            std::cout << "info score mate " << movesToMate*(2*signbit(bestScore)-1);
+            int movesToMate = (bestScore > 0 ) ? (pvLine.moveCount+1)/2 : -(pvLine.moveCount+1)/2;
+            std::cout << "info score mate " <<  movesToMate;
         } else {
-            std::cout << "info score cp " << bestScore*(2*signbit(bestScore)-1);
+            std::cout << "info score cp " << bestScore;
         }
         std::cout << " depth " << incrementalDepth << " time " << duration.count() << " nps " << nps << " pv ";
         for (int i=0; i < pvLine.moveCount; i++){
@@ -168,7 +170,7 @@ void Engine::inputGo(const std::string command){
         // Check if time is up
         stopTime = std::chrono::high_resolution_clock::now();
         auto searchDuration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeSearch);
-        if (searchDuration.count() > limitTime)
+        if (usingTime && searchDuration.count() > limitTime)
             break;
     }
 
