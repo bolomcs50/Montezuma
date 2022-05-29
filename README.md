@@ -1,7 +1,7 @@
 # Montezuma
-Montezuma Chess Engine. [https://lichess.org/@/Montezuma_BOT](Play me) on lichess.org.
+Montezuma Chess Engine. [Play me](https://lichess.org/@/Montezuma_BOT) on lichess.org.
 A fairly strong, far from perfect chess player. Decent among humans, weak among computers. For now.
-Based off Bill Forster's [https://github.com/billforsternz/thc-chess-library](TripleHappyChess library).
+Based off Bill Forster's [TripleHappyChess library](https://github.com/billforsternz/thc-chess-library).
 
 ## Installation
 Clone the repository
