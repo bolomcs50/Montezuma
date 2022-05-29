@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <chrono>
 #include <thread>
 #include <fstream>
@@ -10,7 +9,7 @@
 
 
 Engine::Engine(){
-    Engine::name = "Montezuma";
+    name = "Montezuma";
     author = "Michele Bolognini";
     nodes = 0;
     hashTableSize = 6400; // 64 MB default
@@ -93,7 +92,9 @@ void Engine::updatePosition(const std::string command){
     if (command.find("startpos", 9) == 9){
         resetBoard();
     } else if (command.find("fen", 9) == 9) {
+        resetBoard();
         bool ok = cr.Forsyth(command.substr(13).c_str());
+        std::cout << ok << std::endl;
     }
     std::size_t found = command.find("moves ");
     if (found!=std::string::npos){    // If moves are specified, play them on the board
@@ -113,8 +114,8 @@ void Engine::updatePosition(const std::string command){
 
 // Start move evaluation
 void Engine::inputGo(const std::string command){
-    // Save available time
-    unsigned int maxSearchDepth = 6;
+    // Save available time    
+    unsigned int maxSearchDepth = 2;
     bool usingTime = false;
     size_t pos = command.find("wtime");
     if (pos != std::string::npos){
@@ -134,12 +135,9 @@ void Engine::inputGo(const std::string command){
     pos = command.find("movestogo");
     if (pos != std::string::npos)
         movesToGo = std::stoi(command.substr(pos+10, command.find_first_of(" ", pos+10)-pos+10));
-
     // decide how much time to allocate
     unsigned long int limitTime = (movesToGo) ? myTime/std::min(moveHorizon,movesToGo) : myTime/moveHorizon;
-    logFile << "[MONTE]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
-    
-
+    // logFile << "[MONTE]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
 
     // Search
     LINE pvLine;
@@ -199,8 +197,11 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
     for (auto mv:legalMoves){
-        cr.PushMove(mv);
+        cr.PlayMove(mv);
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
+        for (int d = 0; d < initialDepth-depth; d++)
+            std::cout << "\t";
+        std::cout << "After " << mv.TerseOut() << ", RepCount " << cr.GetRepetitionCount() << ", score " << currentScore << std::endl;
         cr.PopMove(mv);
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,

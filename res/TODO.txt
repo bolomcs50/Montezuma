@@ -1,9 +1,10 @@
 ISSUES
-- Move time allocation does not really work, develop a better method.
+- Move time allocation is sketchy, develop a better method.
+- It seems it does not always see draws by repetition https://lichess.org/HT2tnrP7#157 . Seemingly, it does not even detect them as draws
 
 TODO
 
-
+- Cleanup old files
 - Manage move time wisely
 - Implement multithreading to always have good communicaiton and exploit pondering (= thinking in opponent's time)
 0.2
