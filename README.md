@@ -17,7 +17,8 @@ Free chess GUIs exist, such as:
 * [XBoard](https://www.gnu.org/software/xboard/)
 
 ## Current state and Future development
-The development has hit a roadblock: given the scope of the thc library the engine is currently based on, draws by repetition cannot be detected during search and evaluation. Adding support for hashing would circumvent this problem, but the library does not support Zobrist Hashing (state of the art).
+The engine can now beat fairly experienced players at least in selected time controls.
+Nevertheless, the development has hit a roadblock: given the scope of the thc library the engine is currently based on, draws by repetition cannot be detected during search and evaluation. Adding support for hashing would circumvent this problem, but the library does not support Zobrist Hashing (state of the art).
 Therefore, Montezuma will probably switch to another library in the near future, before implementing further features.
 
 Among others, these features will be considered for implementation, in no particular order:
