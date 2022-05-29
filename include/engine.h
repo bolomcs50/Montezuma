@@ -1,3 +1,4 @@
+#include <fstream>
 #include "thc.h"
 #include "hashTable.h"
 
@@ -51,6 +52,8 @@ class Engine{
     unsigned int tableEntries;
     LINE globalPvLine;
     bool usingPreviousLine;
+    unsigned int wTime;
+    unsigned int bTime;
+    std::ofstream logFile;
 
 };
-
