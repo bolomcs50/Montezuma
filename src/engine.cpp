@@ -115,7 +115,7 @@ void Engine::updatePosition(const std::string command){
 // Start move evaluation
 void Engine::inputGo(const std::string command){
     // Save available time    
-    unsigned int maxSearchDepth = 2;
+    unsigned int maxSearchDepth = 6;
     bool usingTime = false;
     size_t pos = command.find("wtime");
     if (pos != std::string::npos){
@@ -199,9 +199,6 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
     for (auto mv:legalMoves){
         cr.PlayMove(mv);
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
-        for (int d = 0; d < initialDepth-depth; d++)
-            std::cout << "\t";
-        std::cout << "After " << mv.TerseOut() << ", RepCount " << cr.GetRepetitionCount() << ", score " << currentScore << std::endl;
         cr.PopMove(mv);
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,
@@ -283,4 +280,4 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
 
 void Engine::debug(const std::string command){
     displayPosition(cr, "Current position is");
-}
+}
