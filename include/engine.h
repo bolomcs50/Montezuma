@@ -34,7 +34,7 @@ class Engine{
     /* Evaluation function, evaluates the engine's current board */
     int evaluate();
     /* Probes the table to see if "hash" is in it. If it is AND the score is useful, return true and its score */
-    bool probeHash(int depth, int alpha, int beta, int &score, bool &moveSearch);
+    bool probeHash(int depth, int alpha, int beta, int &score);
     /* Record the hash into the table. Implement replacement scheme here */
     void recordHash(int depth, Flag flag, int score, thc::Move bestMove);
     /* Perform some debugging tasks */

@@ -12,7 +12,7 @@ Engine::Engine(){
     name = "Montezuma";
     author = "Michele Bolognini";
     nodes = 0;
-    hashTableSize = 6400; // 64 MB default
+    hashTableSize = 64; // 64 MB default
 }
 
 int Engine::protocolLoop(){
@@ -70,7 +70,8 @@ void Engine::displayPosition( thc::ChessRules &cr, const std::string &descriptio
     std::string s = cr.ToDebugStr();
     printf( "%s\n", description.c_str() );
     printf( "FEN (Forsyth Edwards Notation) = %s\n", fen.c_str() );
-    printf( "Position = %s\n", s.c_str() );
+    printf( "\nPosition = %s\n", s.c_str() );
+    std::cout << cr.Hash64Calculate() << std::endl;
 }
 
 // Reset Board to initial state
@@ -81,7 +82,7 @@ void Engine::resetBoard(){
 
 // Resize and empty the hashTable. Do not call this if you don't want to empty the table!
 void Engine::initHashTable(){
-    numPositions = hashTableSize*0x100000/sizeof(hashEntry); // MB = 1024 KB here.
+    numPositions = hashTableSize*1024*1024/sizeof(hashEntry); // MB = 1024 KB here.
     hashTable.resize(0);
     hashTable.resize(numPositions);
     tableEntries = 0;
@@ -178,32 +179,42 @@ void Engine::inputGo(const std::string command){
 bool toprint = false;
 
 int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initialDepth){
-    // Base case
+    int score;
+    if (probeHash(depth, alpha, beta, score))
+    	return score;
+	// Base case
     std::vector<thc::Move> legalMoves;
     LINE line;
     cr.GenLegalMoveList(legalMoves);
+
     if (depth == 0 || legalMoves.size() == 0){
         pvLine->moveCount = 0;
         return evaluate();
     }
+
+    thc::Move bestMove = legalMoves[0];
+    Flag flag = Flag::ALPHA;
     int moveDepth = initialDepth-depth; // Number of plies played from root position
     if (usingPreviousLine && moveDepth < globalPvLine.moveCount)
         legalMoves.insert(legalMoves.begin(), globalPvLine.moves[moveDepth]);
     /*  Inductive step.
         Alpha = the minimum guaranteed score I can force given my opponent's options. A lower bound, because I can get at least alpha
-        Beta = the maximum score my opponent will allow me, given my options. An upper bound, because I cannot my opponent won't let me get more than beta
+        Beta = the maximum score my opponent will allow me, given my options. An upper bound, because my opponent won't let me get more than beta
         As a consequence:
         - I chose the move with highest alpha, trying to maximize it.
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
     for (auto mv:legalMoves){
         cr.PlayMove(mv);
+        currentHash = cr.Hash64Update(currentHash, mv);
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
+        currentHash = cr.Hash64Update(currentHash, mv);
         cr.PopMove(mv);
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,
             therefore stop looking for other moves and a precise score: return the upper bound as score approximation,
             since my opponent does at least as good as that here. */
+        	recordHash(depth, Flag::BETA, beta, mv);
             return beta;
         }
         if (currentScore > alpha){ // This move results in a higher minimum guaranteed score: make it new best. Implicitly, this is also < beta.
@@ -212,8 +223,11 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
             memcpy(pvLine->moves + 1, line.moves, line.moveCount * sizeof(thc::Move));
             pvLine->moveCount = line.moveCount + 1;
             usingPreviousLine = false;
+            bestMove = mv;
+            flag = Flag::EXACT;
         }
     }
+    recordHash(depth, flag, alpha, bestMove);
     return alpha;
 }
 
@@ -242,10 +256,10 @@ int Engine::evaluate(){
     }
 }
 
-bool Engine::probeHash(int depth, int alpha, int beta, int &score, bool &moveSearch){
+bool Engine::probeHash(int depth, int alpha, int beta, int &score){
     hashEntry *entry = &hashTable[currentHash%numPositions];
     if (entry->key == currentHash){ // Check that the key is the same (not a type ? collision)
-        if (entry->depth >= depth){  // If it is useful
+        if (entry->depth >= depth){  // If it was already searched at a depth greater than the one requested now
             if (entry->flag == Flag::EXACT){
                 score = entry->score;
                 return true;
@@ -258,7 +272,7 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score, bool &moveSea
                 score = beta;
                 return true;
             }
-        } else if (entry->flag == Flag::EXACT || entry->flag == Flag::BETA) moveSearch = true;
+        }
         // RememberBestMove()???
     }
     return false;
@@ -268,7 +282,7 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
     hashEntry *entry = &hashTable[currentHash%numPositions];
     
     if (entry->flag == Flag::NONE) tableEntries++; // Count num of occupied cells
-     if (entry->flag == Flag::NONE || entry->depth < depth){ // Save the position if there is none in the cell or the depth of the new one is greater
+    if (entry->flag == Flag::NONE || entry->depth < depth){ // Save the position if there is none in the cell or the depth of the new one is greater
         entry->key = currentHash;
         entry->depth = depth;
         entry->flag = flag;
@@ -280,4 +294,5 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
 
 void Engine::debug(const std::string command){
     displayPosition(cr, "Current position is");
+    printf("Recorded %u hashTableEntries\n", tableEntries);
 }
