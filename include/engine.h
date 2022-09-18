@@ -41,7 +41,7 @@ class Engine{
     void debug(const std::string command);
 
     thc::ChessEvaluation cr;
-    uint64_t currentHash;  // Hash of the current
+    uint64_t currentHash;  // Hash of the current position
     std::string name;
     std::string author;
     unsigned long long nodes;

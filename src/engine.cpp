@@ -12,7 +12,7 @@ Engine::Engine(){
     name = "Montezuma";
     author = "Michele Bolognini";
     nodes = 0;
-    hashTableSize = 64; // 64 MB default
+    hashTableSize = 256; // 64 MB default
 }
 
 int Engine::protocolLoop(){
@@ -95,7 +95,6 @@ void Engine::updatePosition(const std::string command){
     } else if (command.find("fen", 9) == 9) {
         resetBoard();
         bool ok = cr.Forsyth(command.substr(13).c_str());
-        std::cout << ok << std::endl;
     }
     std::size_t found = command.find("moves ");
     if (found!=std::string::npos){    // If moves are specified, play them on the board
@@ -295,4 +294,8 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
 void Engine::debug(const std::string command){
     displayPosition(cr, "Current position is");
     printf("Recorded %u hashTableEntries\n", tableEntries);
+    hashEntry *entry = &hashTable[currentHash%numPositions];
+    std::cout << "Entry at " << currentHash%numPositions << ": ";
+    printf("depth:%d, flag:%d, score:%d, bestMove:", entry->depth, entry->flag, entry->score);
+    std::cout << entry->bestMove.TerseOut() << std::endl;
 }
