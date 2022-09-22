@@ -69,8 +69,8 @@ void Engine::displayPosition( thc::ChessRules &cr, const std::string &descriptio
     std::string fen = cr.ForsythPublish();
     std::string s = cr.ToDebugStr();
     printf( "%s\n", description.c_str() );
-    printf( "FEN (Forsyth Edwards Notation) = %s\n", fen.c_str() );
-    printf( "\nPosition = %s\n", s.c_str() );
+    printf( "FEN = %s\n", fen.c_str() );
+    printf( "%sHash: ", s.c_str() );
     std::cout << cr.Hash64Calculate() << std::endl;
 }
 
@@ -188,7 +188,10 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
 
     if (depth == 0 || legalMoves.size() == 0){
         pvLine->moveCount = 0;
-        return evaluate();
+        score = evaluate();
+        thc::Move mv;
+        recordHash(depth, Flag::EXACT, score, mv);
+        return score;
     }
 
     thc::Move bestMove = legalMoves[0];
@@ -204,16 +207,20 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
     for (auto mv:legalMoves){
-        cr.PlayMove(mv);
-        currentHash = cr.Hash64Update(currentHash, mv);
+        
+        cr.PushMove(mv);
+        //currentHash = cr.Hash64Update(currentHash, mv);
+        currentHash = cr.Hash64Calculate();
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
-        currentHash = cr.Hash64Update(currentHash, mv);
+        currentHash = cr.Hash64Calculate();
+        //currentHash = cr.Hash64Update(currentHash, mv);
         cr.PopMove(mv);
+        
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,
             therefore stop looking for other moves and a precise score: return the upper bound as score approximation,
             since my opponent does at least as good as that here. */
-        	recordHash(depth, Flag::BETA, beta, mv);
+            recordHash(depth, Flag::BETA, beta, mv);
             return beta;
         }
         if (currentScore > alpha){ // This move results in a higher minimum guaranteed score: make it new best. Implicitly, this is also < beta.
@@ -279,7 +286,6 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score){
 
 void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
     hashEntry *entry = &hashTable[currentHash%numPositions];
-    
     if (entry->flag == Flag::NONE) tableEntries++; // Count num of occupied cells
     if (entry->flag == Flag::NONE || entry->depth < depth){ // Save the position if there is none in the cell or the depth of the new one is greater
         entry->key = currentHash;
@@ -293,9 +299,11 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
 
 void Engine::debug(const std::string command){
     displayPosition(cr, "Current position is");
+    std::cout << currentHash << std::endl;
     printf("Recorded %u hashTableEntries\n", tableEntries);
     hashEntry *entry = &hashTable[currentHash%numPositions];
     std::cout << "Entry at " << currentHash%numPositions << ": ";
     printf("depth:%d, flag:%d, score:%d, bestMove:", entry->depth, entry->flag, entry->score);
     std::cout << entry->bestMove.TerseOut() << std::endl;
-}
+}
+

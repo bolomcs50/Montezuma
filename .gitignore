@@ -26,6 +26,9 @@
 *.a
 *.lib
 
+# Specific files
+Log.txt
+
 # Executables
 *.exe
 *.out
@@ -43,3 +46,6 @@ build/
 # eclipse files
 *.cproject
 *.project
+
+# netbeans files
+nbproject/

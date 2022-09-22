@@ -18,16 +18,17 @@ Free chess GUIs exist, such as:
 
 ## Current state and Future development
 The engine can now beat fairly experienced players at least in selected time controls.
-Nevertheless, the development has hit a roadblock: given the scope of the thc library the engine is currently based on, draws by repetition cannot be detected during search and evaluation. Adding support for hashing would circumvent this problem, but the library does not support Zobrist Hashing (state of the art).
-Therefore, Montezuma will probably switch to another library in the near future, before implementing further features.
 
 Among others, these features will be considered for implementation, in no particular order:
+* Transposition tables for faster search and draw detection
+* Move ordering
+* Support for opening books
 * Wiser management of move time
 * Implementation of the engine as a state machine with multithreading and pondering
 * Implementation of quiescence search to mitigate horizon effect
-* Transposition tables for faster search and draw detection
-* Support for opening books
 * Development of a better evaluation function
 
 After implementing those, the engine will be ready for a round of tests against other machines and humans in all time controls.
 
+## Known issues
+There is a known issue: given the scope of the thc library the engine is currently based on, draws by repetition cannot be detected during search and evaluation. Relying on hashing would circumvent this problem, but the library does not support Zobrist Hashing (state of the art).
