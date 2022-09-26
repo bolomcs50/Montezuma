@@ -2,7 +2,7 @@
 #include "thc.h"
 #include "hashTable.h"
 
-#define MOVE_MAX 10000
+#define MOVE_MAX 1000
 #define MATE_SCORE 100000
 
 typedef struct LINE {
@@ -39,6 +39,8 @@ class Engine{
     void recordHash(int depth, Flag flag, int score, thc::Move bestMove);
     /* Perform some debugging tasks */
     void debug(const std::string command);
+    /* recursively retrieve the PV line using information stored in the table*/
+    void retrievePvLineFromTable(LINE * pvLine);
 
     thc::ChessEvaluation cr;
     uint64_t currentHash;  // Hash of the current position

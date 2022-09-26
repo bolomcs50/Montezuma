@@ -71,7 +71,7 @@ void Engine::displayPosition( thc::ChessRules &cr, const std::string &descriptio
     printf( "%s\n", description.c_str() );
     printf( "FEN = %s\n", fen.c_str() );
     printf( "%sHash: ", s.c_str() );
-    std::cout << cr.Hash64Calculate() << std::endl;
+    std::cout << cr.Hash64Calculate() << std::endl << currentHash << std::endl;
 }
 
 // Reset Board to initial state
@@ -146,21 +146,24 @@ void Engine::inputGo(const std::string command){
     for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++){
         auto startTimeThisDepth = std::chrono::high_resolution_clock::now();
         int bestScore = alphaBeta(-2*MATE_SCORE, 2*MATE_SCORE, incrementalDepth, &pvLine, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
-        memcpy(globalPvLine.moves, pvLine.moves, pvLine.moveCount * sizeof(thc::Move));
-        globalPvLine.moveCount = pvLine.moveCount;
+//        memcpy(globalPvLine.moves, pvLine.moves, pvLine.moveCount * sizeof(thc::Move));
+//        globalPvLine.moveCount = pvLine.moveCount;
+        globalPvLine.moveCount = 0;
+        retrievePvLineFromTable(&globalPvLine);
+        
         auto stopTime = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeThisDepth);
         auto nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
         // Check if the returned score signifies a mate and in how many moves
         if (MATE_SCORE == abs(bestScore)){
-            int movesToMate = (bestScore > 0 ) ? (pvLine.moveCount+1)/2 : -(pvLine.moveCount+1)/2;
+            int movesToMate = (bestScore > 0 ) ? (globalPvLine.moveCount+1)/2 : -(globalPvLine.moveCount+1)/2;
             std::cout << "info score mate " <<  movesToMate;
         } else {
             std::cout << "info score cp " << bestScore;
         }
         std::cout << " depth " << incrementalDepth << " time " << duration.count() << " nps " << nps << " pv ";
-        for (int i=0; i < pvLine.moveCount; i++){
-            std::cout << pvLine.moves[i].TerseOut() << " ";
+        for (int i=0; i < globalPvLine.moveCount; i++){
+            std::cout << globalPvLine.moves[i].TerseOut() << " ";
         }
         std::cout << std::endl;
         usingPreviousLine = true;
@@ -172,7 +175,7 @@ void Engine::inputGo(const std::string command){
             break;
     }
 
-    std::cout << "bestmove " << pvLine.moves[0].TerseOut() << std::endl;
+    std::cout << "bestmove " << globalPvLine.moves[0].TerseOut() << std::endl;
 }
 
 bool toprint = false;
@@ -208,14 +211,12 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
     */
     for (auto mv:legalMoves){
         
+        currentHash = cr.Hash64Update(currentHash, mv);
         cr.PushMove(mv);
-        //currentHash = cr.Hash64Update(currentHash, mv);
-        currentHash = cr.Hash64Calculate();
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
-        currentHash = cr.Hash64Calculate();
-        //currentHash = cr.Hash64Update(currentHash, mv);
         cr.PopMove(mv);
-        
+        currentHash = cr.Hash64Update(currentHash, mv);
+           
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,
             therefore stop looking for other moves and a precise score: return the upper bound as score approximation,
@@ -287,7 +288,7 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score){
 void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
     hashEntry *entry = &hashTable[currentHash%numPositions];
     if (entry->flag == Flag::NONE) tableEntries++; // Count num of occupied cells
-    if (entry->flag == Flag::NONE || entry->depth < depth){ // Save the position if there is none in the cell or the depth of the new one is greater
+    if (entry->flag == Flag::NONE || entry->depth <= depth){ // Save the position if there is none in the cell or the depth of the new one is greater
         entry->key = currentHash;
         entry->depth = depth;
         entry->flag = flag;
@@ -299,7 +300,6 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
 
 void Engine::debug(const std::string command){
     displayPosition(cr, "Current position is");
-    std::cout << currentHash << std::endl;
     printf("Recorded %u hashTableEntries\n", tableEntries);
     hashEntry *entry = &hashTable[currentHash%numPositions];
     std::cout << "Entry at " << currentHash%numPositions << ": ";
@@ -307,3 +307,16 @@ void Engine::debug(const std::string command){
     std::cout << entry->bestMove.TerseOut() << std::endl;
 }
 
+void Engine::retrievePvLineFromTable(LINE * pvLine){
+    hashEntry *entry = &hashTable[currentHash%numPositions];
+    if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000")
+        return;
+    
+    pvLine->moveCount++;
+    pvLine->moves[pvLine->moveCount-1] = entry->bestMove;
+    currentHash = cr.Hash64Update(currentHash, entry->bestMove);
+    cr.PushMove(entry->bestMove);
+    retrievePvLineFromTable(pvLine);
+    cr.PopMove(entry->bestMove);
+    currentHash = cr.Hash64Update(currentHash, entry->bestMove);
+}

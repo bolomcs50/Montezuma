@@ -21,6 +21,7 @@ The engine can now beat fairly experienced players at least in selected time con
 
 Among others, these features will be considered for implementation, in no particular order:
 * Transposition tables for faster search and draw detection
+* PvLine retrieval through transposition tables
 * Move ordering
 * Support for opening books
 * Wiser management of move time
