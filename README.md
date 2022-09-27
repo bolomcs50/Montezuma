@@ -20,16 +20,18 @@ Free chess GUIs exist, such as:
 The engine can now beat fairly experienced players at least in selected time controls.
 
 Among others, these features will be considered for implementation, in no particular order:
-* Transposition tables for faster search and draw detection
-* PvLine retrieval through transposition tables
-* Move ordering
+* Communication of more information regardin the search (nodes, nps, hashTable full%,...)
+* Refactor hasing algorithms to coincide with polyglot hashes (and has whose turn is it too).
 * Support for opening books
+* Draw by repetition check with hashes
 * Wiser management of move time
 * Implementation of the engine as a state machine with multithreading and pondering
+* Improved move ordering
 * Implementation of quiescence search to mitigate horizon effect
 * Development of a better evaluation function
 
 After implementing those, the engine will be ready for a round of tests against other machines and humans in all time controls.
 
 ## Known issues
-There is a known issue: given the scope of the thc library the engine is currently based on, draws by repetition cannot be detected during search and evaluation. Relying on hashing would circumvent this problem, but the library does not support Zobrist Hashing (state of the art).
+* The engine does not see draws by repetition as such and plays them even if it is winning
+* The hashes do not represent whose turn it is: a position has the same has in both cases. This causes circular paths in the transposition table when looking for the pvLine, eventually inducing a segmentation fault (for now the length is hard-limited)

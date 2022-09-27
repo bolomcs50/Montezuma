@@ -213,6 +213,9 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
         
         currentHash = cr.Hash64Update(currentHash, mv);
         cr.PushMove(mv);
+        if (currentHash == 1863876873714280518){
+            debug("Found position with hash");
+        }
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         cr.PopMove(mv);
         currentHash = cr.Hash64Update(currentHash, mv);
@@ -309,7 +312,7 @@ void Engine::debug(const std::string command){
 
 void Engine::retrievePvLineFromTable(LINE * pvLine){
     hashEntry *entry = &hashTable[currentHash%numPositions];
-    if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000")
+    if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash || pvLine->moveCount >= 15)
         return;
     
     pvLine->moveCount++;
