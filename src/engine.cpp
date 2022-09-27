@@ -69,9 +69,9 @@ void Engine::displayPosition( thc::ChessRules &cr, const std::string &descriptio
     std::string fen = cr.ForsythPublish();
     std::string s = cr.ToDebugStr();
     printf( "%s\n", description.c_str() );
-    printf( "FEN = %s\n", fen.c_str() );
-    printf( "%sHash: ", s.c_str() );
-    std::cout << cr.Hash64Calculate() << std::endl << currentHash << std::endl;
+    printf( "FEN = %s", fen.c_str() );
+    printf( "%s", s.c_str() );
+    std::cout << "Hash64: " << cr.Hash64Calculate() << std::endl << "currentHash: " << currentHash << std::endl;
 }
 
 // Reset Board to initial state
@@ -145,9 +145,7 @@ void Engine::inputGo(const std::string command){
     auto startTimeSearch = std::chrono::high_resolution_clock::now();
     for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++){
         auto startTimeThisDepth = std::chrono::high_resolution_clock::now();
-        int bestScore = alphaBeta(-2*MATE_SCORE, 2*MATE_SCORE, incrementalDepth, &pvLine, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
-//        memcpy(globalPvLine.moves, pvLine.moves, pvLine.moveCount * sizeof(thc::Move));
-//        globalPvLine.moveCount = pvLine.moveCount;
+        int bestScore = alphaBeta(-MATE_SCORE, MATE_SCORE, incrementalDepth, &pvLine, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
         globalPvLine.moveCount = 0;
         retrievePvLineFromTable(&globalPvLine);
         
