@@ -34,4 +34,4 @@ After implementing those, the engine will be ready for a round of tests against 
 
 ## Known issues
 * The engine does not see draws by repetition as such and plays them even if it is winning
-* The hashes do not represent whose turn it is: a position has the same has in both cases. This causes circular paths in the transposition table when looking for the pvLine, eventually inducing a segmentation fault (for now the length is hard-limited)
+* The hashes do not represent whose turn it is: a position has the same hash whether it is black or white to move. This causes circular paths in the transposition table when looking for the pvLine, eventually inducing a segmentation fault (for now the length is hard-limited)
