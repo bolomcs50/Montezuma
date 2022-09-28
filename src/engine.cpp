@@ -119,7 +119,6 @@ void Engine::inputGo(const std::string command){
     bool usingTime = false;
     size_t pos = command.find("wtime");
     if (pos != std::string::npos){
-        //maxSearchDepth = 6;
         usingTime = true;
         wTime = std::stoi(command.substr(pos+6, command.find_first_of(" ", pos+6)-pos+6));
         pos = command.find("btime"); // Supposing that, if wtime is given, btime is given too in the same string
@@ -153,7 +152,7 @@ void Engine::inputGo(const std::string command){
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeThisDepth);
         auto nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
         // Check if the returned score signifies a mate and in how many moves
-        if (MATE_SCORE == abs(bestScore)){
+        if (MATE_SCORE-abs(bestScore) < 50){
             int movesToMate = (bestScore > 0 ) ? (globalPvLine.moveCount+1)/2 : -(globalPvLine.moveCount+1)/2;
             std::cout << "info score mate " <<  movesToMate;
         } else {
@@ -198,8 +197,17 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
     thc::Move bestMove = legalMoves[0];
     Flag flag = Flag::ALPHA;
     int moveDepth = initialDepth-depth; // Number of plies played from root position
-    if (usingPreviousLine && moveDepth < globalPvLine.moveCount)
-        legalMoves.insert(legalMoves.begin(), globalPvLine.moves[moveDepth]);
+    if (usingPreviousLine && moveDepth < globalPvLine.moveCount){
+        //check that the move is legal
+        for (auto mv:legalMoves)
+            if (mv.TerseOut() == globalPvLine.moves[moveDepth].TerseOut()){
+                legalMoves.insert(legalMoves.begin(), globalPvLine.moves[moveDepth]);
+                break;
+            }
+    } else {
+        usingPreviousLine = false;
+    }
+        
     /*  Inductive step.
         Alpha = the minimum guaranteed score I can force given my opponent's options. A lower bound, because I can get at least alpha
         Beta = the maximum score my opponent will allow me, given my options. An upper bound, because my opponent won't let me get more than beta
@@ -208,15 +216,19 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
     for (auto mv:legalMoves){
-        
         currentHash = cr.Hash64Update(currentHash, mv);
+        if (currentHash == 3178038088558132006)
+            debug("ERROR");
         cr.PushMove(mv);
-        if (currentHash == 1863876873714280518){
-            debug("Found position with hash");
-        }
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         cr.PopMove(mv);
         currentHash = cr.Hash64Update(currentHash, mv);
+        
+        // Apply mate score correction (reserve the last 50 points for that)
+        if (MATE_SCORE-abs(currentScore) < 50 ){
+            if (currentScore > 0) currentScore--;
+            else currentScore++;
+        }
            
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,
@@ -281,7 +293,6 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score){
                 return true;
             }
         }
-        // RememberBestMove()???
     }
     return false;
 }
@@ -310,7 +321,7 @@ void Engine::debug(const std::string command){
 
 void Engine::retrievePvLineFromTable(LINE * pvLine){
     hashEntry *entry = &hashTable[currentHash%numPositions];
-    if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash || pvLine->moveCount >= 15)
+    if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash || pvLine->moveCount >= 30)
         return;
     
     pvLine->moveCount++;
