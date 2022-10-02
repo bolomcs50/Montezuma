@@ -2,13 +2,7 @@
 #include "thc.h"
 #include "hashTable.h"
 
-#define MOVE_MAX 1000
 #define MATE_SCORE 100000
-
-typedef struct LINE {
-    int moveCount;              // Number of moves in the line.
-    thc::Move moves[MOVE_MAX];  // The line.
-}   LINE;
 
 class Engine{
     public:
@@ -30,7 +24,7 @@ class Engine{
     /* Called when Engine receives the "go" command */
     void inputGo(const std::string command);
     /* Search function */
-    int alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initialDepth);
+    int alphaBeta(int alpha, int beta, int depth, thc::MOVELIST * pvLine, int initialDepth);
     /* Evaluation function, evaluates the engine's current board */
     int evaluate();
     /* Probes the table to see if "hash" is in it. If it is AND the score is useful, return true and its score */
@@ -40,7 +34,7 @@ class Engine{
     /* Perform some debugging tasks */
     void debug(const std::string command);
     /* recursively retrieve the PV line using information stored in the table*/
-    void retrievePvLineFromTable(LINE * pvLine);
+    void retrievePvLineFromTable(thc::MOVELIST * pvLine);
 
     thc::ChessEvaluation cr;
     uint64_t currentHash;  // Hash of the current position
@@ -52,7 +46,7 @@ class Engine{
     unsigned int numPositions;
     unsigned int tableHits;
     unsigned int tableEntries;
-    LINE globalPvLine;
+    thc::MOVELIST globalPvLine;
     bool usingPreviousLine;
     unsigned int wTime;
     unsigned int bTime;

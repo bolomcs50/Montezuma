@@ -20,8 +20,8 @@ Free chess GUIs exist, such as:
 The engine can now beat fairly experienced players at least in selected time controls.
 
 Among others, these features will be considered for implementation, in no particular order:
-* Communication of more information regardin the search (nodes, nps, hashTable full%,...)
 * Refactor hasing algorithms to coincide with polyglot hashes (and has whose turn is it too).
+* Communication of more information regardin the search (nodes, nps, hashTable full%,...)
 * Support for opening books
 * Draw by repetition check with hashes
 * Wiser management of move time

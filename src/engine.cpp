@@ -139,13 +139,13 @@ void Engine::inputGo(const std::string command){
     // logFile << "[MONTE]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
 
     // Search
-    LINE pvLine;
+    thc::MOVELIST pvLine;
     usingPreviousLine = false;
     auto startTimeSearch = std::chrono::high_resolution_clock::now();
     for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++){
         auto startTimeThisDepth = std::chrono::high_resolution_clock::now();
         int bestScore = alphaBeta(-MATE_SCORE, MATE_SCORE, incrementalDepth, &pvLine, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
-        globalPvLine.moveCount = 0;
+        globalPvLine.count = 0;
         retrievePvLineFromTable(&globalPvLine);
         
         auto stopTime = std::chrono::high_resolution_clock::now();
@@ -153,13 +153,13 @@ void Engine::inputGo(const std::string command){
         auto nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
         // Check if the returned score signifies a mate and in how many moves
         if (MATE_SCORE-abs(bestScore) < 50){
-            int movesToMate = (bestScore > 0 ) ? (globalPvLine.moveCount+1)/2 : -(globalPvLine.moveCount+1)/2;
+            int movesToMate = (bestScore > 0 ) ? (globalPvLine.count+1)/2 : -(globalPvLine.count+1)/2;
             std::cout << "info score mate " <<  movesToMate;
         } else {
             std::cout << "info score cp " << bestScore;
         }
         std::cout << " depth " << incrementalDepth << " time " << duration.count() << " nps " << nps << " pv ";
-        for (int i=0; i < globalPvLine.moveCount; i++){
+        for (int i=0; i < globalPvLine.count; i++){
             std::cout << globalPvLine.moves[i].TerseOut() << " ";
         }
         std::cout << std::endl;
@@ -170,6 +170,7 @@ void Engine::inputGo(const std::string command){
         auto searchDuration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeSearch);
         if (usingTime && searchDuration.count() > limitTime)
             break;
+
     }
 
     std::cout << "bestmove " << globalPvLine.moves[0].TerseOut() << std::endl;
@@ -177,17 +178,17 @@ void Engine::inputGo(const std::string command){
 
 bool toprint = false;
 
-int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initialDepth){
+int Engine::alphaBeta(int alpha, int beta, int depth, thc::MOVELIST * pvLine, int initialDepth){
     int score;
     if (probeHash(depth, alpha, beta, score))
     	return score;
 	// Base case
     std::vector<thc::Move> legalMoves;
-    LINE line;
+    thc::MOVELIST line;
     cr.GenLegalMoveList(legalMoves);
 
     if (depth == 0 || legalMoves.size() == 0){
-        pvLine->moveCount = 0;
+        pvLine->count = 0;
         score = evaluate();
         thc::Move mv;
         recordHash(depth, Flag::EXACT, score, mv);
@@ -197,7 +198,7 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
     thc::Move bestMove = legalMoves[0];
     Flag flag = Flag::ALPHA;
     int moveDepth = initialDepth-depth; // Number of plies played from root position
-    if (usingPreviousLine && moveDepth < globalPvLine.moveCount){
+    if (usingPreviousLine && moveDepth < globalPvLine.count){
         //check that the move is legal
         for (auto mv:legalMoves)
             if (mv.TerseOut() == globalPvLine.moves[moveDepth].TerseOut()){
@@ -206,6 +207,7 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
             }
     } else {
         usingPreviousLine = false;
+        
     }
         
     /*  Inductive step.
@@ -217,18 +219,16 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
     */
     for (auto mv:legalMoves){
         currentHash = cr.Hash64Update(currentHash, mv);
-        if (currentHash == 3178038088558132006)
-            debug("ERROR");
         cr.PushMove(mv);
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         cr.PopMove(mv);
         currentHash = cr.Hash64Update(currentHash, mv);
         
-        // Apply mate score correction (reserve the last 50 points for that)
-        if (MATE_SCORE-abs(currentScore) < 50 ){
-            if (currentScore > 0) currentScore--;
-            else currentScore++;
-        }
+//         Apply mate score correction (reserve the last 50 points for that)
+//        if (MATE_SCORE-abs(currentScore) < 50 ){
+//            if (currentScore > 0) currentScore--;
+//            else currentScore++;
+//        }
            
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,
@@ -240,8 +240,8 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
         if (currentScore > alpha){ // This move results in a higher minimum guaranteed score: make it new best. Implicitly, this is also < beta.
             alpha = currentScore;
             pvLine->moves[0] = mv;
-            memcpy(pvLine->moves + 1, line.moves, line.moveCount * sizeof(thc::Move));
-            pvLine->moveCount = line.moveCount + 1;
+            memcpy(pvLine->moves + 1, line.moves, line.count * sizeof(thc::Move));
+            pvLine->count = line.count + 1;
             usingPreviousLine = false;
             bestMove = mv;
             flag = Flag::EXACT;
@@ -319,13 +319,13 @@ void Engine::debug(const std::string command){
     std::cout << entry->bestMove.TerseOut() << std::endl;
 }
 
-void Engine::retrievePvLineFromTable(LINE * pvLine){
+void Engine::retrievePvLineFromTable(thc::MOVELIST * pvLine){
     hashEntry *entry = &hashTable[currentHash%numPositions];
-    if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash || pvLine->moveCount >= 30)
+    if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash || pvLine->count >= 30)
         return;
     
-    pvLine->moveCount++;
-    pvLine->moves[pvLine->moveCount-1] = entry->bestMove;
+    pvLine->count++;
+    pvLine->moves[pvLine->count-1] = entry->bestMove;
     currentHash = cr.Hash64Update(currentHash, entry->bestMove);
     cr.PushMove(entry->bestMove);
     retrievePvLineFromTable(pvLine);
