@@ -1,5 +1,7 @@
 #include <iostream>
+#include <inttypes.h>
 #include "thc.h"
+#include "hashing.h"
 
 void displayPosition( thc::ChessRules &cr, const std::string &description)
 {
@@ -13,28 +15,25 @@ void displayPosition( thc::ChessRules &cr, const std::string &description)
 
 int main(int argc, char const *argv[])
 {
-   
-    // HASH CORRECTNESS TEST
     thc::ChessEvaluation cr;
-//    cr.Forsyth("1k1r4/3b1p2/1P1b3p/1p1p4/Q2P2pN/1R4P1/KPPq1PP1/4r2R b - - 2 1");
-    cr.Forsyth("r2q1r1k/pppb1p1n/3p1BpQ/3Pp3/2P1P1P1/2N3P1/PP2B3/R3K2R b KQ - 0 2");
-    displayPosition(cr, "");
-    
-    
-    thc::TERMINAL terminalScore;
-    cr.Evaluate(terminalScore);    // Evaluates if position is legal, and if it is terminal
-    if( terminalScore == thc::TERMINAL::TERMINAL_WCHECKMATE ){ // White is checkmated
-        std::cout << "White is mated";
-    } else if( terminalScore == thc::TERMINAL::TERMINAL_BCHECKMATE ){ // Black is checkmated
-        std::cout << "Black is mated";
-    } else if (terminalScore == thc::TERMINAL::TERMINAL_WSTALEMATE || terminalScore == thc::TERMINAL::TERMINAL_BSTALEMATE)
-        std::cout << "Draw";
-    std::cout << std::endl;
-
-    
-    std::vector<thc::Move> legalMoves;
-    cr.GenLegalMoveList(legalMoves);
-    std::cout << legalMoves.size() << std::endl;
+    cr.Forsyth("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    printf("%lx\n", zobristHash64Calculate(cr));
+    cr.Forsyth("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
+    printf("%lx\n", zobristHash64Calculate(cr));
+    cr.Forsyth("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2");
+    printf("%lx\n", zobristHash64Calculate(cr));
+    cr.Forsyth("rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2");
+    printf("%lx\n", zobristHash64Calculate(cr));
+    cr.Forsyth("rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3");
+    printf("%lx\n", zobristHash64Calculate(cr));
+    cr.Forsyth("rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPPKPPP/RNBQ1BNR b kq - 0 3");
+    printf("%lx\n", zobristHash64Calculate(cr));
+    cr.Forsyth("rnbq1bnr/ppp1pkpp/8/3pPp2/8/8/PPPPKPPP/RNBQ1BNR w - - 0 4");
+    printf("%lx\n", zobristHash64Calculate(cr));
+    cr.Forsyth("rnbqkbnr/p1pppppp/8/8/PpP4P/8/1P1PPPP1/RNBQKBNR b KQkq c3 0 3");
+    printf("%lx\n", zobristHash64Calculate(cr));
+    cr.Forsyth("rnbqkbnr/p1pppppp/8/8/P6P/R1p5/1P1PPPP1/1NBQKBNR b Kkq - 0 4");
+    printf("%lx\n", zobristHash64Calculate(cr));
     
     return 0;
 }
