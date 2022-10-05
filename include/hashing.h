@@ -284,7 +284,6 @@ static uint64_t zobristHash64Calculate(thc::ChessRules &cr){
         hash ^= Random64[castleOffset+3];
     
     // En Passant
-//    TODO
     if (cr.groomed_enpassant_target()!=thc::SQUARE_INVALID)
         hash ^= Random64[enPassantOffset+get_file(cr.groomed_enpassant_target())-97];
     // Turn
@@ -294,161 +293,143 @@ static uint64_t zobristHash64Calculate(thc::ChessRules &cr){
     return hash;
 }
 
-//static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Move move)
-//{
-//    switch( move.special )
-//    {
-//        default:
-//        {
-//            char piece  = cr.squares[move.src];
-//            char target = cr.squares[move.dst];
-//            if( IsEmptySquare(target) )
-//                target = 'a';
-//            hash ^= hash64_lookup[move.src][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[move.src]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[move.dst][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[move.dst][piece-'B'];   // replace with moving piece
-//            break;
-//        }
-//        case SPECIAL_WK_CASTLING:
-//        {
-//            char piece  = 'K';
-//            char target = 'a';
-//            hash ^= hash64_lookup[e1][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[e1]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[g1][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[g1][piece-'B'];   // replace with moving piece
-//            piece  = 'R';
-//            target = 'a';
-//            hash ^= hash64_lookup[h1][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[h1]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[f1][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[f1][piece-'B'];   // replace with moving piece
-//            break;
-//        }
-//        case SPECIAL_BK_CASTLING:
-//        {
-//            char piece  = 'k';
-//            char target = 'a';
-//            hash ^= hash64_lookup[e8][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[e8]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[g8][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[g8][piece-'B'];   // replace with moving piece
-//            piece  = 'r';
-//            target = 'a';
-//            hash ^= hash64_lookup[h8][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[h8]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[f8][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[f8][piece-'B'];   // replace with moving piece
-//            break;
-//        }
-//        case SPECIAL_WQ_CASTLING:
-//        {
-//            char piece  = 'K';
-//            char target = 'a';
-//            hash ^= hash64_lookup[e1][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[e1]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[c1][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[c1][piece-'B'];   // replace with moving piece
-//            piece  = 'R';
-//            target = 'a';
-//            hash ^= hash64_lookup[a1][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[a1]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[d1][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[d1][piece-'B'];   // replace with moving piece
-//            break;
-//        }
-//        case SPECIAL_BQ_CASTLING:
-//        {
-//            char piece  = 'k';
-//            char target = 'a';
-//            hash ^= hash64_lookup[e8][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[e8]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[c8][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[c8][piece-'B'];   // replace with moving piece
-//            piece  = 'r';
-//            target = 'a';
-//            hash ^= hash64_lookup[a8][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[a8]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[d8][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[d8][piece-'B'];   // replace with moving piece
-//
-//            break;
-//        }
-//        case SPECIAL_PROMOTION_QUEEN:
-//        {
-//            char piece  = cr.squares[move.src];
-//            char target = cr.squares[move.dst];
-//            if( IsEmptySquare(target) )
-//                target = 'a';
-//            hash ^= hash64_lookup[move.src][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[move.src]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[move.dst][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[move.dst][(piece=='P'?'Q':'q')-'B'];   // replace with moving piece
-//            break;
-//        }
-//        case SPECIAL_PROMOTION_ROOK:
-//        {
-//            char piece  = cr.squares[move.src];
-//            char target = cr.squares[move.dst];
-//            if( IsEmptySquare(target) )
-//                target = 'a';
-//            hash ^= hash64_lookup[move.src][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[move.src]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[move.dst][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[move.dst][(piece=='P'?'R':'r')-'B'];   // replace with moving piece
-//            break;
-//        }
-//        case SPECIAL_PROMOTION_BISHOP:
-//        {
-//            char piece  = cr.squares[move.src];
-//            char target = cr.squares[move.dst];
-//            if( IsEmptySquare(target) )
-//                target = 'a';
-//            hash ^= hash64_lookup[move.src][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[move.src]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[move.dst][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[move.dst][(piece=='P'?'B':'b')-'B'];   // replace with moving piece
-//            break;
-//        }
-//        case SPECIAL_PROMOTION_KNIGHT:
-//        {
-//            char piece  = cr.squares[move.src];
-//            char target = cr.squares[move.dst];
-//            if( IsEmptySquare(target) )
-//                target = 'a';
-//            hash ^= hash64_lookup[move.src][piece-'B'];   // remove moving piece
-//            hash ^= hash64_lookup[move.src]['a'-'B'];     // replace with empty square
-//            hash ^= hash64_lookup[move.dst][target-'B'];  // remove target piece
-//            hash ^= hash64_lookup[move.dst][(piece=='P'?'N':'n')-'B'];   // replace with moving piece
-//            break;
-//        }
-//        case SPECIAL_WEN_PASSANT:
-//        {
-//            char piece  = 'P';
-//            char target = 'a';
-//            hash ^= hash64_lookup[move.src][piece-'B'];       // remove moving piece
-//            hash ^= hash64_lookup[move.src]['a'-'B'];         // replace with empty square
-//            hash ^= hash64_lookup[move.dst][target-'B'];      // remove target piece
-//            hash ^= hash64_lookup[move.dst][piece-'B'];       // replace with moving piece
-//            hash ^= hash64_lookup[SOUTH(move.dst)]['p'-'B'];  // remove black pawn south of dst
-//            hash ^= hash64_lookup[SOUTH(move.dst)]['a'-'B'];  // replace with empty square
-//            break;
-//        }
-//        case SPECIAL_BEN_PASSANT:
-//        {
-//            char piece  = 'p';
-//            char target = 'a';
-//            hash ^= hash64_lookup[move.src][piece-'B'];       // remove moving piece
-//            hash ^= hash64_lookup[move.src]['a'-'B'];         // replace with empty square
-//            hash ^= hash64_lookup[move.dst][target-'B'];      // remove target piece
-//            hash ^= hash64_lookup[move.dst][piece-'B'];       // replace with moving piece
-//            hash ^= hash64_lookup[NORTH(move.dst)]['P'-'B'];  // remove white pawn north of dst
-//            hash ^= hash64_lookup[NORTH(move.dst)]['a'-'B'];  // replace with empty square
-//            break;
-//        }
-//    }
-//    return hash;
-//}
+// Hash update before playng/pushing mv, and after popping
+static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Move move){
+    switch( move.special )
+    {
+        default:
+        {
+            // There is a "piece" at (row;file): hash^=Random64[64*kind_of_piece+8*rank+file];
+            char piece  = cr.squares[move.src];
+            int srcFile = thc::get_file(move.src)-97, srcRank = thc::get_rank(move.src)-49;
+            char target = cr.squares[move.dst];
+            int dstFile = thc::get_file(move.dst)-97, dstRank = thc::get_rank(move.dst)-49;
+
+            
+            if(target !=' ' ) // If moving to occupied square, then this is a capture (!!! Not true the other way around: en passant)
+                hash ^= Random64[64*pieceNumber[target-'B']+ 8*dstRank + dstFile];   // remove captured piece
+            hash ^= Random64[64*pieceNumber[piece-'B']+ 8*srcRank + srcFile];   // remove piece from source
+            hash ^= Random64[64*pieceNumber[piece-'B']+ 8*dstRank + dstFile];   // put piece in destination
+            
+            if (move.special == thc::SPECIAL_WPAWN_2SQUARES || move.special == thc::SPECIAL_BPAWN_2SQUARES){ // If the move opens an enpassant, encode it. I don't like this solution
+                cr.PushMove(move);
+                if (cr.groomed_enpassant_target()!=thc::SQUARE_INVALID)
+                    hash ^= Random64[enPassantOffset+get_file(cr.groomed_enpassant_target())-97];
+                cr.PopMove(move);
+            }
+            break;
+        }
+        case thc::SPECIAL_WK_CASTLING:
+        {
+            hash ^= Random64[64*pieceNumber['K'-'B']+ 8*0 + 4];     // remove white king from e1
+            hash ^= Random64[64*pieceNumber['K'-'B']+ 8*0 + 6];     // place white king on g1
+            hash ^= Random64[64*pieceNumber['R'-'B']+ 8*0 + 7];     // remove white rook from h1
+            hash ^= Random64[64*pieceNumber['R'-'B']+ 8*0 + 5];     // place white rook on f1
+            break;
+        }
+        case thc::SPECIAL_BK_CASTLING:
+        {
+            hash ^= Random64[64*pieceNumber['k'-'B']+ 8*7 + 4];     // remove black king from e8
+            hash ^= Random64[64*pieceNumber['k'-'B']+ 8*7 + 6];     // place black king on g8
+            hash ^= Random64[64*pieceNumber['r'-'B']+ 8*7 + 7];     // remove black rook from h8
+            hash ^= Random64[64*pieceNumber['r'-'B']+ 8*7 + 5];     // place black rook on f8
+            break;
+        }
+        case thc::SPECIAL_WQ_CASTLING:
+        {
+            hash ^= Random64[64*pieceNumber['K'-'B']+ 8*0 + 4];     // remove white king from e1
+            hash ^= Random64[64*pieceNumber['K'-'B']+ 8*0 + 2];     // place white king on c1
+            hash ^= Random64[64*pieceNumber['R'-'B']+ 8*0 + 0];     // remove white rook from a1
+            hash ^= Random64[64*pieceNumber['R'-'B']+ 8*0 + 3];     // place white rook on d1
+            break;
+        }
+        case thc::SPECIAL_BQ_CASTLING:
+        {
+            hash ^= Random64[64*pieceNumber['k'-'B']+ 8*7 + 4];     // remove black king from e8
+            hash ^= Random64[64*pieceNumber['k'-'B']+ 8*7 + 2];     // place black king on c8
+            hash ^= Random64[64*pieceNumber['r'-'B']+ 8*7 + 0];     // remove black rook from a8
+            hash ^= Random64[64*pieceNumber['r'-'B']+ 8*7 + 3];     // place black rook on d8
+            break;
+        }
+        case thc::SPECIAL_PROMOTION_QUEEN:
+        {
+            char piece  = cr.squares[move.src];
+            int srcFile = thc::get_file(move.src)-97, srcRank = thc::get_rank(move.src)-49;
+            char target = cr.squares[move.dst];
+            int dstFile = thc::get_file(move.dst)-97, dstRank = thc::get_rank(move.dst)-49;
+            
+            if( target !=' ' )
+                hash ^= Random64[64*pieceNumber[target-'B']+ 8*dstRank + dstFile];   // remove captured piece
+            hash ^= Random64[64*pieceNumber[piece-'B']+ 8*srcRank + srcFile];   // remove piece from source
+            hash ^= Random64[64*pieceNumber[(piece=='P'?'Q':'q')-'B']+ 8*dstRank + dstFile];   // put piece in destination
+            break;
+        }
+        case thc::SPECIAL_PROMOTION_ROOK:
+        {
+            char piece  = cr.squares[move.src];
+            int srcFile = thc::get_file(move.src)-97, srcRank = thc::get_rank(move.src)-49;
+            char target = cr.squares[move.dst];
+            int dstFile = thc::get_file(move.dst)-97, dstRank = thc::get_rank(move.dst)-49;
+            
+            if( target !=' ' )
+                hash ^= Random64[64*pieceNumber[target-'B']+ 8*dstRank + dstFile];   // remove captured piece
+            hash ^= Random64[64*pieceNumber[piece-'B']+ 8*srcRank + srcFile];   // remove piece from source
+            hash ^= Random64[64*pieceNumber[(piece=='P'?'R':'r')-'B']+ 8*dstRank + dstFile];   // put piece in destination
+            break;
+        }
+        case thc::SPECIAL_PROMOTION_BISHOP:
+        {
+            char piece  = cr.squares[move.src];
+            int srcFile = thc::get_file(move.src)-97, srcRank = thc::get_rank(move.src)-49;
+            char target = cr.squares[move.dst];
+            int dstFile = thc::get_file(move.dst)-97, dstRank = thc::get_rank(move.dst)-49;
+            
+            if( target !=' ' )
+                hash ^= Random64[64*pieceNumber[target-'B']+ 8*dstRank + dstFile];   // remove captured piece
+            hash ^= Random64[64*pieceNumber[piece-'B']+ 8*srcRank + srcFile];   // remove piece from source
+            hash ^= Random64[64*pieceNumber[(piece=='P'?'B':'b')-'B']+ 8*dstRank + dstFile];   // put piece in destination
+            break;
+        }
+        case thc::SPECIAL_PROMOTION_KNIGHT:
+        {
+            char piece  = cr.squares[move.src];
+            int srcFile = thc::get_file(move.src)-97, srcRank = thc::get_rank(move.src)-49;
+            char target = cr.squares[move.dst];
+            int dstFile = thc::get_file(move.dst)-97, dstRank = thc::get_rank(move.dst)-49;
+            
+            if( target !=' ' )
+                hash ^= Random64[64*pieceNumber[target-'B']+ 8*dstRank + dstFile];   // remove captured piece
+            hash ^= Random64[64*pieceNumber[piece-'B']+ 8*srcRank + srcFile];   // remove piece from source
+            hash ^= Random64[64*pieceNumber[(piece=='P'?'N':'n')-'B']+ 8*dstRank + dstFile];   // put piece in destination
+            break;
+        }
+        case thc::SPECIAL_WEN_PASSANT:
+        {
+            int srcFile = thc::get_file(move.src)-97;  // source en passant white rank is always the 5th
+            int dstFile = thc::get_file(move.dst)-97; // dest en passant white rank is always the 6th
+
+            hash ^= Random64[64*pieceNumber['P'-'B']+ 8*4 + srcFile];   // remove white pawn from source
+            hash ^= Random64[64*pieceNumber['P'-'B']+ 8*5 + dstFile];   // put white pawn in destination
+            hash ^= Random64[64*pieceNumber['p'-'B']+ 8*4 + dstFile];   // remove captured black pawn (same rank as src, same file as dst)
+            hash ^= Random64[enPassantOffset+dstFile];                  // remove en passant square target
+            break;
+        }
+        case thc::SPECIAL_BEN_PASSANT:
+        {
+            int srcFile = thc::get_file(move.src)-97;  // source en passant black rank is always the 5th
+            int dstFile = thc::get_file(move.dst)-97; // dest en passant black rank is always the 6th
+
+            hash ^= Random64[64*pieceNumber['p'-'B']+ 8*3 + srcFile];   // remove black pawn from source
+            hash ^= Random64[64*pieceNumber['p'-'B']+ 8*2 + dstFile];   // put black pawn in destination
+            hash ^= Random64[64*pieceNumber['P'-'B']+ 8*3 + dstFile];   // remove captured white pawn (same rank as src, same file as dst)
+            hash ^= Random64[enPassantOffset+dstFile];                  // remove en passant square target
+            break;
+        }
+    }
+    
+    // Change turn
+    hash ^= Random64[turnOffset];
+    return hash;
+}
 
 #endif //HASHING_H

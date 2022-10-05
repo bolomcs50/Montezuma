@@ -6,6 +6,7 @@
 #include <math.h>
 #include "thc.h"
 #include "engine.h"
+#include <cassert>
 
 
 Engine::Engine(){
@@ -218,14 +219,14 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
     for (auto mv:legalMoves){
-//        currentHash = cr.Hash64Update(currentHash, mv);
+
+        currentHash = zobristHash64Update(currentHash, cr, mv);
         cr.PushMove(mv);
-        currentHash = zobristHash64Calculate(cr);
+        std::cout << mv.TerseOut() << std::endl;
+        assert(currentHash==zobristHash64Calculate(cr));
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
-        
         cr.PopMove(mv);
-//        currentHash = cr.Hash64Update(currentHash, mv);
-        currentHash = zobristHash64Calculate(cr);
+        currentHash = zobristHash64Update(currentHash, cr, mv);
         
 //         Apply mate score correction (reserve the last 50 points for that)
 //        if (MATE_SCORE-abs(currentScore) < 50 ){
@@ -280,6 +281,7 @@ int Engine::evaluate(){
 }
 
 bool Engine::probeHash(int depth, int alpha, int beta, int &score){
+    
     hashEntry *entry = &hashTable[currentHash%numPositions];
     if (entry->key == currentHash){ // Check that the key is the same (not a type ? collision)
         if (entry->depth >= depth){  // If it was already searched at a depth greater than the one requested now
@@ -331,10 +333,9 @@ void Engine::retrievePvLineFromTable(LINE * pvLine){
     pvLine->moves[pvLine->moveCount-1] = entry->bestMove;
 //    currentHash = cr.Hash64Update(currentHash, entry->bestMove);
     
+    currentHash = zobristHash64Update(currentHash, cr, entry->bestMove);
     cr.PushMove(entry->bestMove);
-    currentHash = zobristHash64Calculate(cr);
     retrievePvLineFromTable(pvLine);
     cr.PopMove(entry->bestMove);
-//    currentHash = cr.Hash64Update(currentHash, entry->bestMove);
-    currentHash = zobristHash64Calculate(cr);
+    currentHash = zobristHash64Update(currentHash, cr, entry->bestMove);
 }

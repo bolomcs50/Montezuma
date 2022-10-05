@@ -20,10 +20,11 @@ Free chess GUIs exist, such as:
 The engine can now beat fairly experienced players at least in selected time controls.
 
 Among others, these features will be considered for implementation, in no particular order:
-* Refactor hasing algorithms to coincide with polyglot hashes (and has whose turn is it too).
+* Add ZobristHash64Update()
 * Communication of more information regardin the search (nodes, nps, hashTable full%,...)
 * Support for opening books
 * Draw by repetition check with hashes
+* refactor: put everything inside a proper namespace
 * Wiser management of move time
 * Implementation of the engine as a state machine with multithreading and pondering
 * Improved move ordering
