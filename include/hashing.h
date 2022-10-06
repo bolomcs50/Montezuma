@@ -305,7 +305,6 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
             char target = cr.squares[move.dst];
             int dstFile = thc::get_file(move.dst)-97, dstRank = thc::get_rank(move.dst)-49;
 
-            
             if(target !=' ' ) // If moving to occupied square, then this is a capture (!!! Not true the other way around: en passant)
                 hash ^= Random64[64*pieceNumber[target-'B']+ 8*dstRank + dstFile];   // remove captured piece
             hash ^= Random64[64*pieceNumber[piece-'B']+ 8*srcRank + srcFile];   // remove piece from source
@@ -411,7 +410,6 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
             hash ^= Random64[64*pieceNumber['P'-'B']+ 8*4 + srcFile];   // remove white pawn from source
             hash ^= Random64[64*pieceNumber['P'-'B']+ 8*5 + dstFile];   // put white pawn in destination
             hash ^= Random64[64*pieceNumber['p'-'B']+ 8*4 + dstFile];   // remove captured black pawn (same rank as src, same file as dst)
-            hash ^= Random64[enPassantOffset+dstFile];                  // remove en passant square target
             break;
         }
         case thc::SPECIAL_BEN_PASSANT:
@@ -422,11 +420,11 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
             hash ^= Random64[64*pieceNumber['p'-'B']+ 8*3 + srcFile];   // remove black pawn from source
             hash ^= Random64[64*pieceNumber['p'-'B']+ 8*2 + dstFile];   // put black pawn in destination
             hash ^= Random64[64*pieceNumber['P'-'B']+ 8*3 + dstFile];   // remove captured white pawn (same rank as src, same file as dst)
-            hash ^= Random64[enPassantOffset+dstFile];                  // remove en passant square target
             break;
         }
     }
-    
+    if (cr.groomed_enpassant_target()!=thc::SQUARE_INVALID) // If an enpassant is valid, remove it, wether it has been palyed or not
+        hash ^= Random64[enPassantOffset+get_file(cr.groomed_enpassant_target())-97];
     // Change turn
     hash ^= Random64[turnOffset];
     return hash;

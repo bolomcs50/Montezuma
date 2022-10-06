@@ -200,15 +200,14 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
     Flag flag = Flag::ALPHA;
     int moveDepth = initialDepth-depth; // Number of plies played from root position
     if (usingPreviousLine && moveDepth < globalPvLine.moveCount){
-        //check that the move is legal
-        for (auto mv:legalMoves)
-            if (mv.TerseOut() == globalPvLine.moves[moveDepth].TerseOut()){
-                legalMoves.insert(legalMoves.begin(), globalPvLine.moves[moveDepth]);
+        //check that the move is legal. If it is, move it to the top.
+        for (int i = 0; i < legalMoves.size(); i++)
+            if (legalMoves[i].TerseOut() == globalPvLine.moves[moveDepth].TerseOut()){
+                std::swap(legalMoves[i], legalMoves.front());
                 break;
             }
     } else {
         usingPreviousLine = false;
-        
     }
         
     /*  Inductive step.
@@ -219,14 +218,16 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
     for (auto mv:legalMoves){
-
         currentHash = zobristHash64Update(currentHash, cr, mv);
         cr.PushMove(mv);
+        for (int i = 0; i < moveDepth; i++)
+            std::cout << "   ";
         std::cout << mv.TerseOut() << std::endl;
         assert(currentHash==zobristHash64Calculate(cr));
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         cr.PopMove(mv);
         currentHash = zobristHash64Update(currentHash, cr, mv);
+        assert(currentHash==zobristHash64Calculate(cr));
         
 //         Apply mate score correction (reserve the last 50 points for that)
 //        if (MATE_SCORE-abs(currentScore) < 50 ){
