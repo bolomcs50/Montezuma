@@ -2,6 +2,7 @@
 #define HASHING_H
 
 #include "thc.h"
+#include <iostream>
 
 #ifdef _MSC_VER
 #  define U64(u) (u##ui64)
@@ -274,18 +275,20 @@ static uint64_t zobristHash64Calculate(thc::ChessRules &cr){
     white can castle long      1
     black can castle short     2
     black can castle long      3 */
-    if (cr.wking)
+    if (cr.wking_allowed())
         hash ^= Random64[castleOffset+0];
-    if (cr.wqueen)
+    if (cr.wqueen_allowed())
         hash ^= Random64[castleOffset+1];
-    if (cr.bking)
+
+    if (cr.bking_allowed())
         hash ^= Random64[castleOffset+2];
-    if (cr.bqueen)
+    if (cr.bqueen_allowed())
         hash ^= Random64[castleOffset+3];
     
     // En Passant
     if (cr.groomed_enpassant_target()!=thc::SQUARE_INVALID)
         hash ^= Random64[enPassantOffset+get_file(cr.groomed_enpassant_target())-97];
+
     // Turn
     if (cr.white)
         hash ^= Random64[turnOffset];
@@ -322,10 +325,11 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
                 hash ^= (cr.bking ? Random64[castleOffset+2] : 0);
                 hash ^= (cr.bqueen ? Random64[castleOffset+3] : 0);
             } else if (piece=='R' && dstRank == 0){
-                if (dstFile == 7 && cr.wking)
+                if (dstFile == 7 && cr.wking){
                     hash ^= Random64[castleOffset+0];
-                else if (dstFile == 0 && cr.wqueen)
+                } else if (dstFile == 0 && cr.wqueen){
                     hash ^= Random64[castleOffset+1];
+                }
             } else if (piece=='r' && dstRank == 7){
                 if (dstFile == 7 && cr.bking)
                     hash ^= Random64[castleOffset+2];

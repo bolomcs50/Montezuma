@@ -23,6 +23,7 @@ Among others, these features will be considered for implementation, in no partic
 * Add ZobristHash64Update()
 * Communication of more information regardin the search (nodes, nps, hashTable full%,...)
 * Support for opening books
+* Support for tablebase finals
 * Draw by repetition check with hashes
 * refactor: put everything inside a proper namespace
 * Wiser management of move time
