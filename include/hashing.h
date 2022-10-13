@@ -315,7 +315,24 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
                 if (cr.groomed_enpassant_target()!=thc::SQUARE_INVALID)
                     hash ^= Random64[enPassantOffset+get_file(cr.groomed_enpassant_target())-97];
                 cr.PopMove(move);
-            }
+            } else if (piece=='K' && dstFile == 4 && dstRank == 0){  // If king/rook goes back to starting square, unhash king castling rights
+                hash ^= (cr.wking ? Random64[castleOffset+0] : 0);
+                hash ^= (cr.wqueen ? Random64[castleOffset+1] : 0);
+            } else if (piece=='k' && dstFile == 4 && dstRank == 7){
+                hash ^= (cr.bking ? Random64[castleOffset+2] : 0);
+                hash ^= (cr.bqueen ? Random64[castleOffset+3] : 0);
+            } else if (piece=='R' && dstRank == 0){
+                if (dstFile == 7 && cr.wking)
+                    hash ^= Random64[castleOffset+0];
+                else if (dstFile == 0 && cr.wqueen)
+                    hash ^= Random64[castleOffset+1];
+            } else if (piece=='r' && dstRank == 7){
+                if (dstFile == 7 && cr.bking)
+                    hash ^= Random64[castleOffset+2];
+                else if (dstFile == 0 && cr.bqueen)
+                    hash ^= Random64[castleOffset+3];
+            } 
+
             break;
         }
         case thc::SPECIAL_WK_CASTLING:

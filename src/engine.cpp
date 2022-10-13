@@ -222,7 +222,8 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
         cr.PushMove(mv);
         for (int i = 0; i < moveDepth; i++)
             std::cout << "   ";
-        std::cout << mv.TerseOut() << std::endl;
+        std::cout << mv.TerseOut() << ": " << (zobristHash64Calculate(cr) ^ currentHash) << std::endl;
+        std::cout << (13513197889458466153^)
         assert(currentHash==zobristHash64Calculate(cr));
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         cr.PopMove(mv);
