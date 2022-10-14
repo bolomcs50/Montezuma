@@ -20,20 +20,19 @@ Free chess GUIs exist, such as:
 The engine can now beat fairly experienced players at least in selected time controls.
 
 Among others, these features will be considered for implementation, in no particular order:
-* Add ZobristHash64Update()
-* Communication of more information regardin the search (nodes, nps, hashTable full%,...)
 * Support for opening books
-* Support for tablebase finals
 * Draw by repetition check with hashes
+* Communication of more information regardin the search (nodes, nps, hashTable full%,...)
+* Support for tablebase finals
 * refactor: put everything inside a proper namespace
 * Wiser management of move time
 * Implementation of the engine as a state machine with multithreading and pondering
 * Improved move ordering
 * Implementation of quiescence search to mitigate horizon effect
-* Development of a better evaluation function
+* Development of a better evaluation function, maybe based on a neural network
 
 After implementing those, the engine will be ready for a round of tests against other machines and humans in all time controls.
 
 ## Known issues
 * The engine does not see draws by repetition as such and plays them even if it is winning
-* The hashes do not represent whose turn it is: a position has the same hash whether it is black or white to move. This causes circular paths in the transposition table when looking for the pvLine, eventually inducing a segmentation fault (for now the length is hard-limited)
+* There is one problem in fens3 where it does not get to mate, though it should
