@@ -317,7 +317,7 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
                 if (cr.groomed_enpassant_target()!=thc::SQUARE_INVALID)
                     hash ^= Random64[enPassantOffset+get_file(cr.groomed_enpassant_target())-97];
                 cr.PopMove(move);
-            } else if (piece=='K') {    // If the moved piece is a king/rook and castling is still allowed, disallow it.
+            } else if (piece=='K') {    // If the moved piece is a king/rook and castling is still allowed, disallow it
                 hash ^= (cr.wking_allowed() ? Random64[castleOffset+0] : 0);
                 hash ^= (cr.wqueen_allowed() ? Random64[castleOffset+1] : 0);
             } else if (piece=='k') {
@@ -329,6 +329,15 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
             } else if (piece=='r') {
                 hash ^= (srcFile==7 && srcRank==7 && cr.bking_allowed() ? Random64[castleOffset+2] : 0);
                 hash ^= (srcFile==0 && srcRank==7 && cr.bqueen_allowed() ? Random64[castleOffset+3] : 0);
+            }
+            if (move.capture){  // If capturing a rook, deal with castling rights
+                if (target=='r'){
+                    hash ^= (dstFile==7 && dstRank==7 && cr.bking_allowed() ? Random64[castleOffset+2] : 0);
+                    hash ^= (dstFile==0 && dstRank==7 && cr.bqueen_allowed() ? Random64[castleOffset+3] : 0);
+                } else if (target == 'R'){
+                    hash ^= (dstFile==7 && dstRank==0 && cr.wking_allowed() ? Random64[castleOffset+0] : 0);
+                    hash ^= (dstFile==0 && dstRank==0 && cr.wqueen_allowed() ? Random64[castleOffset+1] : 0);
+                }
             }
             break;
         }
