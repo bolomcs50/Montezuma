@@ -15,7 +15,7 @@ void displayPosition( thc::ChessRules &cr, const std::string &description)
 int main(int argc, char const *argv[])
 {
     thc::ChessEvaluation cr;
-    cr.Forsyth("rnbqkbnr/p1pppppp/8/8/PpP4P/8/1P1PPPP1/RNBQKBNR b KQkq c3 0 3");
+    cr.Forsyth("r1b1kb1r/pppp1ppp/5q2/4n3/3KP3/2N3PN/PPP4P/R1BQ1B1R b kq - 0 1");
     displayPosition(cr, "");
     uint64_t hash = zobristHash64Calculate(cr);
     printf("%lx\n", hash);

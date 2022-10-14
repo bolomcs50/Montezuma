@@ -218,13 +218,11 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
     for (auto mv:legalMoves){
-        if (mv.TerseOut() == "h1e1")
-            std::cout << "Pippopluto" << std::endl;
         currentHash = zobristHash64Update(currentHash, cr, mv);
         cr.PushMove(mv);
-        for (int i = 0; i < moveDepth; i++)
-            std::cout << "   ";
-        std::cout << mv.TerseOut() << ": " << (zobristHash64Calculate(cr) ^ currentHash) << std::endl;
+//        for (int i = 0; i < moveDepth; i++)
+//            std::cout << "   ";
+//        std::cout << mv.TerseOut() << ": " << (zobristHash64Calculate(cr) ^ currentHash) << std::endl;
         assert(currentHash==zobristHash64Calculate(cr));
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         cr.PopMove(mv);

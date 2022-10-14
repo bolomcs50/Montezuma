@@ -279,7 +279,6 @@ static uint64_t zobristHash64Calculate(thc::ChessRules &cr){
         hash ^= Random64[castleOffset+0];
     if (cr.wqueen_allowed())
         hash ^= Random64[castleOffset+1];
-
     if (cr.bking_allowed())
         hash ^= Random64[castleOffset+2];
     if (cr.bqueen_allowed())
@@ -318,25 +317,19 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
                 if (cr.groomed_enpassant_target()!=thc::SQUARE_INVALID)
                     hash ^= Random64[enPassantOffset+get_file(cr.groomed_enpassant_target())-97];
                 cr.PopMove(move);
-            } else if (piece=='K' && dstFile == 4 && dstRank == 0){  // If king/rook goes back to starting square, unhash king castling rights
-                hash ^= (cr.wking ? Random64[castleOffset+0] : 0);
-                hash ^= (cr.wqueen ? Random64[castleOffset+1] : 0);
-            } else if (piece=='k' && dstFile == 4 && dstRank == 7){
-                hash ^= (cr.bking ? Random64[castleOffset+2] : 0);
-                hash ^= (cr.bqueen ? Random64[castleOffset+3] : 0);
-            } else if (piece=='R' && dstRank == 0){
-                if (dstFile == 7 && cr.wking){
-                    hash ^= Random64[castleOffset+0];
-                } else if (dstFile == 0 && cr.wqueen){
-                    hash ^= Random64[castleOffset+1];
-                }
-            } else if (piece=='r' && dstRank == 7){
-                if (dstFile == 7 && cr.bking)
-                    hash ^= Random64[castleOffset+2];
-                else if (dstFile == 0 && cr.bqueen)
-                    hash ^= Random64[castleOffset+3];
-            } 
-
+            } else if (piece=='K') {    // If the moved piece is a king/rook and castling is still allowed, disallow it.
+                hash ^= (cr.wking_allowed() ? Random64[castleOffset+0] : 0);
+                hash ^= (cr.wqueen_allowed() ? Random64[castleOffset+1] : 0);
+            } else if (piece=='k') {
+                hash ^= (cr.bking_allowed() ? Random64[castleOffset+2] : 0);
+                hash ^= (cr.bqueen_allowed() ? Random64[castleOffset+3] : 0);
+            } else if (piece=='R') {
+                hash ^= (srcFile==7 && srcRank==0 && cr.wking_allowed() ? Random64[castleOffset+0] : 0);
+                hash ^= (srcFile==0 && srcRank==0 && cr.wqueen_allowed() ? Random64[castleOffset+1] : 0);
+            } else if (piece=='r') {
+                hash ^= (srcFile==7 && srcRank==7 && cr.bking_allowed() ? Random64[castleOffset+2] : 0);
+                hash ^= (srcFile==0 && srcRank==7 && cr.bqueen_allowed() ? Random64[castleOffset+3] : 0);
+            }
             break;
         }
         case thc::SPECIAL_WK_CASTLING:
@@ -345,6 +338,8 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
             hash ^= Random64[64*pieceNumber['K'-'B']+ 8*0 + 6];     // place white king on g1
             hash ^= Random64[64*pieceNumber['R'-'B']+ 8*0 + 7];     // remove white rook from h1
             hash ^= Random64[64*pieceNumber['R'-'B']+ 8*0 + 5];     // place white rook on f1
+            hash ^= Random64[castleOffset+0];                       // Update castling flags. One side evidently was legal (we just castled), check if the other was active
+            hash ^= (cr.wqueen_allowed() ? Random64[castleOffset+1] : 0);
             break;
         }
         case thc::SPECIAL_BK_CASTLING:
@@ -353,6 +348,8 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
             hash ^= Random64[64*pieceNumber['k'-'B']+ 8*7 + 6];     // place black king on g8
             hash ^= Random64[64*pieceNumber['r'-'B']+ 8*7 + 7];     // remove black rook from h8
             hash ^= Random64[64*pieceNumber['r'-'B']+ 8*7 + 5];     // place black rook on f8
+            hash ^= Random64[castleOffset+2];                       // Update castling flags
+            hash ^= (cr.bqueen_allowed() ? Random64[castleOffset+3] : 0);
             break;
         }
         case thc::SPECIAL_WQ_CASTLING:
@@ -361,6 +358,8 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
             hash ^= Random64[64*pieceNumber['K'-'B']+ 8*0 + 2];     // place white king on c1
             hash ^= Random64[64*pieceNumber['R'-'B']+ 8*0 + 0];     // remove white rook from a1
             hash ^= Random64[64*pieceNumber['R'-'B']+ 8*0 + 3];     // place white rook on d1
+            hash ^= (cr.wking_allowed() ? Random64[castleOffset+0] : 0); // Update castling flags
+            hash ^= Random64[castleOffset+1];
             break;
         }
         case thc::SPECIAL_BQ_CASTLING:
@@ -369,6 +368,8 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
             hash ^= Random64[64*pieceNumber['k'-'B']+ 8*7 + 2];     // place black king on c8
             hash ^= Random64[64*pieceNumber['r'-'B']+ 8*7 + 0];     // remove black rook from a8
             hash ^= Random64[64*pieceNumber['r'-'B']+ 8*7 + 3];     // place black rook on d8
+            hash ^= (cr.bking_allowed() ? Random64[castleOffset+2] : 0); // Update castling flags
+            hash ^= Random64[castleOffset+3];
             break;
         }
         case thc::SPECIAL_PROMOTION_QUEEN:
