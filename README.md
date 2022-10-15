@@ -17,7 +17,7 @@ Free chess GUIs exist, such as:
 * [XBoard](https://www.gnu.org/software/xboard/)
 
 ## Current state and Future development
-The engine can now beat fairly experienced players at least in selected time controls.
+The engine can sometimes beat fairly experienced players at least in selected time controls.
 
 Among others, these features will be considered for implementation, in no particular order:
 * Support for opening books
@@ -31,8 +31,6 @@ Among others, these features will be considered for implementation, in no partic
 * Implementation of quiescence search to mitigate horizon effect
 * Development of a better evaluation function, maybe based on a neural network
 * Automate testing
-
-After implementing those, the engine will be ready for a round of tests against other machines and humans in all time controls.
 
 ## Known issues
 * The engine does not see draws by repetition as such and plays them even if it is winning
