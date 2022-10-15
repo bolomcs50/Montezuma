@@ -22,7 +22,7 @@ The engine can sometimes beat fairly experienced players at least in selected ti
 Among others, these features will be considered for implementation, in no particular order:
 * Support for opening books
 * Draw by repetition check with hashes
-* Communication of more information regardin the search (nodes, nps, hashTable full%,...)
+* Communication of more information regardin the search (nodes, hashFull%mill,...)
 * Support for tablebase finals
 * refactor: put everything inside a proper namespace, add trailing _ to member variables 
 * Wiser management of move time
