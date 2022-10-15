@@ -13,7 +13,7 @@ Engine::Engine(){
     name = "Montezuma";
     author = "Michele Bolognini";
     nodes = 0;
-    hashTableSize = 256; // 64 MB default
+    hashTableSize = 64; // 64 MB default
 }
 
 int Engine::protocolLoop(){
