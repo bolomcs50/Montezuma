@@ -12,7 +12,7 @@
 Engine::Engine(){
     name = "Montezuma";
     author = "Michele Bolognini";
-    nodes = 0;
+    evaluatedPositions = 0;
     hashTableSize = 64; // 64 MB default
 }
 
@@ -144,6 +144,7 @@ void Engine::inputGo(const std::string command){
     usingPreviousLine = false;
     auto startTimeSearch = std::chrono::high_resolution_clock::now();
     for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++){
+        evaluatedPositions = 0;
         auto startTimeThisDepth = std::chrono::high_resolution_clock::now();
         int bestScore = alphaBeta(-MATE_SCORE, MATE_SCORE, incrementalDepth, &pvLine, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
         globalPvLine.moveCount = 0;
@@ -151,7 +152,7 @@ void Engine::inputGo(const std::string command){
         
         auto stopTime = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeThisDepth);
-        auto nps = (duration.count() > 0) ? 1000*nodes/duration.count() : 0;
+        auto nps = (duration.count() > 0) ? 1000*evaluatedPositions/duration.count() : 0;
         // Check if the returned score signifies a mate and in how many moves
         if (MATE_SCORE-abs(bestScore) < 50){
             int movesToMate = (bestScore > 0 ) ? (globalPvLine.moveCount+1)/2 : -(globalPvLine.moveCount+1)/2;
@@ -191,6 +192,7 @@ int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initial
     if (depth == 0 || legalMoves.size() == 0){
         pvLine->moveCount = 0;
         score = evaluate();
+        evaluatedPositions++;
         thc::Move mv;
         recordHash(depth, Flag::EXACT, score, mv);
         return score;

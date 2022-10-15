@@ -49,7 +49,7 @@ class Engine{
     uint64_t currentHash;  // Hash of the current position
     std::string name;
     std::string author;
-    unsigned long long nodes;
+    unsigned long long evaluatedPositions;
     std::vector<hashEntry> hashTable;
     unsigned int hashTableSize; // Given in MB
     unsigned int numPositions;
