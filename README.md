@@ -30,9 +30,9 @@ Among others, these features will be considered for implementation, in no partic
 * Improved move ordering
 * Implementation of quiescence search to mitigate horizon effect
 * Development of a better evaluation function, maybe based on a neural network
+* Automate testing
 
 After implementing those, the engine will be ready for a round of tests against other machines and humans in all time controls.
 
 ## Known issues
 * The engine does not see draws by repetition as such and plays them even if it is winning
-* There is one problem in fens3 where it does not get to mate, though it should
