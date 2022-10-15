@@ -1,9 +1,11 @@
+#ifndef ENGINE_H
+#define ENGINE_H
+
 #include <fstream>
 #include "thc.h"
 #include "hashing.h"
 
-#ifndef ENGINE_H
-#define ENGINE_H
+namespace montezuma {
 
 #define MOVE_MAX 1000
 #define MATE_SCORE 100000
@@ -45,22 +47,22 @@ class Engine{
     /* recursively retrieve the PV line using information stored in the table*/
     void retrievePvLineFromTable(LINE * pvLine);
 
-    thc::ChessEvaluation cr;
-    uint64_t currentHash;  // Hash of the current position
-    std::string name;
-    std::string author;
-    unsigned long long evaluatedPositions;
-    std::vector<hashEntry> hashTable;
-    unsigned int hashTableSize; // Given in MB
-    unsigned int numPositions;
-    unsigned int tableHits;
-    unsigned int tableEntries;
-    LINE globalPvLine;
-    bool usingPreviousLine;
-    unsigned int wTime;
-    unsigned int bTime;
-    std::ofstream logFile;
+    thc::ChessEvaluation cr_;
+    uint64_t currentHash_;  // Hash of the current position
+    std::string name_;
+    std::string author_;
+    unsigned long long evaluatedPositions_;
+    std::vector<hashEntry> hashTable_;
+    unsigned int hashTableSize_; // Given in MB
+    unsigned int numPositions_;
+    unsigned int tableHits_;
+    unsigned int tableEntries_;
+    LINE globalPvLine_;
+    bool usingPreviousLine_;
+    unsigned int wTime_;
+    unsigned int bTime_;
+    std::ofstream logFile_;
 
 };
-
+} // end namespace montezuma
 #endif //ENGINE_H

@@ -1,6 +1,6 @@
 #include "engine.h"
 
 int main(int argc, char **argv){
-    Engine engine;
+    montezuma::Engine engine;
     return engine.protocolLoop();
 }

@@ -2,7 +2,8 @@
 #define HASHING_H
 
 #include "thc.h"
-#include <iostream>
+
+namespace montezuma {
 
 #ifdef _MSC_VER
 #  define U64(u) (u##ui64)
@@ -462,5 +463,7 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
     hash ^= Random64[turnOffset];
     return hash;
 }
+
+} // end namespace montezuma
 
 #endif //HASHING_H
