@@ -35,6 +35,6 @@ int main(int argc, char const *argv[])
     displayPosition(cr, ""); 
     printf("Calculated:\t%lx\n", montezuma::zobristHash64Calculate(cr));
     printf("Updated:\t%lx\n", new_hash);
-    
+        
     return 0;
 }

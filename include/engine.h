@@ -4,16 +4,17 @@
 #include <fstream>
 #include "thc.h"
 #include "hashing.h"
+#include "book.h"
 
 namespace montezuma {
 
 #define MOVE_MAX 1000
 #define MATE_SCORE 100000
 
-typedef struct LINE {
+struct line {
     int moveCount;              // Number of moves in the line.
     thc::Move moves[MOVE_MAX];  // The line.
-}   LINE;
+};
 
 class Engine{
     public:
@@ -22,7 +23,6 @@ class Engine{
     /* Effectively starts the engine, listening for command */
     int protocolLoop();
     
-
     private:
     void uciHandShake() const;
     void displayPosition( thc::ChessRules &cr, const std::string &description) const;
@@ -35,7 +35,7 @@ class Engine{
     /* Called when Engine receives the "go" command */
     void inputGo(const std::string command);
     /* Search function */
-    int alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initialDepth);
+    int alphaBeta(int alpha, int beta, int depth, line * pvLine, int initialDepth);
     /* Evaluation function, evaluates the engine's current board */
     int evaluate();
     /* Probes the table to see if "hash" is in it. If it is AND the score is useful, return true and its score */
@@ -45,7 +45,7 @@ class Engine{
     /* Perform some debugging tasks */
     void debug(const std::string command);
     /* recursively retrieve the PV line using information stored in the table*/
-    void retrievePvLineFromTable(LINE * pvLine);
+    void retrievePvLineFromTable(line * pvLine);
 
     thc::ChessEvaluation cr_;
     uint64_t currentHash_;  // Hash of the current position
@@ -57,11 +57,12 @@ class Engine{
     unsigned int numPositions_;
     unsigned int tableHits_;
     unsigned int tableEntries_;
-    LINE globalPvLine_;
+    line globalPvLine_;
     bool usingPreviousLine_;
     unsigned int wTime_;
     unsigned int bTime_;
     std::ofstream logFile_;
+    std::vector<polyBookEntry> book;
 
 };
 } // end namespace montezuma

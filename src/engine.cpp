@@ -140,7 +140,7 @@ void Engine::inputGo(const std::string command){
     // logFile << "[MONTE]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
 
     // Search
-    LINE pvLine;
+    line pvLine;
     usingPreviousLine_ = false;
     auto startTimeSearch = std::chrono::high_resolution_clock::now();
     for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++){
@@ -180,13 +180,13 @@ void Engine::inputGo(const std::string command){
 
 bool toprint = false;
 
-int Engine::alphaBeta(int alpha, int beta, int depth, LINE * pvLine, int initialDepth){
+int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initialDepth){
     int score;
     if (probeHash(depth, alpha, beta, score))
     	return score;
 	// Base case
     std::vector<thc::Move> legalMoves;
-    LINE line;
+    line line;
     cr_.GenLegalMoveList(legalMoves);
 
     if (depth == 0 || legalMoves.size() == 0){
@@ -327,7 +327,7 @@ void Engine::debug(const std::string command){
     std::cout << entry->bestMove.TerseOut() << std::endl;
 }
 
-void Engine::retrievePvLineFromTable(LINE * pvLine){
+void Engine::retrievePvLineFromTable(line * pvLine){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
     if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash_ || pvLine->moveCount >= 30)
         return;
