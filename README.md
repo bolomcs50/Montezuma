@@ -24,7 +24,7 @@ Among others, these features will be considered for implementation, in no partic
 * Draw by repetition check with hashes
 * Communication of more information regardin the search (nodes, hashFull%mill,...)
 * Support for tablebase finals
-* refactor: put everything inside a proper namespace, add trailing _ to member variables 
+* Remove asserts for speed
 * Wiser management of move time
 * Implementation of the engine as a state machine with multithreading and pondering
 * Improved move ordering
