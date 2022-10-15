@@ -297,16 +297,15 @@ static uint64_t zobristHash64Calculate(thc::ChessRules &cr){
 
 // Hash update before playng/pushing mv, and after popping
 static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Move move){
-    switch( move.special )
-    {
-        default:
-        {
-            // There is a "piece" at (row;file): hash^=Random64[64*kind_of_piece+8*rank+file];
+    // There is a "piece" at (row;file): hash^=Random64[64*kind_of_piece+8*rank+file];
             char piece  = cr.squares[move.src];
             int srcFile = thc::get_file(move.src)-97, srcRank = thc::get_rank(move.src)-49;
             char target = cr.squares[move.dst];
             int dstFile = thc::get_file(move.dst)-97, dstRank = thc::get_rank(move.dst)-49;
-
+    switch( move.special )
+    {
+        default:
+        {
             if(target !=' ' ) // If moving to occupied square, then this is a capture (!!! Not true the other way around: en passant)
                 hash ^= Random64[64*pieceNumber[target-'B']+ 8*dstRank + dstFile];   // remove captured piece
             hash ^= Random64[64*pieceNumber[piece-'B']+ 8*srcRank + srcFile];   // remove piece from source
@@ -330,15 +329,7 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
                 hash ^= (srcFile==7 && srcRank==7 && cr.bking_allowed() ? Random64[castleOffset+2] : 0);
                 hash ^= (srcFile==0 && srcRank==7 && cr.bqueen_allowed() ? Random64[castleOffset+3] : 0);
             }
-            if (move.capture){  // If capturing a rook, deal with castling rights
-                if (target=='r'){
-                    hash ^= (dstFile==7 && dstRank==7 && cr.bking_allowed() ? Random64[castleOffset+2] : 0);
-                    hash ^= (dstFile==0 && dstRank==7 && cr.bqueen_allowed() ? Random64[castleOffset+3] : 0);
-                } else if (target == 'R'){
-                    hash ^= (dstFile==7 && dstRank==0 && cr.wking_allowed() ? Random64[castleOffset+0] : 0);
-                    hash ^= (dstFile==0 && dstRank==0 && cr.wqueen_allowed() ? Random64[castleOffset+1] : 0);
-                }
-            }
+            
             break;
         }
         case thc::SPECIAL_WK_CASTLING:
@@ -454,6 +445,17 @@ static uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Mo
             break;
         }
     }
+    
+    if (move.capture){  // If capturing a rook, deal with castling rights
+        if (target=='r'){
+            hash ^= (dstFile==7 && dstRank==7 && cr.bking_allowed() ? Random64[castleOffset+2] : 0);
+            hash ^= (dstFile==0 && dstRank==7 && cr.bqueen_allowed() ? Random64[castleOffset+3] : 0);
+        } else if (target == 'R'){
+            hash ^= (dstFile==7 && dstRank==0 && cr.wking_allowed() ? Random64[castleOffset+0] : 0);
+            hash ^= (dstFile==0 && dstRank==0 && cr.wqueen_allowed() ? Random64[castleOffset+1] : 0);
+        }
+    }
+    
     if (cr.groomed_enpassant_target()!=thc::SQUARE_INVALID) // If an enpassant is valid, remove it, wether it has been palyed or not
         hash ^= Random64[enPassantOffset+get_file(cr.groomed_enpassant_target())-97];
     // Change turn

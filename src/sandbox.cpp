@@ -15,7 +15,7 @@ void displayPosition( thc::ChessRules &cr, const std::string &description)
 int main(int argc, char const *argv[])
 {
     thc::ChessEvaluation cr;
-    cr.Forsyth("r1b1kb1r/pppp1ppp/5q2/4n3/3KP3/2N3PN/PPP4P/R1BQ1B1R b kq - 0 1");
+    cr.Forsyth("rnbqkbnr/p1pppppp/8/8/PpP4P/8/1P1PPPP1/RNBQKBNR b KQkq c3 0 3");
     displayPosition(cr, "");
     uint64_t hash = zobristHash64Calculate(cr);
     printf("%lx\n", hash);
@@ -36,13 +36,13 @@ int main(int argc, char const *argv[])
     printf("Calculated:\t%lx\n", zobristHash64Calculate(cr));
     printf("Updated:\t%lx\n", new_hash);
 
-//    mv.TerseIn(&cr, "h1e1");
+//    mv.TerseIn(&cr, "d1h1");
 //    new_hash = zobristHash64Update(new_hash, cr, mv);
 //    cr.PushMove(mv);
 //    displayPosition(cr, ""); 
 //    printf("Calculated:\t%lx\n", zobristHash64Calculate(cr));
 //    printf("Updated:\t%lx\n", new_hash);     
-////     
+     
 //    mv.TerseIn(&cr, "e6e5");
 //    new_hash = zobristHash64Update(new_hash, cr, mv);
 //    cr.PushMove(mv);
