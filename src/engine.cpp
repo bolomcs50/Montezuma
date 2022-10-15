@@ -4,9 +4,8 @@
 #include <fstream>
 #include <limits.h>
 #include <math.h>
-#include "thc.h"
-#include "engine.h"
 #include <cassert>
+#include "engine.h"
 
 namespace montezuma {
 
