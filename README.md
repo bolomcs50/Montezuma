@@ -31,6 +31,7 @@ Among others, these features will be considered for implementation, in no partic
 * Implementation of quiescence search to mitigate horizon effect
 * Development of a better evaluation function, maybe based on a neural network
 * Automate testing
+* Implement proper communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html)
 
 ## Known issues
 * The engine does not see draws by repetition as such and plays them even if it is winning
