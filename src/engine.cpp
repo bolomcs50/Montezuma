@@ -14,6 +14,7 @@ Engine::Engine(){
     author_ = "Michele Bolognini";
     evaluatedPositions_ = 0;
     hashTableSize_ = 64; // 64 MB default
+    book_.initialize("res/Titans.bin");
 }
 
 int Engine::protocolLoop(){
@@ -79,6 +80,7 @@ void Engine::displayPosition( thc::ChessRules &cr, const std::string &descriptio
 void Engine::resetBoard(){
     thc::ChessRules newcr;
     cr_ = newcr;
+    isOpening_ = true;
 }
 
 // Resize and empty the hashTable. Do not call this if you don't want to empty the table!
@@ -140,9 +142,19 @@ void Engine::inputGo(const std::string command){
     // logFile << "[MONTE]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
 
     // Search
+    // If the position is in the opening book, use it
+    char* bestMove = (char*)malloc(6*sizeof(char));
+    if (isOpening_ && book_.getMove(cr_, currentHash_, bestMove)){
+        std::cout << "bestmove " << bestMove << std::endl;
+        return;
+    } else
+        isOpening_ = false;
+    free(bestMove);
+    
     line pvLine;
     usingPreviousLine_ = false;
     auto startTimeSearch = std::chrono::high_resolution_clock::now();
+    
     for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++){
         evaluatedPositions_ = 0;
         auto startTimeThisDepth = std::chrono::high_resolution_clock::now();

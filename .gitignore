@@ -49,3 +49,6 @@ build/
 
 # netbeans files
 nbproject/
+
+# Opening books
+*.bin

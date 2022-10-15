@@ -20,7 +20,7 @@ Free chess GUIs exist, such as:
 The engine can sometimes beat fairly experienced players at least in selected time controls.
 
 Among others, these features will be considered for implementation, in no particular order:
-* Support for opening books
+* Parametrize openin book directory
 * Draw by repetition check with hashes
 * Communication of more information regardin the search (nodes, hashFull%mill,...)
 * Support for tablebase finals

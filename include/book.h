@@ -8,6 +8,7 @@
  */
 
 #include "hashing.h"
+#include "thc.h"
 
 #ifndef BOOK_H
 #define BOOK_H
@@ -21,22 +22,26 @@ struct polyBookEntry {
     unsigned int learn; 
 };
 
+
+
 class Book{
 public:
     Book();
+    bool initialize(std::string fileName);
+    // Provides a list of polyBookEntries representing the suggested moves
+    bool listMoves(uint64_t hash, std::vector<polyBookEntry> &moves);
+    // Return the suggested best move in the current position
+    bool getMove(thc::ChessEvaluation cr, uint64_t hash, char* moveTerse);
     
 private:
-    // Initializes a book, copying from fileName into memory
-    int initialize(std::string fileName);
-    // Provides a list of polyBookEntries representing the suggested moves
-    int probe(uint64_t hash, std::vector<polyBookEntry> moves);
-    // Clears the allocated memory
-    void clear();
     
-    std::vector<polyBookEntry> positionList;
+    
+    std::vector<polyBookEntry> positionList_;
 };
 
-
+unsigned short endianSwapU16(unsigned short x);
+unsigned int endianSwapU32(unsigned int x);
+uint64_t endianSwapU64 (uint64_t x);
     
 } // end namespace montezuma
 

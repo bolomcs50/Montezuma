@@ -25,7 +25,7 @@ class Engine{
     
     private:
     void uciHandShake() const;
-    void displayPosition( thc::ChessRules &cr, const std::string &description) const;
+    void displayPosition(thc::ChessRules &cr, const std::string &description) const;
     /* Re-initializes the cr thc::ChessEvaluation board */
     void resetBoard();
     /* Initializes hashTable by setting all elements to 0 */
@@ -62,7 +62,8 @@ class Engine{
     unsigned int wTime_;
     unsigned int bTime_;
     std::ofstream logFile_;
-    std::vector<polyBookEntry> book;
+    Book book_;
+    bool isOpening_;
 
 };
 } // end namespace montezuma
