@@ -312,7 +312,7 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
     if (entry->key == currentHash_){ // Check that the key is the same (not a type ? collision)
         if (entry->depth >= depth){  // If it was already searched at a depth greater than the one requested now
-            if(entry->repetitionCount >= 3){ // If the position has been reached 2 times already in the past, return 0, as it would be a draw.
+            if(entry->repetitionCount >= 3){ // If the position has been reached 3 times already, return 0, as it is a draw.
                 score = 0;
                 entry->score = 0;
                 return true;
