@@ -20,18 +20,15 @@ Free chess GUIs exist, such as:
 The engine can sometimes beat fairly experienced players at least in selected time controls.
 
 Among others, these features will be considered for implementation, in no particular order:
-* Parametrize openin book directory
-* Draw by repetition check with hashes -> save repetiion count in the table
+* Parametrize opening book directory
 * Communication of more information regardin the search (nodes, hashFull%mill,...)
 * Support for tablebase finals
-* Remove asserts for speed
 * Wiser management of move time
 * Implementation of the engine as a state machine with multithreading and pondering
 * Improved move ordering
 * Implementation of quiescence search to mitigate horizon effect
 * Development of a better evaluation function, maybe based on a neural network
 * Automate testing
-* Implement proper communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html)
+* Implement full communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html)
 
 ## Known issues
-* The engine does not see draws by repetition as such and plays them even if it is winning
