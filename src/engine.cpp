@@ -5,6 +5,7 @@
 #include <limits.h>
 #include <math.h>
 #include <cassert>
+#include <algorithm>
 #include "engine.h"
 
 namespace montezuma {
@@ -81,12 +82,13 @@ void Engine::resetBoard(){
     thc::ChessRules newcr;
     cr_ = newcr;
     isOpening_ = true;
+    repetitionHashHistory_.clear();
 }
 
 // Resize and empty the hashTable. Do not call this if you don't want to empty the table!
 void Engine::initHashTable(){
     numPositions_ = hashTableSize_*1024*1024/sizeof(hashEntry); // MB = 1024 KB here.
-    hashTable_.resize(0);
+    hashTable_.clear();
     hashTable_.resize(numPositions_);
     tableEntries_ = 0;
 }
@@ -99,6 +101,9 @@ void Engine::updatePosition(const std::string command){
         resetBoard();
         bool ok = cr_.Forsyth(command.substr(13).c_str());
     }
+    currentHash_ = zobristHash64Calculate(cr_);
+    repetitionHashHistory_.clear();
+    repetitionHashHistory_.push_back(currentHash_);
     std::size_t found = command.find("moves ");
     if (found!=std::string::npos){    // If moves are specified, play them on the board
         std::string movelist = command.substr(found+6);
@@ -109,10 +114,17 @@ void Engine::updatePosition(const std::string command){
         {
             end = movelist.find(" ", start);
             mv.TerseIn(&cr_, movelist.substr(start, end - start).c_str());
+            currentHash_ = zobristHash64Update(currentHash_, cr_, mv);
+            if (mv.capture || cr_.squares[mv.src]=='p' || cr_.squares[mv.src]=='P')
+                repetitionHashHistory_.clear();
+            else
+                repetitionHashHistory_.push_back(currentHash_);
             cr_.PlayMove(mv);
-        }                
+        }        
     }
-    currentHash_ = zobristHash64Calculate(cr_);;
+    for (auto hash:repetitionHashHistory_)
+            hashTable_[hash%numPositions_].repetitionCount = std::count(repetitionHashHistory_.begin(), repetitionHashHistory_.end(), hash);
+    
 }
 
 // Start move evaluation
@@ -139,7 +151,7 @@ void Engine::inputGo(const std::string command){
         movesToGo = std::stoi(command.substr(pos+10, command.find_first_of(" ", pos+10)-pos+10));
     // decide how much time to allocate
     unsigned long int limitTime = (movesToGo) ? myTime/std::min(moveHorizon,movesToGo) : myTime/moveHorizon;
-    // logFile << "[MONTE]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
+    // logFile << "[MONTEZUMA]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
 
     // Search
     // If the position is in the opening book, use it
@@ -147,7 +159,7 @@ void Engine::inputGo(const std::string command){
     if (isOpening_ && book_.getMove(cr_, currentHash_, bestMove)){
         std::cout << "bestmove " << bestMove << std::endl;
         return;
-    } else
+    } else // Otherwise stop looking in the book
         isOpening_ = false;
     free(bestMove);
     
@@ -234,20 +246,22 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
     for (auto mv:legalMoves){
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);
         cr_.PushMove(mv);
-//        for (int i = 0; i < moveDepth; i++)
-//            std::cout << "   ";
-//        std::cout << mv.TerseOut() << ": " << (zobristHash64Calculate(cr) ^ currentHash) << std::endl;
+        hashTable_[currentHash_%numPositions_].repetitionCount++;
+        if (currentHash_==3840914469759713111)
+            debug("here");
         assert(currentHash_==zobristHash64Calculate(cr_));
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
+        
+        hashTable_[currentHash_%numPositions_].repetitionCount--;
         cr_.PopMove(mv);
-        currentHash_ = zobristHash64Update(currentHash_, cr_, mv);
+        currentHash_ = zobristHash64Update(currentHash_, cr_, mv);       
         assert(currentHash_==zobristHash64Calculate(cr_));
         
-//         Apply mate score correction (reserve the last 50 points for that)
-//        if (MATE_SCORE-abs(currentScore) < 50 ){
-//            if (currentScore > 0) currentScore--;
-//            else currentScore++;
-//        }
+        // Apply mate score correction (reserve the last 50 points for that)
+        if (MATE_SCORE-abs(currentScore) < 50 ){
+            if (currentScore > 0) currentScore--;
+            else currentScore++;
+        }
            
         if (currentScore >= beta){
             /* The opponent will not allow this move, he has at least one better choice,
@@ -273,10 +287,10 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
 int Engine::evaluate(){
     int evalMat{0}, evalPos{0};
     thc::DRAWTYPE drawType;
-    if (cr_.IsDraw(cr_.white, drawType)){
+    if (cr_.IsDraw(cr_.white, drawType)){ // Check for threefold repetition explicitly
         return 0;
     }
-
+    
     thc::TERMINAL terminalScore;
     cr_.Evaluate(terminalScore);    // Evaluates if position is legal, and if it is terminal
     if( terminalScore == thc::TERMINAL::TERMINAL_WCHECKMATE ){ // White is checkmated
@@ -300,6 +314,11 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
     if (entry->key == currentHash_){ // Check that the key is the same (not a type ? collision)
         if (entry->depth >= depth){  // If it was already searched at a depth greater than the one requested now
+            if(entry->repetitionCount >= 2){ // If the position has been reached 2 times already in the past, return 0, as it would be a draw.
+                score = 0;
+                entry->score = 0;
+                return true;
+            }
             if (entry->flag == Flag::EXACT){
                 score = entry->score;
                 return true;
@@ -330,29 +349,28 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
     
 }
 
-void Engine::debug(const std::string command){
-    displayPosition(cr_, "Current position is");
-    printf("Recorded %u hashTableEntries\n", tableEntries_);
-    hashEntry *entry = &hashTable_[currentHash_%numPositions_];
-    std::cout << "Entry at " << currentHash_%numPositions_ << ": ";
-    printf("depth:%d, flag:%d, score:%d, bestMove:", entry->depth, entry->flag, entry->score);
-    std::cout << entry->bestMove.TerseOut() << std::endl;
-}
-
 void Engine::retrievePvLineFromTable(line * pvLine){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
     if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash_ || pvLine->moveCount >= 30)
         return;
     
     pvLine->moveCount++;
-    pvLine->moves[pvLine->moveCount-1] = entry->bestMove;
-//    currentHash = cr.Hash64Update(currentHash, entry->bestMove);
-    
+    pvLine->moves[pvLine->moveCount-1] = entry->bestMove; 
     currentHash_ = zobristHash64Update(currentHash_, cr_, entry->bestMove);
     cr_.PushMove(entry->bestMove);
     retrievePvLineFromTable(pvLine);
     cr_.PopMove(entry->bestMove);
     currentHash_ = zobristHash64Update(currentHash_, cr_, entry->bestMove);
+}
+
+void Engine::debug(const std::string command){
+    displayPosition(cr_, "Current position is");
+    printf("Recorded %u hashTableEntries\n", tableEntries_);
+    std::cout << currentHash_%numPositions_ << std::endl;
+    hashEntry *entry = &hashTable_[currentHash_%numPositions_];
+    std::cout << "Entry at " << currentHash_%numPositions_ << ": ";
+    printf("depth:%d, flag:%d, score:%d, repetitions:%u, bestMove:", entry->depth, entry->flag, entry->score, entry->repetitionCount);
+    std::cout << entry->bestMove.TerseOut() << std::endl;
 }
 
 } //end namespace montezuma

@@ -42,13 +42,17 @@ class Engine{
     bool probeHash(int depth, int alpha, int beta, int &score);
     /* Record the hash into the table. Implement replacement scheme here */
     void recordHash(int depth, Flag flag, int score, thc::Move bestMove);
-    /* Perform some debugging tasks */
-    void debug(const std::string command);
     /* recursively retrieve the PV line using information stored in the table*/
     void retrievePvLineFromTable(line * pvLine);
+    /* Checks if the current hash has appeared at least other 2 times in history */
+    bool isThreefoldRepetitionHash();
+    /* Perform some debugging tasks */
+    void debug(const std::string command);
+    
 
     thc::ChessEvaluation cr_;
     uint64_t currentHash_;  // Hash of the current position
+    std::vector<uint64_t> repetitionHashHistory_; // History of the relevant position hashes to check for threefold repetition draws
     std::string name_;
     std::string author_;
     unsigned long long evaluatedPositions_;

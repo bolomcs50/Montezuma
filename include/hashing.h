@@ -24,6 +24,7 @@ struct hashEntry {
     Flag flag;
     int score;
     thc::Move bestMove;
+    unsigned short repetitionCount;
 };
 
 // Polyglot format Zobrist Hashing, see http://hgm.nubati.net/book_format.html for a manual
@@ -253,7 +254,7 @@ static int castleOffset = 768, enPassantOffset = 772, turnOffset=780;
 
 uint64_t zobristHash64Calculate(thc::ChessRules &cr);
 
-uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Move move);
+uint64_t zobristHash64Update(uint64_t hash, thc::ChessRules &cr, thc::Move move);
 
 } // end namespace montezuma
 

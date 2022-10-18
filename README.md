@@ -21,7 +21,7 @@ The engine can sometimes beat fairly experienced players at least in selected ti
 
 Among others, these features will be considered for implementation, in no particular order:
 * Parametrize openin book directory
-* Draw by repetition check with hashes
+* Draw by repetition check with hashes -> save repetiion count in the table
 * Communication of more information regardin the search (nodes, hashFull%mill,...)
 * Support for tablebase finals
 * Remove asserts for speed
