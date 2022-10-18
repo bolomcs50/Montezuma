@@ -115,7 +115,7 @@ void Engine::updatePosition(const std::string command){
             end = movelist.find(" ", start);
             mv.TerseIn(&cr_, movelist.substr(start, end - start).c_str());
             currentHash_ = zobristHash64Update(currentHash_, cr_, mv);
-            if (mv.capture || cr_.squares[mv.src]=='p' || cr_.squares[mv.src]=='P')
+            if (cr_.squares[mv.dst]!=' ' || cr_.squares[mv.src]=='p' || cr_.squares[mv.src]=='P')
                 repetitionHashHistory_.clear();
             else
                 repetitionHashHistory_.push_back(currentHash_);
@@ -123,7 +123,7 @@ void Engine::updatePosition(const std::string command){
         }        
     }
     for (auto hash:repetitionHashHistory_)
-            hashTable_[hash%numPositions_].repetitionCount = std::count(repetitionHashHistory_.begin(), repetitionHashHistory_.end(), hash);
+        hashTable_[hash%numPositions_].repetitionCount = std::count(repetitionHashHistory_.begin(), repetitionHashHistory_.end(), hash);
     
 }
 
@@ -247,8 +247,6 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);
         cr_.PushMove(mv);
         hashTable_[currentHash_%numPositions_].repetitionCount++;
-        if (currentHash_==3840914469759713111)
-            debug("here");
         assert(currentHash_==zobristHash64Calculate(cr_));
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         
@@ -314,7 +312,7 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
     if (entry->key == currentHash_){ // Check that the key is the same (not a type ? collision)
         if (entry->depth >= depth){  // If it was already searched at a depth greater than the one requested now
-            if(entry->repetitionCount >= 2){ // If the position has been reached 2 times already in the past, return 0, as it would be a draw.
+            if(entry->repetitionCount >= 3){ // If the position has been reached 2 times already in the past, return 0, as it would be a draw.
                 score = 0;
                 entry->score = 0;
                 return true;
