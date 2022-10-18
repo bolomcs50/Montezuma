@@ -247,13 +247,10 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);
         cr_.PushMove(mv);
         hashTable_[currentHash_%numPositions_].repetitionCount++;
-        assert(currentHash_==zobristHash64Calculate(cr_));
         int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
-        
         hashTable_[currentHash_%numPositions_].repetitionCount--;
         cr_.PopMove(mv);
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);       
-        assert(currentHash_==zobristHash64Calculate(cr_));
         
         // Apply mate score correction (reserve the last 50 points for that)
         if (MATE_SCORE-abs(currentScore) < 50 ){
@@ -314,7 +311,6 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score){
         if (entry->depth >= depth){  // If it was already searched at a depth greater than the one requested now
             if(entry->repetitionCount >= 3){ // If the position has been reached 3 times already, return 0, as it is a draw.
                 score = 0;
-                entry->score = 0;
                 return true;
             }
             if (entry->flag == Flag::EXACT){
