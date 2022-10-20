@@ -17,13 +17,10 @@ Free chess GUIs exist, such as:
 * [XBoard](https://www.gnu.org/software/xboard/)
 
 ## Current state and Future development
-<<<<<<< HEAD
-The engine can sometimes beat fairly experienced players at least in selected time controls.
-=======
 The engine can now beat fairly experienced players at least in selected time controls.
 Nevertheless, the development has hit a roadblock: given the scope of the thc library the engine is currently based on, draws by repetition cannot be detected during search and evaluation. Adding support for hashing would circumvent this problem, but the library does not support Zobrist Hashing (state of the art).
 Therefore, Montezuma will probably switch to another library (like https://github.com/nkarve/surge) in the near future, before implementing further features.
->>>>>>> d6761dd966462aa66946727183662aaf5779bc40
+
 
 Among others, these features will be considered for implementation, in no particular order:
 * Parametrize opening book directory
@@ -35,6 +32,6 @@ Among others, these features will be considered for implementation, in no partic
 * Implementation of quiescence search to mitigate horizon effect
 * Development of a better evaluation function, maybe based on a neural network
 * Automate testing
-* Implement full communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html)
+* Implement full communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html )
 
 ## Known issues
