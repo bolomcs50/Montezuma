@@ -26,6 +26,9 @@
 *.a
 *.lib
 
+# Specific files
+Log.txt
+
 # Executables
 *.exe
 *.out
@@ -36,6 +39,16 @@ out/
 build/
 .vscode/
 
-# sublime stuff
+# sublime files
 *.sublime-project
 *.sublime-workspace
+
+# eclipse files
+*.cproject
+*.project
+
+# netbeans files
+nbproject/
+
+# Opening books
+*.bin
