@@ -15,7 +15,8 @@ Engine::Engine(){
     author_ = "Michele Bolognini";
     evaluatedPositions_ = 0;
     hashTableSize_ = 64; // 64 MB default
-    book_.initialize("res/Titans.bin");
+    book_.initialize("engines/Human.bin");
+//    book_.initialize("res/Titans.bin");
 }
 
 int Engine::protocolLoop(){
@@ -309,8 +310,10 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
     if (entry->key == currentHash_){ // Check that the key is the same (not a type ? collision)
         if (entry->depth >= depth){  // If it was already searched at a depth greater than the one requested now
-            if(entry->repetitionCount >= 3){ // If the position has been reached 3 times already, return 0, as it is a draw.
+            if(entry->repetitionCount >= 2){ // If the position has been reached 3 times already, return 0, as it is a draw.
                 score = 0;
+                entry->score = 0;
+                entry->flag = Flag::EXACT;
                 return true;
             }
             if (entry->flag == Flag::EXACT){
