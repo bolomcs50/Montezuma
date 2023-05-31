@@ -19,12 +19,12 @@ Engine::Engine(){
 //    book_.initialize("res/Titans.bin");
 }
 
-int Engine::protocolLoop(){
+int Engine::protocolLoop(std::istream& inputStream){
     std::string command;
     while(true){
-        std::getline(std::cin, command);
+        std::getline(inputStream, command);
+        std::cout << "\tgot command " << command << std::endl;
         logFile_.open("Log.txt", std::ios::out | std::ios::app);
-        logFile_ << command << std::endl;
         if (command.compare("uci") == 0){
             uciHandShake();
             resetBoard();
