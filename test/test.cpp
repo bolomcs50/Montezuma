@@ -36,8 +36,6 @@ TEST_CASE("Engine reads positions correctly"){
 TEST_CASE("Engine hashes positions correctly"){
 }
 
-TEST_CASE("Engine solves mates in 2"){
-}
 
 // TEST_CASE("Example test with sections", "[Optional tag]"){
 //     // Init code

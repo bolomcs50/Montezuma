@@ -12,13 +12,18 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 ### Testing
 find_package(Catch2 3 REQUIRED)
-add_executable(dummy_test)
-target_sources(dummy_test PRIVATE test/test.cpp src/engine.cpp src/thc.cpp src/hashing.cpp src/book.cpp)
-target_link_libraries(dummy_test PRIVATE Catch2::Catch2WithMain)
+add_executable(unit_tests)
+target_sources(unit_tests PRIVATE test/test.cpp src/engine.cpp src/thc.cpp src/hashing.cpp src/book.cpp)
+target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain)
 
 include(CTest)
 include(Catch)
-catch_discover_tests(dummy_test)
+catch_discover_tests(unit_tests)
+
+# Test mates solving
+add_executable(mates_tests)
+target_sources(mates_tests PRIVATE test/solveMates.cpp src/engine.cpp src/thc.cpp src/hashing.cpp src/book.cpp)
+add_test(NAME Mates COMMAND mates_tests)
 
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 # set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
