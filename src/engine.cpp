@@ -221,6 +221,8 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
         score = evaluate();
         evaluatedPositions_++;
         thc::Move mv;
+        mv.dst = thc::SQUARE_INVALID;
+        mv.src = thc::SQUARE_INVALID;
         recordHash(depth, Flag::EXACT, score, mv);
         return score;
     }
@@ -350,11 +352,13 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
 
 void Engine::retrievePvLineFromTable(line * pvLine){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
-    if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash_ || pvLine->moveCount >= 30)
+    if (entry->flag == Flag::NONE || entry->bestMove.src >= thc::SQUARE_INVALID || entry->bestMove.dst >= thc::SQUARE_INVALID
+        || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash_ || pvLine->moveCount >= 30)
         return;
     
     pvLine->moveCount++;
-    pvLine->moves[pvLine->moveCount-1] = entry->bestMove; 
+    pvLine->moves[pvLine->moveCount-1] = entry->bestMove;
+    
     currentHash_ = zobristHash64Update(currentHash_, cr_, entry->bestMove);
     cr_.PushMove(entry->bestMove);
     retrievePvLineFromTable(pvLine);
