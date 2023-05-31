@@ -2,20 +2,18 @@
 #include <iostream>
 #include <sstream>
 
-int main(int argc, char** argv){
-    std::cout << "Here";
-    std::stringstream iStream, oStream;
-    montezuma::Engine engine(iStream, std::cout);
-    std::cout << "Here";
-    std::ifstream problemsFile("res/fens2.fen", std::ios::binary);
-    std::string fen;
-    std::cout << "Here";
-    while (getline(problemsFile, fen)){
-        return 1;
-        std::cout << "Here";
-        iStream << "uci\nposition fen" << fen << "\ngo\nquit\n";
+
+int main(int argc, char **argv){
+    std::stringstream commandStream;
+    montezuma::Engine engine(commandStream, std::cout);
+    std::ifstream problemsFile("res/fens2.fen", std::ios::in);
+    std::string line, command;
+    commandStream << "uci\n";
+    while(getline(problemsFile, line)){
+        command = "ucinewgame\nposition fen " + line + "\ngo\nquit\n";
+        commandStream << command;
         engine.protocolLoop();
-        std::cout << oStream.str();
+        std::cout << command << std::endl;
     }
     return 0;
 }
