@@ -11,12 +11,14 @@ target_sources(Montezuma PRIVATE src/thc.cpp src/hashing.cpp src/book.cpp src/en
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 ### Testing
-enable_testing()
-
+find_package(Catch2 3 REQUIRED)
 add_executable(dummy_test)
 target_sources(dummy_test PRIVATE test/test.cpp src/engine.cpp src/thc.cpp src/hashing.cpp src/book.cpp)
+target_link_libraries(dummy_test PRIVATE Catch2::Catch2WithMain)
 
-add_test(NAME example_test COMMAND dummy_test)
+include(CTest)
+include(Catch)
+catch_discover_tests(dummy_test)
 
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 # set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

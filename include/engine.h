@@ -20,9 +20,9 @@ struct line {
 class Engine{
     public:
     /* Constructor */
-    Engine();
+    Engine(std::istream& inputStream=std::cin, std::ostream& outputStream=std::cout);
     /* Effectively starts the engine, listening for command */
-    int protocolLoop(std::istream& inputStream=std::cin);
+    int protocolLoop();
     
     private:
     void uciHandShake() const;
@@ -69,6 +69,8 @@ class Engine{
     std::ofstream logFile_;
     Book book_;
     bool isOpening_;
+    std::istream& inputStream_;
+    std::ostream& outputStream_;
 
 };
 } // end namespace montezuma
