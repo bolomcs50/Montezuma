@@ -2,6 +2,7 @@
 #define ENGINE_H
 
 #include <fstream>
+#include <iostream>
 #include "thc.h"
 #include "hashing.h"
 #include "book.h"
@@ -21,7 +22,7 @@ class Engine{
     /* Constructor */
     Engine();
     /* Effectively starts the engine, listening for command */
-    int protocolLoop();
+    int protocolLoop(std::istream& inputStream=std::cin);
     
     private:
     void uciHandShake() const;

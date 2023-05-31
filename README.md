@@ -22,6 +22,7 @@ The engine can sometimes beat fairly experienced players at least in selected ti
 Among others, these features will be considered for implementation, in no particular order:
 
 * Parametrize opening book directory
+* Investigate chess.engine.EngineTerminatedError: engine event loop dead errors in lichess-bot
 * Communication of more information regardin the search (nodes, hashFull%mill,...)
 * Support for tablebase finals
 * Wiser management of move time
