@@ -2,6 +2,7 @@
 #include <chrono>
 #include <thread>
 #include <fstream>
+#include <future>
 #include <limits.h>
 #include <math.h>
 #include <cassert>
@@ -23,10 +24,10 @@ outputStream_ (outputStream)
 }
 
 int Engine::protocolLoop(){
+    std::vector<std::future<void>> futures;
     std::string command;
     while(true){
         std::getline(inputStream_, command);
-        logFile_.open("Log.txt", std::ios::out | std::ios::app);
         if (command.compare("uci") == 0){
             uciHandShake();
             resetBoard();
@@ -52,11 +53,11 @@ int Engine::protocolLoop(){
         } else if (command.find("position", 0) == 0){
             updatePosition(command);
         } else if (command.find("go", 0) == 0){
-            inputGo(command);
+            futures.push_back(std::async(std::launch::async, &Engine::inputGo, this, command));
+            // inputGo(command);
         } else if (command.find("quit", 0) == 0){
             break;
         }
-        logFile_.close();
     }
     return 0;
 }
