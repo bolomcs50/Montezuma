@@ -57,7 +57,7 @@ uint64_t zobristHash64Update( uint64_t hash, thc::ChessRules &cr, thc::Move move
     {
         default:
         {
-            if(target !=' ' ) // If moving to occupied square, then this is a capture (!!! Not true the other way around: en passant)
+            if(target != ' ' ) // If moving to occupied square, then this is a capture (!!! Not true the other way around: en passant)
                 hash ^= Random64[64*pieceNumber[target-'B']+ 8*dstRank + dstFile];   // remove captured piece
             hash ^= Random64[64*pieceNumber[piece-'B']+ 8*srcRank + srcFile];   // remove piece from source
             hash ^= Random64[64*pieceNumber[piece-'B']+ 8*dstRank + dstFile];   // put piece in destination
