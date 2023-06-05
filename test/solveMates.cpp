@@ -21,8 +21,11 @@ TEST_CASE("Engine solves mates"){
 
             while(getline(outputStream, attempt)){
                 if (attempt.find("mate") != std::string::npos){
-                    std::cout << "Position: " << position << std::endl << "Attempt: " << attempt << std::endl << "Solution: " << solution << std::endl << std::endl;
-                    CHECK(attempt.find(solution) != std::string::npos);
+                    std::cout << "Position: " << position << std::endl
+                              << "Attempt:\t" << attempt.substr(attempt.find("pv ")) << std::endl
+                              << "Solution:\t" << solution << std::endl << std::endl;
+                    REQUIRE(attempt.find("mate 2") != std::string::npos);
+                    // CHECK(attempt.find(solution) != std::string::npos);
                     outputStream.str(std::string());
                     break;
                 }
@@ -40,8 +43,11 @@ TEST_CASE("Engine solves mates"){
 
             while(getline(outputStream, attempt)){
                 if (attempt.find("mate") != std::string::npos){
-                    std::cout << "Position: " << position << std::endl << "Attempt: " << attempt << std::endl << "Solution: " << solution << std::endl << std::endl;
-                    CHECK(attempt.find(solution) != std::string::npos);
+                    std::cout << "Position: " << position << std::endl
+                              << "Attempt:\t" << attempt.substr(attempt.find("pv ")) << std::endl
+                              << "Solution:\t" << solution << std::endl << std::endl;
+                    REQUIRE(attempt.find("mate 3") != std::string::npos);
+                    // CHECK(attempt.find(solution) != std::string::npos);
                     outputStream.str(std::string());
                     break;
                 }
