@@ -30,7 +30,9 @@ Among others, these features will be considered for implementation, in no partic
 * Improved move ordering
 * Implementation of quiescence search to mitigate horizon effect
 * Development of a better evaluation function, maybe based on a neural network
-* Automate testing
+* Testing
+    * Write unit tests for existing code
+    * Go through the results of mate testing and iron out the problems
+    * Select a subset of problems with forced mate as the testing set
 * Implement full communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html))
 
-## Known issues
