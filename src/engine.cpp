@@ -182,7 +182,7 @@ void Engine::inputGo(const std::string command){
         auto nps = (duration.count() > 0) ? 1000*evaluatedPositions_/duration.count() : 0;
         // Check if the returned score signifies a mate and in how many moves
         if (MATE_SCORE-abs(bestScore) < 50){
-            int movesToMate = (bestScore > 0 ) ? (globalPvLine_.moveCount+1)/2 : -(globalPvLine_.moveCount+1)/2;
+            int movesToMate = (bestScore > 0 ) ? (MATE_SCORE-abs(bestScore)+1)/2 : -(MATE_SCORE-abs(bestScore))/2;
             outputStream_ << "info score mate " <<  movesToMate;
         } else {
             outputStream_ << "info score cp " << bestScore;
