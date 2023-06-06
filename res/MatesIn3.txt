@@ -121,7 +121,7 @@ pv c7b6 c6b6 c5b6 a7b8 d4e5
 4rk2/2pQ1p2/2p2B2/2P1P2q/1b4R1/1P6/r5PP/2R3K1 w - - 1 0
 pv f6g7 f8g8 d7e8 g8h7 e8h8
 4R3/1p4rk/6p1/2pQBpP1/p1P1pP2/Pq6/1P6/K7 w - - 1 0
-pv d5d8 b3a2 a1a2 g7g8 d8c7 g8g7 c7g7
+pv d5d7 b3a3 b2a3 e4e3 d7g7
 1rbk1r2/pp4R1/3Np3/3p2p1/6q1/BP2P3/P2P2B1/2R3K1 w - - 1 0
 pv c1c8 b8c8 d6b7 d8e8 g7e7
 rn2kb1r/pp2pp1p/2p2p2/8/8/3Q1N2/qPPB1PPP/2KR3R w - - 1 0
