@@ -181,7 +181,7 @@ void Engine::inputGo(const std::string command){
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeThisDepth);
         auto nps = (duration.count() > 0) ? 1000*evaluatedPositions_/duration.count() : 0;
         // Check if the returned score signifies a mate and in how many moves
-        if (MATE_SCORE-abs(bestScore) < 50){
+        if (MATE_SCORE-abs(bestScore) < 100){
             int movesToMate = (bestScore > 0 ) ? (MATE_SCORE-abs(bestScore)+1)/2 : -(MATE_SCORE-abs(bestScore))/2;
             outputStream_ << "info score mate " <<  movesToMate;
         } else {
@@ -257,8 +257,8 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
         cr_.PopMove(mv);
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);       
         
-        // Apply mate score correction (reserve the last 50 points for that)
-        if (MATE_SCORE-abs(currentScore) < 50 ){
+        // Apply mate score correction (reserve the last 100 points for that)
+        if (MATE_SCORE-abs(currentScore) < 100 ){
             if (currentScore > 0) currentScore--;
             else currentScore++;
         }
