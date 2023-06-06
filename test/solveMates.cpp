@@ -19,13 +19,19 @@ TEST_CASE("Engine solves mates"){
             commandStream << command;
             engine.protocolLoop();
 
+            std::string solutionFirstMove;
             while(getline(outputStream, attempt)){
                 if (attempt.find("mate") != std::string::npos){
+
+                    size_t secondSpace = solution.find(" ", 3);
+                    solutionFirstMove = solution.substr(0, secondSpace);
+
                     std::cout << "Position: " << position << std::endl
                               << "Attempt:\t" << attempt.substr(attempt.find("pv ")) << std::endl
                               << "Solution:\t" << solution << std::endl << std::endl;
+
                     REQUIRE(attempt.find("mate 2") != std::string::npos);
-                    // CHECK(attempt.find(solution) != std::string::npos);
+                    REQUIRE(attempt.find(solutionFirstMove) != std::string::npos); // require that the first move at least coincides with the solution
                     outputStream.str(std::string());
                     break;
                 }
@@ -41,13 +47,19 @@ TEST_CASE("Engine solves mates"){
             commandStream << command;
             engine.protocolLoop();
 
+            std::string solutionFirstMove;
             while(getline(outputStream, attempt)){
                 if (attempt.find("mate") != std::string::npos){
+
+                    size_t secondSpace = solution.find(" ", 3);
+                    solutionFirstMove = solution.substr(0, secondSpace);
+
                     std::cout << "Position: " << position << std::endl
                               << "Attempt:\t" << attempt.substr(attempt.find("pv ")) << std::endl
                               << "Solution:\t" << solution << std::endl << std::endl;
+
                     REQUIRE(attempt.find("mate 3") != std::string::npos);
-                    // CHECK(attempt.find(solution) != std::string::npos);
+                    REQUIRE(attempt.find(solutionFirstMove) != std::string::npos); // require that the first move at least coincides with the solution
                     outputStream.str(std::string());
                     break;
                 }
