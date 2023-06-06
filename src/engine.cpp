@@ -350,20 +350,28 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
     
 }
 
-void Engine::retrievePvLineFromTable(line * pvLine){
+void Engine::retrievePvLineFromTable(line * pvLine) {
+    std::set<uint64_t> hashHistory;
+    retrievePvLineFromTable(pvLine, hashHistory);
+    return;
+}
+
+void Engine::retrievePvLineFromTable(line * pvLine, std::set<uint64_t>& hashHistory){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
     if (entry->flag == Flag::NONE || entry->bestMove.src >= thc::SQUARE_INVALID || entry->bestMove.dst >= thc::SQUARE_INVALID
-        || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash_ || pvLine->moveCount >= 30)
+        || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash_ || pvLine->moveCount >= 30 || hashHistory.count(currentHash_))
         return;
     
     pvLine->moveCount++;
     pvLine->moves[pvLine->moveCount-1] = entry->bestMove;
     
+    hashHistory.insert(currentHash_);
     currentHash_ = zobristHash64Update(currentHash_, cr_, entry->bestMove);
     cr_.PushMove(entry->bestMove);
-    retrievePvLineFromTable(pvLine);
+    retrievePvLineFromTable(pvLine, hashHistory);
     cr_.PopMove(entry->bestMove);
     currentHash_ = zobristHash64Update(currentHash_, cr_, entry->bestMove);
+    hashHistory.erase(currentHash_);
 }
 
 void Engine::debug(const std::string command){

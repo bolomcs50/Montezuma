@@ -34,5 +34,6 @@ Among others, these features will be considered for implementation, in no partic
     * Write unit tests for existing code
     * Go through the results of mate testing and iron out the problems
     * Select a subset of problems with forced mate as the testing set
+* Format code according to some standard
 * Implement full communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html))
 
