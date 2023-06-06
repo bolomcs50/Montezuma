@@ -27,7 +27,7 @@ pv g2g1 h1g1 f2f1
 rnbqkbn1/ppppp3/7r/6pp/3P1p2/3BP1B1/PPP2PPP/RN1QK1NR w - - 1 0
 pv d1h5 h6h5 d3g6
 r2qrb2/p1pn1Qp1/1p4Nk/4PR2/3n4/7N/P5PP/R6K w - - 1 0
-pv f5h5 h6h5 g6f4 h5g4 f7h5
+pv g6e7 b6b5 f7g6
 8/2r5/1k5p/1pp4P/8/K2P4/PR2QB2/2q5 b - - 0 1
 pv c1c3 b2b3 c7a7
 r1b3nr/ppqk1Bbp/2pp4/4P1B1/3n4/3P4/PPP2QPP/R4RK1 w - - 1 0
