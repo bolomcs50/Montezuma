@@ -712,8 +712,8 @@ private:
     bool black_is_better;
     int  planning_score_white_pieces;
     int  planning_score_black_pieces;
-    int  planning_white_piece_pawn_percent;
-    int  planning_black_piece_pawn_percent;
+    int  planning_white_piece_pawn_percent{0};
+    int  planning_black_piece_pawn_percent{0};
 };
 
 } //namespace thc

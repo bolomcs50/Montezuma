@@ -23,16 +23,14 @@ Among others, these features will be considered for implementation, in no partic
 
 * Parametrize opening book directory
 * Investigate chess.engine.EngineTerminatedError: engine event loop dead errors in lichess-bot
-* Communication of more information regardin the search (nodes, hashFull%mill,...)
+* Communication of more information regarding the search (nodes, hashFull%mill,...)
 * Support for tablebase finals
 * Wiser management of move time
 * Implementation of the engine as a state machine with multithreading and pondering
-* Improved move ordering
+* Implement full communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html))
+* Improved move ordering during search
 * Implementation of quiescence search to mitigate horizon effect
 * Development of a better evaluation function, maybe based on a neural network
 * Testing
     * Write unit tests for existing code
-    * Go through the results of mate testing and iron out the problems
-    * Select a subset of problems with forced mate as the testing set
-* Implement full communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html))
-
+* Format code according to some standard
