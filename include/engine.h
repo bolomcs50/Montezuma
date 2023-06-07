@@ -14,7 +14,7 @@ namespace montezuma {
 #define MATE_SCORE 100000
 
 struct line {
-    int moveCount;              // Number of moves in the line.
+int moveCount{0};               // Number of moves in the line.
     thc::Move moves[MOVE_MAX];  // The line.
 };
 

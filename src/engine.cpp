@@ -248,11 +248,12 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
         - I chose the move with highest alpha, trying to maximize it.
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
+    int currentScore{0};
     for (auto mv:legalMoves){
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);
         cr_.PushMove(mv);
         hashTable_[currentHash_%numPositions_].repetitionCount++;
-        int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
+        currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         hashTable_[currentHash_%numPositions_].repetitionCount--;
         cr_.PopMove(mv);
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);       
