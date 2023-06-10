@@ -10,20 +10,23 @@
 
 namespace montezuma {
 
-Engine::Engine(){
+Engine::Engine(std::istream& inputStream, std::ostream& outputStream):
+inputStream_ (inputStream),
+outputStream_ (outputStream)
+{
     name_ = "Montezuma";
     author_ = "Michele Bolognini";
     evaluatedPositions_ = 0;
     hashTableSize_ = 64; // 64 MB default
-    book_.initialize("res/Titans.bin");
+    book_.initialize("engines/Human.bin");
+//    book_.initialize("res/Titans.bin");
 }
 
 int Engine::protocolLoop(){
     std::string command;
     while(true){
-        std::getline(std::cin, command);
+        std::getline(inputStream_, command);
         logFile_.open("Log.txt", std::ios::out | std::ios::app);
-        logFile_ << command << std::endl;
         if (command.compare("uci") == 0){
             uciHandShake();
             resetBoard();
@@ -31,7 +34,7 @@ int Engine::protocolLoop(){
         } else if (command.compare("isready") == 0){
             // Called once before the GUI asks to calculate a move the first time.
             // Also if the engine is taking time when it is expected to answer, to check if it is alive.
-            std::cout << "readyok\n";
+            outputStream_ << "readyok\n";
         } else if (command.compare("ucinewgame") == 0){
             resetBoard();
             initHashTable();
@@ -42,10 +45,10 @@ int Engine::protocolLoop(){
             // It is called once per option with the syntax:
             // "setoption name Style value Risky\n"
             // TODO: implement option setting
-            std::cout << "info string setoption command is not supported yet\n";
+            outputStream_ << "info string setoption command is not supported yet\n";
         } else if (command.find("register", 0) == 0){
             //TODO: Find out what registration is and implement it
-            std::cout << "info string registration is not supported yet\n";
+            outputStream_ << "info string registration is not supported yet\n";
         } else if (command.find("position", 0) == 0){
             updatePosition(command);
         } else if (command.find("go", 0) == 0){
@@ -61,9 +64,9 @@ int Engine::protocolLoop(){
 // Basic handshake in the UCI protocol
 void Engine::uciHandShake() const
 {
-    std::cout << "id name " << name_ << "\nid author " << author_;
+    outputStream_ << "id name " << name_ << "\nid author " << author_;
     // TODO: send back 'option' command to tell the GUI which options the engine supports
-    std::cout << "\nuciok\n";
+    outputStream_ << "\nuciok\n";
 }
 
 // Diplays a position to the console
@@ -74,7 +77,7 @@ void Engine::displayPosition( thc::ChessRules &cr, const std::string &descriptio
     printf( "%s\n", description.c_str() );
     printf( "FEN = %s", fen.c_str() );
     printf( "%s", s.c_str() );
-    std::cout << "Hash64: " << zobristHash64Calculate(cr) << std::endl << "currentHash: " << currentHash_ << std::endl;
+    outputStream_ << "Hash64: " << zobristHash64Calculate(cr) << std::endl << "currentHash: " << currentHash_ << std::endl;
 }
 
 // Reset Board to initial state
@@ -157,7 +160,7 @@ void Engine::inputGo(const std::string command){
     // If the position is in the opening book, use it
     char* bestMove = (char*)malloc(6*sizeof(char));
     if (isOpening_ && book_.getMove(cr_, currentHash_, bestMove)){
-        std::cout << "bestmove " << bestMove << std::endl;
+        outputStream_ << "bestmove " << bestMove << std::endl;
         return;
     } else // Otherwise stop looking in the book
         isOpening_ = false;
@@ -178,17 +181,17 @@ void Engine::inputGo(const std::string command){
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeThisDepth);
         auto nps = (duration.count() > 0) ? 1000*evaluatedPositions_/duration.count() : 0;
         // Check if the returned score signifies a mate and in how many moves
-        if (MATE_SCORE-abs(bestScore) < 50){
-            int movesToMate = (bestScore > 0 ) ? (globalPvLine_.moveCount+1)/2 : -(globalPvLine_.moveCount+1)/2;
-            std::cout << "info score mate " <<  movesToMate;
+        if (MATE_SCORE-abs(bestScore) < 100){
+            int movesToMate = (bestScore > 0 ) ? (MATE_SCORE-abs(bestScore)+1)/2 : -(MATE_SCORE-abs(bestScore))/2;
+            outputStream_ << "info score mate " <<  movesToMate;
         } else {
-            std::cout << "info score cp " << bestScore;
+            outputStream_ << "info score cp " << bestScore;
         }
-        std::cout << " depth " << incrementalDepth << " time " << duration.count() << " nps " << nps << " pv ";
+        outputStream_ << " depth " << incrementalDepth << " time " << duration.count() << " nps " << nps << " pv ";
         for (int i=0; i < globalPvLine_.moveCount; i++){
-            std::cout << globalPvLine_.moves[i].TerseOut() << " ";
+            outputStream_ << globalPvLine_.moves[i].TerseOut() << " ";
         }
-        std::cout << std::endl;
+        outputStream_ << std::endl;
         usingPreviousLine_ = true;
 
         // Check if time is up
@@ -199,7 +202,7 @@ void Engine::inputGo(const std::string command){
 
     }
 
-    std::cout << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
+    outputStream_ << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
 }
 
 bool toprint = false;
@@ -218,6 +221,8 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
         score = evaluate();
         evaluatedPositions_++;
         thc::Move mv;
+        mv.dst = thc::SQUARE_INVALID;
+        mv.src = thc::SQUARE_INVALID;
         recordHash(depth, Flag::EXACT, score, mv);
         return score;
     }
@@ -243,17 +248,18 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
         - I chose the move with highest alpha, trying to maximize it.
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
+    int currentScore{0};
     for (auto mv:legalMoves){
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);
         cr_.PushMove(mv);
         hashTable_[currentHash_%numPositions_].repetitionCount++;
-        int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
+        currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         hashTable_[currentHash_%numPositions_].repetitionCount--;
         cr_.PopMove(mv);
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);       
         
-        // Apply mate score correction (reserve the last 50 points for that)
-        if (MATE_SCORE-abs(currentScore) < 50 ){
+        // Apply mate score correction (reserve the last 100 points for that)
+        if (MATE_SCORE-abs(currentScore) < 100 ){
             if (currentScore > 0) currentScore--;
             else currentScore++;
         }
@@ -309,8 +315,10 @@ bool Engine::probeHash(int depth, int alpha, int beta, int &score){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
     if (entry->key == currentHash_){ // Check that the key is the same (not a type ? collision)
         if (entry->depth >= depth){  // If it was already searched at a depth greater than the one requested now
-            if(entry->repetitionCount >= 3){ // If the position has been reached 3 times already, return 0, as it is a draw.
+            if(entry->repetitionCount >= 2){ // If the position has been reached 3 times already, return 0, as it is a draw.
                 score = 0;
+                entry->score = 0;
+                entry->flag = Flag::EXACT;
                 return true;
             }
             if (entry->flag == Flag::EXACT){
@@ -343,28 +351,38 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
     
 }
 
-void Engine::retrievePvLineFromTable(line * pvLine){
+void Engine::retrievePvLineFromTable(line * pvLine) {
+    std::set<uint64_t> hashHistory;
+    retrievePvLineFromTable(pvLine, hashHistory);
+    return;
+}
+
+void Engine::retrievePvLineFromTable(line * pvLine, std::set<uint64_t>& hashHistory){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
-    if (entry->flag == Flag::NONE || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash_ || pvLine->moveCount >= 30)
+    if (entry->flag == Flag::NONE || entry->bestMove.src >= thc::SQUARE_INVALID || entry->bestMove.dst >= thc::SQUARE_INVALID
+        || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash_ || pvLine->moveCount >= 30 || hashHistory.count(currentHash_))
         return;
     
     pvLine->moveCount++;
-    pvLine->moves[pvLine->moveCount-1] = entry->bestMove; 
+    pvLine->moves[pvLine->moveCount-1] = entry->bestMove;
+    
+    hashHistory.insert(currentHash_);
     currentHash_ = zobristHash64Update(currentHash_, cr_, entry->bestMove);
     cr_.PushMove(entry->bestMove);
-    retrievePvLineFromTable(pvLine);
+    retrievePvLineFromTable(pvLine, hashHistory);
     cr_.PopMove(entry->bestMove);
     currentHash_ = zobristHash64Update(currentHash_, cr_, entry->bestMove);
+    hashHistory.erase(currentHash_);
 }
 
 void Engine::debug(const std::string command){
     displayPosition(cr_, "Current position is");
     printf("Recorded %u hashTableEntries\n", tableEntries_);
-    std::cout << currentHash_%numPositions_ << std::endl;
+    outputStream_ << currentHash_%numPositions_ << std::endl;
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
-    std::cout << "Entry at " << currentHash_%numPositions_ << ": ";
+    outputStream_ << "Entry at " << currentHash_%numPositions_ << ": ";
     printf("depth:%d, flag:%d, score:%d, repetitions:%u, bestMove:", entry->depth, entry->flag, entry->score, entry->repetitionCount);
-    std::cout << entry->bestMove.TerseOut() << std::endl;
+    outputStream_ << entry->bestMove.TerseOut() << std::endl;
 }
 
 } //end namespace montezuma

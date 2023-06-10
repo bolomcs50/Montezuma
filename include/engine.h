@@ -2,6 +2,8 @@
 #define ENGINE_H
 
 #include <fstream>
+#include <iostream>
+#include <set>
 #include "thc.h"
 #include "hashing.h"
 #include "book.h"
@@ -12,14 +14,14 @@ namespace montezuma {
 #define MATE_SCORE 100000
 
 struct line {
-    int moveCount;              // Number of moves in the line.
+int moveCount{0};               // Number of moves in the line.
     thc::Move moves[MOVE_MAX];  // The line.
 };
 
 class Engine{
     public:
     /* Constructor */
-    Engine();
+    Engine(std::istream& inputStream=std::cin, std::ostream& outputStream=std::cout);
     /* Effectively starts the engine, listening for command */
     int protocolLoop();
     
@@ -44,6 +46,7 @@ class Engine{
     void recordHash(int depth, Flag flag, int score, thc::Move bestMove);
     /* recursively retrieve the PV line using information stored in the table*/
     void retrievePvLineFromTable(line * pvLine);
+    void retrievePvLineFromTable(line * pvLine, std::set<uint64_t>& hashHistory);
     /* Checks if the current hash has appeared at least other 2 times in history */
     bool isThreefoldRepetitionHash();
     /* Perform some debugging tasks */
@@ -68,6 +71,8 @@ class Engine{
     std::ofstream logFile_;
     Book book_;
     bool isOpening_;
+    std::istream& inputStream_;
+    std::ostream& outputStream_;
 
 };
 } // end namespace montezuma

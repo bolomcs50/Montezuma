@@ -22,14 +22,15 @@ The engine can sometimes beat fairly experienced players at least in selected ti
 Among others, these features will be considered for implementation, in no particular order:
 
 * Parametrize opening book directory
-* Communication of more information regardin the search (nodes, hashFull%mill,...)
+* Investigate chess.engine.EngineTerminatedError: engine event loop dead errors in lichess-bot
+* Communication of more information regarding the search (nodes, hashFull%mill,...)
 * Support for tablebase finals
 * Wiser management of move time
 * Implementation of the engine as a state machine with multithreading and pondering
-* Improved move ordering
+* Implement full communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html))
+* Improved move ordering during search
 * Implementation of quiescence search to mitigate horizon effect
 * Development of a better evaluation function, maybe based on a neural network
-* Automate testing
-* Implement full communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html))
-
-## Known issues
+* Testing
+    * Write unit tests for existing code
+* Format code according to some standard
