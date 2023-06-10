@@ -1,7 +1,9 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#include <chrono>
 #include <fstream>
+#include <future>
 #include <iostream>
 #include <set>
 #include "thc.h"
@@ -51,28 +53,31 @@ class Engine{
     void debug(const std::string command);
     /* Launch the search, populating the table */
     void search(int maxSearchDepth=MOVE_MAX);
+    /* Stop the search and communicate the best move from the pvTable*/
+    void giveBestMove(std::chrono::high_resolution_clock::time_point searchStartTime, unsigned long allottedSearchTime);
     
 
     thc::ChessEvaluation cr_;
     uint64_t currentHash_;  // Hash of the current position
     std::vector<uint64_t> repetitionHashHistory_; // History of the relevant position hashes to check for threefold repetition draws
-    std::string name_;
-    std::string author_;
-    unsigned long long evaluatedPositions_;
+    std::string name_{"Montezuma"};
+    std::string author_{"Michele Bolognini"};
     std::vector<hashEntry> hashTable_;
-    unsigned int hashTableSize_; // Given in MB
-    unsigned int numPositions_;
-    unsigned int tableHits_;
-    unsigned int tableEntries_;
+    unsigned long long evaluatedPositions_{0};
+    unsigned int hashTableSize_{64}; // Given in MB
+    unsigned int numPositions_{0};
+    unsigned int tableHits_{0};
+    unsigned int tableEntries_{0};
     line globalPvLine_;
-    bool usingPreviousLine_;
-    unsigned int wTime_;
-    unsigned int bTime_;
+    bool usingPreviousLine_{false};
+    unsigned int wTime_{0}, bTime_{0};
     std::ofstream logFile_;
     Book book_;
-    bool isOpening_;
+    bool isOpening_{true};
+    bool stopSearch_{false};
     std::istream& inputStream_;
     std::ostream& outputStream_;
+    std::vector<std::future<void>> searchThreadsFutures_;
 
 };
 } // end namespace montezuma
