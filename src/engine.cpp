@@ -182,8 +182,8 @@ void Engine::inputGo(const std::string command){
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeThisDepth);
         auto nps = (duration.count() > 0) ? 1000*evaluatedPositions_/duration.count() : 0;
         // Check if the returned score signifies a mate and in how many moves
-        if (MATE_SCORE-abs(bestScore) < 50){
-            int movesToMate = (bestScore > 0 ) ? (globalPvLine_.moveCount+1)/2 : -(globalPvLine_.moveCount+1)/2;
+        if (MATE_SCORE-abs(bestScore) < 100){
+            int movesToMate = (bestScore > 0 ) ? (MATE_SCORE-abs(bestScore)+1)/2 : -(MATE_SCORE-abs(bestScore))/2;
             outputStream_ << "info score mate " <<  movesToMate;
         } else {
             outputStream_ << "info score cp " << bestScore;
@@ -249,17 +249,18 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
         - I chose the move with highest alpha, trying to maximize it.
         - If a move results in a score > beta, my opponent won't allow it, because he has a better option already.
     */
+    int currentScore{0};
     for (auto mv:legalMoves){
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);
         cr_.PushMove(mv);
         hashTable_[currentHash_%numPositions_].repetitionCount++;
-        int currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
+        currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
         hashTable_[currentHash_%numPositions_].repetitionCount--;
         cr_.PopMove(mv);
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);       
         
-        // Apply mate score correction (reserve the last 50 points for that)
-        if (MATE_SCORE-abs(currentScore) < 50 ){
+        // Apply mate score correction (reserve the last 100 points for that)
+        if (MATE_SCORE-abs(currentScore) < 100 ){
             if (currentScore > 0) currentScore--;
             else currentScore++;
         }
@@ -351,20 +352,28 @@ void Engine::recordHash(int depth, Flag flag, int score, thc::Move bestMove){
     
 }
 
-void Engine::retrievePvLineFromTable(line * pvLine){
+void Engine::retrievePvLineFromTable(line * pvLine) {
+    std::set<uint64_t> hashHistory;
+    retrievePvLineFromTable(pvLine, hashHistory);
+    return;
+}
+
+void Engine::retrievePvLineFromTable(line * pvLine, std::set<uint64_t>& hashHistory){
     hashEntry *entry = &hashTable_[currentHash_%numPositions_];
     if (entry->flag == Flag::NONE || entry->bestMove.src >= thc::SQUARE_INVALID || entry->bestMove.dst >= thc::SQUARE_INVALID
-        || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash_ || pvLine->moveCount >= 30)
+        || entry->bestMove.TerseOut() == "0000" || entry->key != currentHash_ || pvLine->moveCount >= 30 || hashHistory.count(currentHash_))
         return;
     
     pvLine->moveCount++;
     pvLine->moves[pvLine->moveCount-1] = entry->bestMove;
     
+    hashHistory.insert(currentHash_);
     currentHash_ = zobristHash64Update(currentHash_, cr_, entry->bestMove);
     cr_.PushMove(entry->bestMove);
-    retrievePvLineFromTable(pvLine);
+    retrievePvLineFromTable(pvLine, hashHistory);
     cr_.PopMove(entry->bestMove);
     currentHash_ = zobristHash64Update(currentHash_, cr_, entry->bestMove);
+    hashHistory.erase(currentHash_);
 }
 
 void Engine::debug(const std::string command){
