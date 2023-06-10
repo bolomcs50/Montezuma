@@ -47,10 +47,10 @@ class Engine{
     /* recursively retrieve the PV line using information stored in the table*/
     void retrievePvLineFromTable(line * pvLine);
     void retrievePvLineFromTable(line * pvLine, std::set<uint64_t>& hashHistory);
-    /* Checks if the current hash has appeared at least other 2 times in history */
-    bool isThreefoldRepetitionHash();
     /* Perform some debugging tasks */
     void debug(const std::string command);
+    /* Launch the search, populating the table */
+    void search(int maxSearchDepth=MOVE_MAX);
     
 
     thc::ChessEvaluation cr_;

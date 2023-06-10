@@ -54,7 +54,7 @@ int Engine::protocolLoop(){
             updatePosition(command);
         } else if (command.find("go", 0) == 0){
             futures.push_back(std::async(std::launch::async, &Engine::inputGo, this, command));
-            // inputGo(command);
+            inputGo(command);
         } else if (command.find("quit", 0) == 0){
             break;
         }
@@ -144,10 +144,6 @@ void Engine::inputGo(const std::string command){
         bTime_ = std::stoi(command.substr(pos+6, command.find_first_of(" ", pos+6)-pos+6));
     }
     unsigned long long int myTime = (cr_.white) ? wTime_ : bTime_;
-    // Save depth limit
-    pos = command.find("depth");
-    if (pos != std::string::npos)
-        maxSearchDepth = std::stoi(command.substr(pos+6, command.find_first_of(" ", pos+6)-pos+6));
     int moveHorizon = 50;
     int movesToGo = 0;
     pos = command.find("movestogo");
@@ -155,7 +151,12 @@ void Engine::inputGo(const std::string command){
         movesToGo = std::stoi(command.substr(pos+10, command.find_first_of(" ", pos+10)-pos+10));
     // decide how much time to allocate
     unsigned long int limitTime = (movesToGo) ? myTime/std::min(moveHorizon,movesToGo) : myTime/moveHorizon;
-    // logFile << "[MONTEZUMA]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
+
+    // Save depth limit
+    pos = command.find("depth");
+    if (pos != std::string::npos)
+        maxSearchDepth = std::stoi(command.substr(pos+6, command.find_first_of(" ", pos+6)-pos+6));
+    
 
     // Search
     // If the position is in the opening book, use it
@@ -163,15 +164,20 @@ void Engine::inputGo(const std::string command){
     if (isOpening_ && book_.getMove(cr_, currentHash_, bestMove)){
         outputStream_ << "bestmove " << bestMove << std::endl;
         return;
-    } else // Otherwise stop looking in the book
+    } else // Otherwise stop looking in the book for this game
         isOpening_ = false;
     free(bestMove);
     
-    line pvLine;
     usingPreviousLine_ = false;
-    auto startTimeSearch = std::chrono::high_resolution_clock::now();
-    
-    for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++){
+
+    search(maxSearchDepth);
+
+    outputStream_ << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
+}
+
+void Engine::search(int maxSearchDepth){
+    line pvLine;
+        for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++){
         evaluatedPositions_ = 0;
         auto startTimeThisDepth = std::chrono::high_resolution_clock::now();
         int bestScore = alphaBeta(-MATE_SCORE, MATE_SCORE, incrementalDepth, &pvLine, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
@@ -193,20 +199,9 @@ void Engine::inputGo(const std::string command){
             outputStream_ << globalPvLine_.moves[i].TerseOut() << " ";
         }
         outputStream_ << std::endl;
-        usingPreviousLine_ = true;
-
-        // Check if time is up
-        stopTime = std::chrono::high_resolution_clock::now();
-        auto searchDuration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeSearch);
-        if (usingTime && searchDuration.count() > limitTime)
-            break;
-
+        usingPreviousLine_ = true; // At each iterative deepening step, the best move found at the previous will be anlyzed first
     }
-
-    outputStream_ << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
 }
-
-bool toprint = false;
 
 int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initialDepth){
     int score;
