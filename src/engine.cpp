@@ -180,7 +180,7 @@ void Engine::search(int maxSearchDepth){
         for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++){
         evaluatedPositions_ = 0;
         auto startTimeThisDepth = std::chrono::high_resolution_clock::now();
-        int bestScore = alphaBeta(-MATE_SCORE, MATE_SCORE, incrementalDepth, &pvLine, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
+        int bestScore = alphaBeta(-MATE_SCORE, MATE_SCORE, incrementalDepth, incrementalDepth); // to avoid overflow when changing sign in recursive calls, do not use INT_MIN as either alpha or beta
         globalPvLine_.moveCount = 0;
         retrievePvLineFromTable(&globalPvLine_);
         
@@ -203,7 +203,7 @@ void Engine::search(int maxSearchDepth){
     }
 }
 
-int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initialDepth){
+int Engine::alphaBeta(int alpha, int beta, int depth, int initialDepth){
     int score;
     if (probeHash(depth, alpha, beta, score))
     	return score;
@@ -213,7 +213,6 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
     cr_.GenLegalMoveList(legalMoves);
 
     if (depth == 0 || legalMoves.size() == 0){
-        pvLine->moveCount = 0;
         score = evaluate();
         evaluatedPositions_++;
         thc::Move mv;
@@ -249,7 +248,7 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);
         cr_.PushMove(mv);
         hashTable_[currentHash_%numPositions_].repetitionCount++;
-        currentScore = -alphaBeta(-beta, -alpha, depth-1, &line, initialDepth);
+        currentScore = -alphaBeta(-beta, -alpha, depth-1, initialDepth);
         hashTable_[currentHash_%numPositions_].repetitionCount--;
         cr_.PopMove(mv);
         currentHash_ = zobristHash64Update(currentHash_, cr_, mv);       
@@ -269,9 +268,6 @@ int Engine::alphaBeta(int alpha, int beta, int depth, line * pvLine, int initial
         }
         if (currentScore > alpha){ // This move results in a higher minimum guaranteed score: make it new best. Implicitly, this is also < beta.
             alpha = currentScore;
-            pvLine->moves[0] = mv;
-            memcpy(pvLine->moves + 1, line.moves, line.moveCount * sizeof(thc::Move));
-            pvLine->moveCount = line.moveCount + 1;
             usingPreviousLine_ = false;
             bestMove = mv;
             flag = Flag::EXACT;
