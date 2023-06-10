@@ -22,12 +22,14 @@ The engine can sometimes beat fairly experienced players at least in selected ti
 Among others, these features will be considered for implementation, in no particular order:
 
 * Increasing the strength of the engine:
-    * Implementation of the engine as a state machine with multithreading and pondering
+    * Implementation of the engine as a state machine with multithreading
+    * Implement pondering
     * Support for tablebase finals
     * Improved move ordering during search
     * Implementation of quiescence search to mitigate horizon effect
     * Development of a better evaluation function, maybe based on a neural network
 
+* Remove implicit hardcoded depth limit and implement a response to the "stop" command
 * Implement full communicaiton with GUIs, enabling all possible options (see the [Protocol Description](http://wbec-ridderkerk.nl/html/UCIProtocol.html))
 * Communication of more information regarding the search (nodes, hashFull%mill,...)
 * Wiser management of move time
