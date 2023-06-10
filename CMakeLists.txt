@@ -34,6 +34,9 @@ include(Catch)
 catch_discover_tests(unit_tests)
 catch_discover_tests(mates_tests)
 
-# set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-# set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-# include(CPack)
+# Copy montezuma to engine directory
+add_custom_command(
+        TARGET Montezuma POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${PROJECT_BINARY_DIR}/Montezuma
+                /home/michele/engines/)
