@@ -1,39 +1,29 @@
-cmake_minimum_required(VERSION 3.16.3)
+cmake_minimum_required(VERSION 3.19.0)
 
 project("Montezuma"
         VERSION 0.1.0
         DESCRIPTION "A simple chess engine"
+        HOMEPAGE_URL "https://github.com/bolomcs50/Montezuma"
         LANGUAGES CXX)
 
-add_library(montezuma)
-target_sources(montezuma PRIVATE src/thc.cpp src/hashing.cpp src/book.cpp src/engine.cpp)
-include_directories(${PROJECT_SOURCE_DIR}/include)
+add_library(montezumaLib OBJECT)
+target_sources(montezumaLib
+                PRIVATE src/thc.cpp
+                        src/hashing.cpp
+                        src/book.cpp
+                        src/engine.cpp)
+target_include_directories(montezumaLib
+                PUBLIC ${PROJECT_SOURCE_DIR}/include/thc
+                       ${PROJECT_SOURCE_DIR}/include/montezuma )
 
 add_executable(Montezuma)
 target_sources(Montezuma PRIVATE src/main.cpp)
-target_link_libraries(Montezuma montezuma)
+target_link_libraries(Montezuma montezumaLib)
 
 
 ### Testing
-find_package(Catch2 3 REQUIRED)
+if (ENABLE_TESTING)
+        add_subdirectory(test)
+endif()
 
-add_executable(unit_tests)
-target_sources(unit_tests PRIVATE test/test.cpp)
-target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain montezuma)
-
-add_executable(mates_tests)
-target_sources(mates_tests PRIVATE
-        test/solveMates.cpp
-        res/MatesIn2.txt
-        res/MatesIn3.txt)
-target_link_libraries(mates_tests PRIVATE Catch2::Catch2WithMain montezuma)
-
-
-include(CTest)
-include(Catch)
-catch_discover_tests(unit_tests)
-catch_discover_tests(mates_tests)
-
-# set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-# set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-# include(CPack)
+### Installing
