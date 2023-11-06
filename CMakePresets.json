@@ -36,6 +36,22 @@
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Release"
         }
+      },
+      {
+        "name": "visual-studio-release",
+        "displayName": "Visual Studio Release",
+        "description": "Visual Studio Release build",
+        "generator": "Visual Studio 15 2017",
+        "binaryDir": "${sourceDir}/build/release",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "WINDOWS": true
+        },
+        "condition": {
+          "type": "equals",
+          "lhs": "${hostSystemName}",
+          "rhs": "Windows"
+        }
       }
     ],
     "buildPresets": [

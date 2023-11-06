@@ -21,7 +21,8 @@ Free chess GUIs exist, such as:
 The engine can sometimes beat fairly experienced players at least in selected time controls.
 Among others, these features will be considered for implementation, in no particular order:
 
-* Parametrize opening book directory
+* Include thc properly with CMake
+* Parametrize opening book directory, pass one as argument and use a default.
 * Investigate chess.engine.EngineTerminatedError: engine event loop dead errors in lichess-bot
 * Communication of more information regarding the search (nodes, hashFull%mill,...)
 * Support for tablebase finals
