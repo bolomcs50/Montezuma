@@ -38,13 +38,12 @@
         }
       },
       {
-        "name": "visual-studio-release",
-        "displayName": "Visual Studio Release",
-        "description": "Visual Studio Release build",
+        "name": "windows-msvc2017-32",
+        "displayName": "Visual Studio",
+        "description": "Visual Studio build",
         "generator": "Visual Studio 15 2017",
-        "binaryDir": "${sourceDir}/build/release",
+        "binaryDir": "${sourceDir}/build",
         "cacheVariables": {
-          "CMAKE_BUILD_TYPE": "Release",
           "WINDOWS": true
         },
         "condition": {
@@ -58,7 +57,29 @@
       {
         "name": "default",
         "configurePreset": "Debug"
-      }
+      },
+      {
+          "name": "ci-msvc2017-release-32",
+          "displayName" : "MSVC 2017 32Bit release",
+          "configurePreset" : "windows-msvc2017-32",
+          "configuration": "Release",
+          "condition": {
+              "type": "equals",
+              "lhs": "${hostSystemName}",
+              "rhs": "Windows"
+          }
+      },
+      {
+        "name": "ci-msvc2017-debug-32",
+        "displayName" : "MSVC 2017 32Bit debug",
+        "configurePreset" : "windows-msvc2017-32",
+        "configuration": "Debug",
+        "condition": {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Windows"
+        }
+    }
     ],
     "testPresets": [
       {
