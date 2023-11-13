@@ -1,8 +1,6 @@
 #include <fstream>
 #include <iostream>
-#include <unistd.h>
 #include "book.h"
-
 
 namespace montezuma {
     
@@ -11,7 +9,6 @@ Book::Book(){}
 bool Book::initialize(std::string fileName){
     std::ifstream bookFile(fileName, std::ios::binary);
     if (!bookFile.is_open()){
-        printf("Current working dir: %s\n", get_current_dir_name());
         std::cout << "info string unable to open book " << fileName << std::endl;
         return false;
     }
