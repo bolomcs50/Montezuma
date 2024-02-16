@@ -1,92 +1,97 @@
 {
-    "version": 3,
-    "cmakeMinimumRequired": {
-      "major": 3,
-      "minor": 19,
-      "patch": 0
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 22,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Ninja Debug build",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     },
-    "configurePresets": [
-      {
-        "name": "debug",
-        "displayName": "Debug",
-        "description": "Ninja Debug build",
-        "generator": "Ninja",
-        "binaryDir": "${sourceDir}/build/debug",
-        "cacheVariables": {
-          "CMAKE_BUILD_TYPE": "Debug"
-        }
-      },
-      {
-        "name": "debug-with-tests",
-        "displayName": "Debug with Tests",
-        "description": "Ninja Debug build with tests",
-        "generator": "Ninja",
-        "binaryDir": "${sourceDir}/build/debug-with-tests",
-        "cacheVariables": {
-          "CMAKE_BUILD_TYPE": "Debug",
-          "ENABLE_TESTING": true
-        }
-      },
-      {
-        "name": "release",
-        "displayName": "Release",
-        "description": "Ninja Release build",
-        "generator": "Ninja",
-        "binaryDir": "${sourceDir}/build/release",
-        "cacheVariables": {
-          "CMAKE_BUILD_TYPE": "Release"
-        }
-      },
-      {
-        "name": "windows-msvc2017-32",
-        "displayName": "Visual Studio",
-        "description": "Visual Studio build",
-        "generator": "Visual Studio 15 2017",
-        "binaryDir": "${sourceDir}/build",
-        "cacheVariables": {
-          "WINDOWS": true
-        },
-        "condition": {
-          "type": "equals",
-          "lhs": "${hostSystemName}",
-          "rhs": "Windows"
-        }
+    {
+      "name": "debug-with-tests",
+      "displayName": "Debug with Tests",
+      "description": "Ninja Debug build with tests",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/debug-with-tests",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ENABLE_TESTING": true
       }
-    ],
-    "buildPresets": [
-      {
-        "name": "default",
-        "configurePreset": "Debug"
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Ninja Release build",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "windows-msvc2017-32",
+      "displayName": "Visual Studio",
+      "description": "Visual Studio build",
+      "generator": "Visual Studio 15 2017",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "WINDOWS": true
       },
-      {
-          "name": "ci-msvc2017-release-32",
-          "displayName" : "MSVC 2017 32Bit release",
-          "configurePreset" : "windows-msvc2017-32",
-          "configuration": "Release",
-          "condition": {
-              "type": "equals",
-              "lhs": "${hostSystemName}",
-              "rhs": "Windows"
-          }
-      },
-      {
-        "name": "ci-msvc2017-debug-32",
-        "displayName" : "MSVC 2017 32Bit debug",
-        "configurePreset" : "windows-msvc2017-32",
-        "configuration": "Debug",
-        "condition": {
-            "type": "equals",
-            "lhs": "${hostSystemName}",
-            "rhs": "Windows"
-        }
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     }
-    ],
-    "testPresets": [
-      {
-        "name": "default",
-        "configurePreset": "default",
-        "output": {"outputOnFailure": true},
-        "execution": {"noTestsAction": "error", "stopOnFailure": true}
+  ],
+  "buildPresets": [
+    {
+      "name": "default"
+    },
+    {
+      "name": "ci-msvc2017-release-32",
+      "displayName": "MSVC 2017 32Bit release",
+      "configuration": "Release",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
       }
-    ]
-  }
+    },
+    {
+      "name": "ci-msvc2017-debug-32",
+      "displayName": "MSVC 2017 32Bit debug",
+      "configuration": "Debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "unit-tests",
+      "displayName": "Unit Tests",
+      "description": "A series of unit tests for Montezuma",
+      "configurePreset": "debug-with-tests",
+      "output": {
+        "outputOnFailure": true,
+        "shortProgress": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    }
+  ]
+}

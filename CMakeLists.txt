@@ -28,5 +28,6 @@ include(installMontezuma)
 
 ### Testing
 if (ENABLE_TESTING)
+        enable_testing()
         add_subdirectory(test)
 endif()
