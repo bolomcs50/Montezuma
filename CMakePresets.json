@@ -53,31 +53,6 @@
       }
     }
   ],
-  "buildPresets": [
-    {
-      "name": "default"
-    },
-    {
-      "name": "ci-msvc2017-release-32",
-      "displayName": "MSVC 2017 32Bit release",
-      "configuration": "Release",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      }
-    },
-    {
-      "name": "ci-msvc2017-debug-32",
-      "displayName": "MSVC 2017 32Bit debug",
-      "configuration": "Debug",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      }
-    }
-  ],
   "testPresets": [
     {
       "name": "unit-tests",
