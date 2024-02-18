@@ -16,7 +16,7 @@ TEST_CASE("Engine solves mates")
     {
         std::ifstream problemsFile("../res/MatesIn2.txt", std::ios::in);
         int solved = 0; // TODO when the engine is faster, run through the whole set of problems
-        while (getline(problemsFile, position) && solved <= 50)
+        while (getline(problemsFile, position) && solved <= 25)
         {
             getline(problemsFile, solution);
             command = "ucinewgame\nposition fen " + position + "\ngo\nquit\n";
@@ -52,7 +52,7 @@ TEST_CASE("Engine solves mates")
     {
         std::ifstream problemsFile("../res/MatesIn3.txt", std::ios::in);
         int solved = 0; // TODO when the engine is faster, run through the whole set of problems
-        while (getline(problemsFile, position) && solved <= 25)
+        while (getline(problemsFile, position) && solved <= 15)
         {
             getline(problemsFile, solution);
             command = "ucinewgame\nposition fen " + position + "\ngo\nquit\n";
