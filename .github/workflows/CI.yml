@@ -39,5 +39,5 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}
-      run: ctest --test-dir build/debug-with-tests
+      run: ctest --test-dir build
 
