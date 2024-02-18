@@ -83,7 +83,7 @@ TEST_CASE("Engine solves mates")
     }
 }
 
-TEST_CASE("Performance Benchmarks", [!benchmark])
+TEST_CASE("Performance Benchmarks", "[!benchmark]")
 {
 
     std::stringstream commandStream, outputStream;
