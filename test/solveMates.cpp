@@ -3,6 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/benchmark/catch_benchmark.hpp>
 
 TEST_CASE("Engine solves mates")
 {
@@ -80,4 +81,26 @@ TEST_CASE("Engine solves mates")
             solved++;
         }
     }
+}
+
+TEST_CASE("Performance Benchmarks", [!benchmark])
+{
+
+    std::stringstream commandStream, outputStream;
+    montezuma::Engine engine(commandStream, outputStream);
+    std::string command, attempt, token;
+    commandStream << "uci\n";
+
+    BENCHMARK_ADVANCED("Mate in 2")
+    (Catch::Benchmark::Chronometer meter)
+    {
+        commandStream << "ucinewgame\nposition fen r3k2r/p3bpp1/2q1p1b1/1ppPP1B1/3n3P/5NR1/PP2NP2/K1QR4 b kq - 0 1\ngo\nquit\n";
+        meter.measure([&]
+                      { engine.protocolLoop();
+                        while (getline(outputStream, attempt)){
+                            outputStream >> std::skipws >> token;
+                            if (token == "bestmove")
+                                return 1;
+                        } return 0; });
+    };
 }

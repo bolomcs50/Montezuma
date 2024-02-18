@@ -7,24 +7,20 @@
   },
   "configurePresets": [
     {
+      "name": "tests",
+      "hidden": true,
+      "cacheVariables": {
+        "ENABLE_TESTING": true
+      }
+    },
+    {
       "name": "debug",
       "displayName": "Debug",
       "description": "Ninja Debug build",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/debug",
+      "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "debug-with-tests",
-      "displayName": "Debug with Tests",
-      "description": "Ninja Debug build with tests",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/debug-with-tests",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "ENABLE_TESTING": true
       }
     },
     {
@@ -32,10 +28,28 @@
       "displayName": "Release",
       "description": "Ninja Release build",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/release",
+      "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    },
+    {
+      "name": "debug-with-tests",
+      "displayName": "Debug with Tests",
+      "description": "Ninja Debug build with tests",
+      "inherits": [
+        "debug",
+        "tests"
+      ]
+    },
+    {
+      "name": "release-with-tests",
+      "displayName": "Release with Tests",
+      "description": "Ninja Release build with tests",
+      "inherits": [
+        "release",
+        "tests"
+      ]
     },
     {
       "name": "windows-msvc2017-32",
