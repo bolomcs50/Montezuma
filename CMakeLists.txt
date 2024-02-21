@@ -9,7 +9,9 @@ project("Montezuma"
 # Append local modules to the module path
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-add_library(montezumaLib OBJECT)
+find_package(Catch2 3 REQUIRED)
+
+add_library(montezumaLib OBJECT Catch2)
 target_sources(montezumaLib
                 PRIVATE src/thc.cpp
                         src/hashing.cpp
