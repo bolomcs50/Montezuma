@@ -27,7 +27,7 @@ Among others, these features will be considered for implementation, in no partic
 * Support for tablebase finals
 * Wiser management of move time
 * Multithreaded search
-* Implementation of the [UCI Protocol](http://wbec-ridderkerk.nl/html/UCIProtocol.html))
+* Implementation of the [UCI Protocol](http://wbec-ridderkerk.nl/html/UCIProtocol.html)
 * Improved move ordering during search
 * Implementation of quiescence search to mitigate horizon effect
 * Development of a better evaluation function, maybe based on a neural network
