@@ -80,6 +80,9 @@
       "execution": {
         "noTestsAction": "error",
         "stopOnFailure": true
+      },
+      "environment": {
+        "CTEST_PARALLEL_LEVEL": "10"
       }
     }
   ]
