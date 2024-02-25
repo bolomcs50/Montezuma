@@ -25,6 +25,10 @@ jobs:
     - name: Install dependencies
       run: |
           sudo apt install -y ninja-build expect
+          git clone https://github.com/catchorg/Catch2.git
+          cd Catch2
+          cmake -S . -B build -DBUILD_TESTING=OFF
+          sudo cmake --build build/ --target install
 
     - name: Configure CMake
       run: cmake -S . --preset debug-with-tests
