@@ -24,7 +24,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-          sudo apt install -y ninja-build
+          sudo apt install -y ninja-build expect
           git clone https://github.com/catchorg/Catch2.git
           cd Catch2
           cmake -S . -B build -DBUILD_TESTING=OFF
@@ -39,5 +39,5 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}
-      run: ctest --test-dir build
+      run: ctest --preset unit-tests
 

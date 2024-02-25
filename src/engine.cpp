@@ -19,7 +19,6 @@ namespace montezuma
         evaluatedPositions_ = 0;
         hashTableSize_ = 64; // 64 MB default
         book_.initialize("engines/Human.bin");
-        //    book_.initialize("res/Titans.bin");
     }
 
     int Engine::protocolLoop()
@@ -159,8 +158,14 @@ namespace montezuma
     // Start move evaluation
     void Engine::inputGo(const std::string command)
     {
+        std::thread searchThread(&Engine::startSearching, this, command);
+        searchThread.detach();
+    }
+
+    void Engine::startSearching(const std::string command)
+    {
         // Save available time
-        unsigned int maxSearchDepth = 8;
+        unsigned int maxSearchDepth = 6;
         bool usingTime = false;
         size_t pos = command.find("wtime");
         if (pos != std::string::npos)
@@ -199,7 +204,6 @@ namespace montezuma
         line pvLine;
         usingPreviousLine_ = false;
         auto startTimeSearch = std::chrono::high_resolution_clock::now();
-
         for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++)
         {
             evaluatedPositions_ = 0;
@@ -237,9 +241,9 @@ namespace montezuma
         }
 
         outputStream_ << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
+        logFile_ << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
+        outputStream_.flush();
     }
-
-    bool toprint = false;
 
     int Engine::alphaBeta(int alpha, int beta, int depth, line *pvLine, int initialDepth)
     {

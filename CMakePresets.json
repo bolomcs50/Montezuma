@@ -72,7 +72,7 @@
       "name": "unit-tests",
       "displayName": "Unit Tests",
       "description": "A series of unit tests for Montezuma",
-      "configurePreset": "debug-with-tests",
+      "configurePreset": "release-with-tests",
       "output": {
         "outputOnFailure": true,
         "shortProgress": true
@@ -80,6 +80,9 @@
       "execution": {
         "noTestsAction": "error",
         "stopOnFailure": true
+      },
+      "environment": {
+        "CTEST_PARALLEL_LEVEL": "10"
       }
     }
   ]
