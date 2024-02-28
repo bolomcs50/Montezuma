@@ -22,7 +22,6 @@ The engine can sometimes beat fairly experienced players at least in selected ti
 Among others, these features will be considered for implementation, in no particular order:
 
 * Include thc properly with CMake
-* Parametrize opening book directory, pass one as argument and use a default.
 * Communication of more information regarding the search (nodes, hashFull%mill,...)
 * Support for tablebase finals
 * Wiser management of move time
@@ -33,3 +32,4 @@ Among others, these features will be considered for implementation, in no partic
 * Development of a better evaluation function, maybe based on a neural network
 * Testing
     * Write unit tests for existing code
+

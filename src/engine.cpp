@@ -82,7 +82,7 @@ namespace montezuma
         outputStream_ << "id name " << name_ << "\nid author " << author_ << "\n"
                       << "option name hashSize type spin default 64 min 1 max 128\n"
                       << "option name bookPath type string\n"
-                      << "option name maxSearchDepth type spin default 6 min 1 max 10"
+                      << "option name maxSearchDepth type spin default 6 min 1 max 10\n"
                       << "uciok\n";
     }
 
@@ -119,14 +119,14 @@ namespace montezuma
     // plays the moves contained in the string command on the board
     void Engine::updatePosition(const std::string command)
     {
-        if (command.find("startpos", 9) == 9)
+        if (command.find("startpos", 1) == 1)
         {
             resetBoard();
         }
-        else if (command.find("fen", 9) == 9)
+        else if (command.find("fen", 1) == 1)
         {
             resetBoard();
-            bool ok = cr_.Forsyth(command.substr(13).c_str());
+            bool ok = cr_.Forsyth(command.substr(5).c_str());
         }
         currentHash_ = zobristHash64Calculate(cr_);
         repetitionHashHistory_.clear();

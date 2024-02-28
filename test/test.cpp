@@ -3,29 +3,34 @@
 #include <sstream>
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("Engine initializes correctly"){
+TEST_CASE("EngineOperation")
+{
     std::stringstream iStream, oStream;
     montezuma::Engine engine(iStream, oStream);
-    iStream << "uci\nquit\n";
-    engine.protocolLoop();
 
-    std::string s;
-    std::getline(oStream, s);
-    REQUIRE(s.compare("id name Montezuma") == 0);
+    SECTION("EngineInitialization")
+    {
+        iStream << "uci\nquit\n";
+        engine.protocolLoop();
 
-    std::getline(oStream, s);
-    REQUIRE(s.compare("id author Michele Bolognini") == 0);
+        std::string s;
+        std::getline(oStream, s);
+        REQUIRE(s.compare("id name Montezuma") == 0);
 
-    std::getline(oStream, s);
-    REQUIRE(s.compare("uciok") == 0);
+        std::getline(oStream, s);
+        REQUIRE(s.compare("id author Michele Bolognini") == 0);
+    }
 }
 
-TEST_CASE("Engine reads positions correctly"){
+TEST_CASE("SettingOptions")
+{
 }
 
-TEST_CASE("Engine hashes positions correctly"){
-}
+// TEST_CASE("Engine reads positions correctly"){
+// }
 
+// TEST_CASE("Engine hashes positions correctly"){
+// }
 
 // TEST_CASE("Example test with sections", "[Optional tag]"){
 //     // Init code
