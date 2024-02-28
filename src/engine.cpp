@@ -18,7 +18,6 @@ namespace montezuma
         author_ = "Michele Bolognini";
         evaluatedPositions_ = 0;
         hashTableSize_ = 64; // 64 MB default
-        book_.initialize("engines/Human.bin");
     }
 
     int Engine::protocolLoop()
@@ -26,7 +25,7 @@ namespace montezuma
         std::string command;
         while (true)
         {
-            std::getline(inputStream_, command);
+            inputStream_ >> command;
             logFile_.open("Log.txt", std::ios::out | std::ios::app);
             if (command.compare("uci") == 0)
             {
@@ -45,29 +44,27 @@ namespace montezuma
                 resetBoard();
                 initHashTable();
             }
-            else if (command.find("debug", 0) == 0)
+            else if (command.compare("debug") == 0)
             {
-                debug(command);
+                debug();
             }
-            else if (command.find("setoption", 0) == 0)
+            else if (command.compare("setoption") == 0)
             {
-                // This is called to set the internal options of the engine.
-                // It is called once per option with the syntax:
-                // "setoption name Style value Risky\n"
-                // TODO: implement option setting
-                outputStream_ << "info string setoption command is not supported yet\n";
+                setOption(inputStream_);
             }
-            else if (command.find("register", 0) == 0)
+            else if (command.compare("register") == 0)
             {
                 // TODO: Find out what registration is and implement it
                 outputStream_ << "info string registration is not supported yet\n";
             }
-            else if (command.find("position", 0) == 0)
+            else if (command.compare("position") == 0)
             {
+                std::getline(inputStream_, command);
                 updatePosition(command);
             }
             else if (command.find("go", 0) == 0)
             {
+                std::getline(inputStream_, command);
                 inputGo(command);
             }
             else if (command.find("quit", 0) == 0)
@@ -82,9 +79,11 @@ namespace montezuma
     // Basic handshake in the UCI protocol
     void Engine::uciHandShake() const
     {
-        outputStream_ << "id name " << name_ << "\nid author " << author_;
-        // TODO: send back 'option' command to tell the GUI which options the engine supports
-        outputStream_ << "\nuciok\n";
+        outputStream_ << "id name " << name_ << "\nid author " << author_ << "\n"
+                      << "option name hashSize type spin default 64 min 1 max 128\n"
+                      << "option name bookPath type string\n"
+                      << "option name maxSearchDepth type spin default 6 min 1 max 10"
+                      << "uciok\n";
     }
 
     // Diplays a position to the console
@@ -165,7 +164,7 @@ namespace montezuma
     void Engine::startSearching(const std::string command)
     {
         // Save available time
-        unsigned int maxSearchDepth = 6;
+        unsigned int maxSearchDepth = maxSearchDepth_;
         bool usingTime = false;
         size_t pos = command.find("wtime");
         if (pos != std::string::npos)
@@ -445,7 +444,29 @@ namespace montezuma
         hashHistory.erase(currentHash_);
     }
 
-    void Engine::debug(const std::string command)
+    void Engine::setOption(std::istream &commandStream)
+    {
+        std::string optionName, optionValue;
+        commandStream >> optionName >> optionName; // Throw away the "name" and "value" keys
+        commandStream >> optionValue >> optionValue;
+        std::cout << "info string setting " << optionName << " to " << optionValue << std::endl;
+
+        if (optionName.compare("bookPath") == 0)
+        {
+            book_.initialize(optionValue);
+        }
+        else if (optionName.compare("maxSearchDepth") == 0)
+        {
+            maxSearchDepth_ = std::stoi(optionValue);
+        }
+        else if (optionName.compare("hashSize") == 0)
+        {
+            hashTableSize_ = std::stoi(optionValue);
+            initHashTable();
+        }
+    }
+
+    void Engine::debug()
     {
         displayPosition(cr_, "Current position is");
         printf("Recorded %u hashTableEntries\n", tableEntries_);

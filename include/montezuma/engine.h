@@ -53,8 +53,9 @@ namespace montezuma
         void retrievePvLineFromTable(line *pvLine, std::set<uint64_t> &hashHistory);
         /* Checks if the current hash has appeared at least other 2 times in history */
         bool isThreefoldRepetitionHash();
+        void setOption(std::istream &commandStream);
         /* Perform some debugging tasks */
-        void debug(const std::string command);
+        void debug();
 
         thc::ChessEvaluation cr_;
         uint64_t currentHash_;                        // Hash of the current position
@@ -71,6 +72,7 @@ namespace montezuma
         bool usingPreviousLine_;
         unsigned int wTime_;
         unsigned int bTime_;
+        unsigned int maxSearchDepth_{6};
         std::ofstream logFile_;
         Book book_;
         bool isOpening_;
