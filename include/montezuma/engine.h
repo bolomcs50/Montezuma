@@ -6,7 +6,6 @@
 #include <set>
 #include "thc.h"
 #include "hashing.h"
-#include "book.h"
 
 namespace montezuma
 {
@@ -30,7 +29,6 @@ namespace montezuma
 
     private:
         void uciHandShake() const;
-        void displayPosition(thc::ChessRules &cr, const std::string &description) const;
         /* Re-initializes the cr thc::ChessEvaluation board */
         void resetBoard();
         /* Initializes hashTable by setting all elements to 0 */
@@ -54,8 +52,6 @@ namespace montezuma
         /* Checks if the current hash has appeared at least other 2 times in history */
         bool isThreefoldRepetitionHash();
         void setOption(std::istream &commandStream);
-        /* Perform some debugging tasks */
-        void debug();
 
         thc::ChessEvaluation cr_;
         uint64_t currentHash_;                        // Hash of the current position
@@ -74,7 +70,6 @@ namespace montezuma
         unsigned int bTime_;
         unsigned int maxSearchDepth_{6};
         std::ofstream logFile_;
-        Book book_;
         bool isOpening_;
         std::istream &inputStream_;
         std::ostream &outputStream_;

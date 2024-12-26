@@ -44,10 +44,6 @@ namespace montezuma
                 resetBoard();
                 initHashTable();
             }
-            else if (command.compare("debug") == 0)
-            {
-                debug();
-            }
             else if (command.compare("setoption") == 0)
             {
                 setOption(inputStream_);
@@ -81,21 +77,8 @@ namespace montezuma
     {
         outputStream_ << "id name " << name_ << "\nid author " << author_ << "\n"
                       << "option name hashSize type spin default 64 min 1 max 128\n"
-                      << "option name bookPath type string\n"
                       << "option name maxSearchDepth type spin default 6 min 1 max 10\n"
                       << "uciok\n";
-    }
-
-    // Diplays a position to the console
-    void Engine::displayPosition(thc::ChessRules &cr, const std::string &description) const
-    {
-        std::string fen = cr.ForsythPublish();
-        std::string s = cr.ToDebugStr();
-        printf("%s\n", description.c_str());
-        printf("FEN = %s", fen.c_str());
-        printf("%s", s.c_str());
-        outputStream_ << "Hash64: " << zobristHash64Calculate(cr) << std::endl
-                      << "currentHash: " << currentHash_ << std::endl;
     }
 
     // Reset Board to initial state
@@ -187,18 +170,6 @@ namespace montezuma
         // decide how much time to allocate
         unsigned long int limitTime = (movesToGo) ? myTime / std::min(moveHorizon, movesToGo) : myTime / moveHorizon;
         // logFile << "[MONTEZUMA]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
-
-        // Search
-        // If the position is in the opening book, use it
-        char *bestMove = (char *)malloc(6 * sizeof(char));
-        if (isOpening_ && book_.getMove(cr_, currentHash_, bestMove))
-        {
-            outputStream_ << "bestmove " << bestMove << std::endl;
-            return;
-        }
-        else // Otherwise stop looking in the book
-            isOpening_ = false;
-        free(bestMove);
 
         line pvLine;
         usingPreviousLine_ = false;
@@ -451,11 +422,7 @@ namespace montezuma
         commandStream >> optionValue >> optionValue;
         std::cout << "info string setting " << optionName << " to " << optionValue << std::endl;
 
-        if (optionName.compare("bookPath") == 0)
-        {
-            book_.initialize(optionValue);
-        }
-        else if (optionName.compare("maxSearchDepth") == 0)
+        if (optionName.compare("maxSearchDepth") == 0)
         {
             maxSearchDepth_ = std::stoi(optionValue);
         }
@@ -465,16 +432,4 @@ namespace montezuma
             initHashTable();
         }
     }
-
-    void Engine::debug()
-    {
-        displayPosition(cr_, "Current position is");
-        printf("Recorded %u hashTableEntries\n", tableEntries_);
-        outputStream_ << currentHash_ % numPositions_ << std::endl;
-        hashEntry *entry = &hashTable_[currentHash_ % numPositions_];
-        outputStream_ << "Entry at " << currentHash_ % numPositions_ << ": ";
-        printf("depth:%d, flag:%d, score:%d, repetitions:%u, bestMove:", entry->depth, entry->flag, entry->score, entry->repetitionCount);
-        outputStream_ << entry->bestMove.TerseOut() << std::endl;
-    }
-
 } // end namespace montezuma

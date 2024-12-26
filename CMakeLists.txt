@@ -13,7 +13,7 @@ add_library(montezumaLib OBJECT)
 target_sources(montezumaLib
                 PRIVATE src/thc.cpp
                         src/hashing.cpp
-                        src/book.cpp
+                        # src/book.cpp
                         src/engine.cpp)
 target_include_directories(montezumaLib
                 PUBLIC ${PROJECT_SOURCE_DIR}/include/thc
