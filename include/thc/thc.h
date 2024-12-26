@@ -462,33 +462,9 @@ public:
     // Return true if Positions are the same (including counts)
     bool CmpStrict( const ChessPosition &other ) const;
 
-    // For debug
-    std::string ToDebugStr( const char *label = 0 );
-
     // Set up position on board from Forsyth string with extensions
     //  return bool okay
     virtual bool Forsyth( const char *txt );
-
-    // Publish chess position and supplementary info in forsyth notation
-    std::string ForsythPublish();
-
-    // Compress a ChessPosition into 24 bytes, return 16 bit hash
-    unsigned short Compress( CompressedPosition &dst ) const;
-
-    // Decompress chess position
-    void Decompress( const CompressedPosition &src );
-
-    // Calculate a hash value for position (not same as CompressPosition algorithm hash)
-    uint32_t HashCalculate();
-
-    // Incremental hash value update
-    uint32_t HashUpdate( uint32_t hash_in, Move move );
-
-    // Calculate a hash value for position (64 bit version)
-    uint64_t Hash64Calculate();
-
-    // Incremental hash value update (64 bit version)
-    uint64_t Hash64Update( uint64_t hash_in, Move move );
 
     // Whos turn is it anyway
     inline bool WhiteToPlay() const { return white; }
@@ -546,8 +522,6 @@ public:
         return *this;
     }
 
-    // Test internals, for porting to new environments etc
-    bool TestInternals( int (*log)(const char *,...) = NULL );
 
     // Initialise from Forsyth string
     bool Forsyth( const char *txt )
@@ -557,9 +531,6 @@ public:
             Init(); // clear stuff for repitition, 50 move rule
         return okay;
     }
-
-    //  Test for legal position, sets reason to a mask of possibly multiple reasons
-    bool IsLegal( ILLEGAL_REASON& reason );
 
     // Play a move
     void PlayMove( Move imove );
@@ -583,12 +554,6 @@ public:
     // Determine if an occupied square is attacked
     bool AttackedPiece( Square square );
 
-    // Transform a position with W to move into an equivalent with B to move and vice-versa
-    void Transform();
-
-    // Transform a W move in a transformed position to a B one and vice-versa
-    Move Transform( Move m );
-
     // Create a list of all legal moves in this position
     void GenLegalMoveList( std::vector<Move> &moves );
 
@@ -611,9 +576,6 @@ public:
 
     // Undo a move
     void PopMove( Move& m );
-
-    // Test fundamental internal assumptions and operations
-    void TestInternals();
 
 // Private stuff
 protected:
@@ -687,19 +649,11 @@ public:
         return *this;
     }
 
-
-    // Use leaf evaluator to generate a sorted move list
-    void GenLegalMoveListSorted( MOVELIST *list );
-    void GenLegalMoveListSorted( std::vector<Move> &moves );
-
     // Evaluate a position, leaf node (useful for playing programs)
     void EvaluateLeaf( int &material, int &positional );
 
 // internal stuff
 protected:
-
-    // Always some planning before calculating a move
-    void Planning();
 
     // Calculate material that side to play can win directly
     int Enprise();
