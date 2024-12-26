@@ -70,7 +70,6 @@ namespace montezuma
     void Engine::uciHandShake() const
     {
         outputStream_ << "id name " << name_ << "\nid author " << author_ << "\n"
-                      << "option name hashSize type spin default 64 min 1 max 128\n"
                       << "option name maxSearchDepth type spin default 6 min 1 max 10\n"
                       << "uciok\n";
     }
