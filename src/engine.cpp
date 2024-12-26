@@ -1,7 +1,6 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include <fstream>
 #include <limits.h>
 #include <math.h>
 #include <cassert>
@@ -25,7 +24,6 @@ namespace montezuma
         while (true)
         {
             inputStream_ >> command;
-            logFile_.open("Log.txt", std::ios::out | std::ios::app);
             if (command.compare("uci") == 0)
             {
                 uciHandShake();
@@ -64,7 +62,6 @@ namespace montezuma
             {
                 break;
             }
-            logFile_.close();
         }
         return 0;
     }

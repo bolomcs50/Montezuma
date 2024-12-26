@@ -1,7 +1,6 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include <fstream>
 #include <iostream>
 #include <set>
 #include "thc.h"
@@ -53,14 +52,11 @@ namespace montezuma
         std::string author_;
         unsigned long long evaluatedPositions_;
         unsigned int numPositions_;
-        unsigned int tableHits_;
-        unsigned int tableEntries_;
         line globalPvLine_;
         bool usingPreviousLine_;
         unsigned int wTime_;
         unsigned int bTime_;
         unsigned int maxSearchDepth_{6};
-        std::ofstream logFile_;
         bool isOpening_;
         std::istream &inputStream_;
         std::ostream &outputStream_;
