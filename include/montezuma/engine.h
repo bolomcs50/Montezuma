@@ -5,7 +5,13 @@
 #include <iostream>
 #include <set>
 #include "thc.h"
-#include "hashing.h"
+
+enum class Flag {
+    NONE,
+    EXACT,
+    ALPHA,
+    BETA
+};
 
 namespace montezuma
 {
@@ -31,8 +37,6 @@ namespace montezuma
         void uciHandShake() const;
         /* Re-initializes the cr thc::ChessEvaluation board */
         void resetBoard();
-        /* Initializes hashTable by setting all elements to 0 */
-        void initHashTable();
         /* Plays the listed moves on the Engine's board */
         void updatePosition(const std::string command);
         /* Called when Engine receives the "go" command */
@@ -42,25 +46,12 @@ namespace montezuma
         int alphaBeta(int alpha, int beta, int depth, line *pvLine, int initialDepth);
         /* Evaluation function, evaluates the engine's current board */
         int evaluate();
-        /* Probes the table to see if "hash" is in it. If it is AND the score is useful, return true and its score */
-        bool probeHash(int depth, int alpha, int beta, int &score);
-        /* Record the hash into the table. Implement replacement scheme here */
-        void recordHash(int depth, Flag flag, int score, thc::Move bestMove);
-        /* recursively retrieve the PV line using information stored in the table*/
-        void retrievePvLineFromTable(line *pvLine);
-        void retrievePvLineFromTable(line *pvLine, std::set<uint64_t> &hashHistory);
-        /* Checks if the current hash has appeared at least other 2 times in history */
-        bool isThreefoldRepetitionHash();
         void setOption(std::istream &commandStream);
 
         thc::ChessEvaluation cr_;
-        uint64_t currentHash_;                        // Hash of the current position
-        std::vector<uint64_t> repetitionHashHistory_; // History of the relevant position hashes to check for threefold repetition draws
         std::string name_;
         std::string author_;
         unsigned long long evaluatedPositions_;
-        std::vector<hashEntry> hashTable_;
-        unsigned int hashTableSize_; // Given in MB
         unsigned int numPositions_;
         unsigned int tableHits_;
         unsigned int tableEntries_;
