@@ -1,16 +1,17 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#include <chrono>
+#include <thread>
+#include <limits.h>
+#include <math.h>
+#include <cassert>
+#include <algorithm>
 #include <iostream>
 #include <set>
 #include "thc.h"
 
-enum class Flag {
-    NONE,
-    EXACT,
-    ALPHA,
-    BETA
-};
+enum class Flag { NONE, EXACT, ALPHA, BETA };
 
 namespace montezuma
 {
