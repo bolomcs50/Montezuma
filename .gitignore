@@ -37,6 +37,7 @@ Log.txt
 # Folders
 out/
 build/
+build_2/
 .vscode/
 
 # sublime files

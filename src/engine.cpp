@@ -1,10 +1,3 @@
-#include <iostream>
-#include <chrono>
-#include <thread>
-#include <limits.h>
-#include <math.h>
-#include <cassert>
-#include <algorithm>
 #include "engine.h"
 
 namespace montezuma
@@ -13,8 +6,8 @@ namespace montezuma
     Engine::Engine(std::istream &inputStream, std::ostream &outputStream) : inputStream_(inputStream),
                                                                             outputStream_(outputStream)
     {
-        name_ = "Montezuma";
-        author_ = "Michele Bolognini";
+        name_ = "Montezuma - FIDE Challenge version";
+        author_ = "Michele Bolognini, Fabrizio Brioni, Daniele Cursano, Flavio Milinanni";
         evaluatedPositions_ = 0;
     }
 

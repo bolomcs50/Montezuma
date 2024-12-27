@@ -1,8 +1,4 @@
-#include <iostream>
-#include <inttypes.h>
-#include "thc.h"
 #include "hashing.h"
-#include "book.h"
 
 void displayPosition( thc::ChessRules &cr, const std::string &description)
 {
@@ -36,9 +32,6 @@ int main(int argc, char const *argv[])
 //    displayPosition(cr, ""); 
 //    printf("Calculated:\t%lx\n", montezuma::zobristHash64Calculate(cr));
 //    printf("Updated:\t%lx\n", new_hash);
-    
-    montezuma::Book openingBook;
-    openingBook.initialize("Titans.bin");
     thc::Move bestMove;
 
     return 0;
