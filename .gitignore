@@ -39,8 +39,8 @@ out/
 build/
 build_2/
 .vscode/
-.cache/
-.github/
+.cache/clangd/index
+.github/workflows
 
 # sublime files
 *.sublime-project
