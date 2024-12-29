@@ -18,7 +18,7 @@ namespace montezuma
         while (true)
         {
             inputStream_ >> command;
-            logFile_.open("Log.txt", std::ios::out | std::ios::app);
+            // logFile_.open("Log.txt", std::ios::out | std::ios::app);
             if (command.compare("uci") == 0)
             {
                 uciHandShake();
@@ -63,7 +63,7 @@ namespace montezuma
             {
                 break;
             }
-            logFile_.close();
+            // logFile_.close();
         }
         return 0;
     }
@@ -157,14 +157,15 @@ namespace montezuma
     {
         // Save available time
         unsigned int maxSearchDepth = maxSearchDepth_;
-        bool usingTime = false;
         size_t pos = command.find("wtime");
         if (pos != std::string::npos)
         {
-            usingTime = true;
+            usingTime_ = true;
             wTime_ = std::stoi(command.substr(pos + 6, command.find_first_of(" ", pos + 6) - pos + 6));
             pos = command.find("btime"); // Supposing that, if wtime is given, btime is given too in the same string
             bTime_ = std::stoi(command.substr(pos + 6, command.find_first_of(" ", pos + 6) - pos + 6));
+        } else {
+            usingTime_ = false;
         }
         unsigned long long int myTime = (cr_.white) ? wTime_ : bTime_;
         // Save depth limit
@@ -177,7 +178,7 @@ namespace montezuma
         if (pos != std::string::npos)
             movesToGo = std::stoi(command.substr(pos + 10, command.find_first_of(" ", pos + 10) - pos + 10));
         // decide how much time to allocate
-        unsigned long int limitTime = (movesToGo) ? myTime / std::min(moveHorizon, movesToGo) : myTime / moveHorizon;
+        limitTime_ = (movesToGo) ? myTime / std::min(moveHorizon, movesToGo) : myTime / moveHorizon;
         // logFile << "[MONTEZUMA]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
 
         // Search
@@ -194,7 +195,7 @@ namespace montezuma
 
         line pvLine;
         usingPreviousLine_ = false;
-        auto startTimeSearch = std::chrono::high_resolution_clock::now();
+        startTimeSearch_ = std::chrono::high_resolution_clock::now();
         for (int incrementalDepth = 1; incrementalDepth <= maxSearchDepth; incrementalDepth++)
         {
             evaluatedPositions_ = 0;
@@ -226,13 +227,13 @@ namespace montezuma
 
             // Check if time is up
             stopTime = std::chrono::high_resolution_clock::now();
-            auto searchDuration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeSearch);
-            if (usingTime && searchDuration.count() > limitTime)
+            auto searchDuration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeSearch_);
+            if (usingTime_ && searchDuration.count() > limitTime_)
                 break;
         }
 
         outputStream_ << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
-        logFile_ << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
+        // logFile_ << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
         outputStream_.flush();
     }
 
@@ -246,7 +247,10 @@ namespace montezuma
         line line;
         cr_.GenLegalMoveList(legalMoves);
 
-        if (depth == 0 || legalMoves.size() == 0)
+        auto stopTime = std::chrono::high_resolution_clock::now();
+        auto searchDuration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTimeSearch_);
+
+        if (depth == 0 || legalMoves.size() == 0 || (usingTime_ && searchDuration.count() > limitTime_))
         {
             pvLine->moveCount = 0;
             score = evaluate();
@@ -465,7 +469,7 @@ namespace montezuma
         outputStream_ << currentHash_ % numPositions_ << std::endl;
         hashEntry *entry = &hashTable_[currentHash_ % numPositions_];
         outputStream_ << "Entry at " << currentHash_ % numPositions_ << ": ";
-        printf("depth:%d, flag:%d, score:%d, repetitions:%u, bestMove:", entry->depth, entry->flag, entry->score, entry->repetitionCount);
+        printf("depth:%d, flag:%d, score:%d, repetitions:%u, bestMove:", entry->depth, static_cast<int>(entry->flag), entry->score, entry->repetitionCount);
         outputStream_ << entry->bestMove.TerseOut() << std::endl;
     }
 
