@@ -134,15 +134,6 @@ enum TERMINAL
                 //             ^                         ^
                 //[calculated practical maximum   ] + [margin]
 
-// We have developed an algorithm to compress any legal chess position,
-//  including who to move, castling allowed flags and enpassant_target
-//  into 24 bytes
-union CompressedPosition
-{
-    unsigned char storage[24];
-    unsigned int ints[ 24 / sizeof(unsigned int) ];
-};
-
 // Types we'd really rather have in PrivateChessDefs.h, but not possible
 //  at the moment, so we reluctantly expose them to users of the chess
 //  classes.
@@ -471,24 +462,6 @@ public:
 
     // Publish chess position and supplementary info in forsyth notation
     std::string ForsythPublish();
-
-    // Compress a ChessPosition into 24 bytes, return 16 bit hash
-    unsigned short Compress( CompressedPosition &dst ) const;
-
-    // Decompress chess position
-    void Decompress( const CompressedPosition &src );
-
-    // Calculate a hash value for position (not same as CompressPosition algorithm hash)
-    uint32_t HashCalculate();
-
-    // Incremental hash value update
-    uint32_t HashUpdate( uint32_t hash_in, Move move );
-
-    // Calculate a hash value for position (64 bit version)
-    uint64_t Hash64Calculate();
-
-    // Incremental hash value update (64 bit version)
-    uint64_t Hash64Update( uint64_t hash_in, Move move );
 
     // Whos turn is it anyway
     inline bool WhiteToPlay() const { return white; }

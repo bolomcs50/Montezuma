@@ -1,8 +1,14 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include <fstream>
 #include <iostream>
+#include <chrono>
+#include <thread>
+#include <fstream>
+#include <limits.h>
+#include <math.h>
+#include <cassert>
+#include <algorithm>
 #include <set>
 #include "thc.h"
 #include "hashing.h"
