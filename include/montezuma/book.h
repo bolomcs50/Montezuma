@@ -6,7 +6,9 @@
  * 
  * Definitions for opening book management
  */
-
+ 
+#include <fstream>
+#include <iostream>
 #include "hashing.h"
 #include "thc.h"
 

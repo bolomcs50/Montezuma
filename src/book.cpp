@@ -1,5 +1,3 @@
-#include <fstream>
-#include <iostream>
 #include "book.h"
 
 namespace montezuma {
