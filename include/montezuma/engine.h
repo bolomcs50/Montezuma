@@ -76,6 +76,9 @@ namespace montezuma
         unsigned int tableEntries_;
         line globalPvLine_;
         bool usingPreviousLine_;
+        bool usingTime_;
+        unsigned long int limitTime_;
+        std::chrono::time_point<std::chrono::high_resolution_clock> startTimeSearch_;
         unsigned int wTime_;
         unsigned int bTime_;
         unsigned int maxSearchDepth_{6};
