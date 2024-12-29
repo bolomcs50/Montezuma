@@ -34,6 +34,16 @@
       }
     },
     {
+      "name": "minimum-size",
+      "displayName": "Minimum Size Release",
+      "description": "Ninja Minimum Size Release build",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "MinSizeRel"
+      }
+    },
+    {
       "name": "debug-with-tests",
       "displayName": "Debug with Tests",
       "description": "Ninja Debug build with tests",
