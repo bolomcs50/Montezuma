@@ -9,7 +9,7 @@ namespace montezuma
         name_ = "Montezuma";
         author_ = "Michele Bolognini";
         evaluatedPositions_ = 0;
-        hashTableSize_ = 64; // 64 MB default
+        hashTableSize_ = 1; // 1 MB default
     }
 
     int Engine::protocolLoop()
@@ -18,7 +18,7 @@ namespace montezuma
         while (true)
         {
             inputStream_ >> command;
-            // logFile_.open("Log.txt", std::ios::out | std::ios::app);
+            outputStream_ << "info string " << command << std::endl;
             if (command.compare("uci") == 0)
             {
                 uciHandShake();
@@ -63,7 +63,6 @@ namespace montezuma
             {
                 break;
             }
-            // logFile_.close();
         }
         return 0;
     }
@@ -179,7 +178,6 @@ namespace montezuma
             movesToGo = std::stoi(command.substr(pos + 10, command.find_first_of(" ", pos + 10) - pos + 10));
         // decide how much time to allocate
         limitTime_ = (movesToGo) ? myTime / std::min(moveHorizon, movesToGo) : myTime / moveHorizon;
-        // logFile << "[MONTEZUMA]: I have " << myTime << ", allocated " << limitTime << " to this move." << std::endl;
 
         // Search
         // If the position is in the opening book, use it
@@ -233,7 +231,6 @@ namespace montezuma
         }
 
         outputStream_ << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
-        // logFile_ << "bestmove " << globalPvLine_.moves[0].TerseOut() << std::endl;
         outputStream_.flush();
     }
 
