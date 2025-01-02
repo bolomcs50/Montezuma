@@ -1,6 +1,8 @@
 #ifndef HASHING_H
 #define HASHING_H
 
+#include <cstdint>
+
 #include "thc.h"
 
 namespace montezuma {

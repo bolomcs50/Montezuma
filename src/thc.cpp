@@ -3030,10 +3030,10 @@ void ChessEvaluation::Planning()
         // Reset dynamic king position arrays
         memcpy( king_ending_bonus_dynamic_white,
                 king_ending_bonus_static,
-                sizeof(king_ending_bonus_dynamic_white) );
+                sizeof(king_ending_bonus_static) );
         memcpy( king_ending_bonus_dynamic_black,
                 king_ending_bonus_static,
-                sizeof(king_ending_bonus_dynamic_black) );
+                sizeof(king_ending_bonus_static) );
 
         // Encourage kings to go where the pawns are
         #ifdef USE_CHASE_PAWNS
